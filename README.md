@@ -2,7 +2,7 @@
 
 [中文](https://github.com/tolerance-go/huima/blob/main/README.ZH-CN.md)
 
-A small plug-in that seamlessly connects figma design resources and code, welcome to build together!ヾ(@^▽^@)ノ
+> A small plug-in that seamlessly connects figma design resources and code, welcome to build together!ヾ(@^▽^@)ノ
 
 
 ## Features
