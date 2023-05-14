@@ -1,0 +1,12 @@
+{
+  "name": "huima",
+  "id": "1239442570532327240",
+  "api": "1.0.0",
+  "main": "packages/code/dist/code.js",
+  "ui": "packages/ui/dist/ui.html",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": [
+    "figma"
+  ]
+}

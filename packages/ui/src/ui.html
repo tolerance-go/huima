@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app" class="p-2 py-3">
+      <div class="flex justify-center">
+        <span class="text-gray-900 text-sm">当前选中的节点：</span>
+      </div>
+      <div class="flex justify-center py-4 italic">
+        <span
+          class="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
+          >{{ selectedNodeName }}({{ selectedNodeId }})</span
+        >
+      </div>
+      <div class="flex justify-center">
+        <button
+          @click="handleGenCode"
+          type="button"
+          class="mb-2 w-full rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+        >
+          生成代码
+        </button>
+      </div>
+      <div
+        class="h-[250px] mb-2 border overflow-scroll"
+        v-html="nodeHtml"
+      ></div>
+
+      <div class="group relative">
+        <button
+          id="copyBtn"
+          type="button"
+          class="absolute bottom-2 right-2 hidden rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 group-hover:block dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          {{ copyBtnText }}
+        </button>
+
+        <pre class="h-[250px] overflow-scroll rounded border text-sm">
+ {{ nodeHtml }}</pre
+        >
+      </div>
+    </div>
+  </body>
+</html>
