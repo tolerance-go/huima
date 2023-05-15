@@ -302,5 +302,6 @@ figma.on("selectionchange", () => {
 //====================== UI 事件处理 * 结束 ======================
 
 figma.showUI(__html__, {
-  height: 660,
+  height: 600,
+  width: 800
 });

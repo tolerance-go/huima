@@ -7,6 +7,7 @@ const selectedNodeName = ref("未选择");
 const selectedNodeId = ref("未知");
 const nodeHtml = ref("");
 const copyBtnText = ref("复制");
+const showMode = ref<"code" | "playground" | "empty">("empty");
 
 const clipboard = new ClipboardJS("#copyBtn", {
   text: function () {
@@ -41,6 +42,14 @@ const handleGenCode = () => {
   );
 };
 
+const handleShowCodeBtnClick = () => {
+  showMode.value = "code";
+};
+
+const handleShowPlaygroundBtnClick = () => {
+  showMode.value = "playground";
+};
+
 createApp({
   setup() {
     return {
@@ -48,7 +57,10 @@ createApp({
       selectedNodeId,
       nodeHtml,
       handleGenCode,
+      handleShowCodeBtnClick,
+      handleShowPlaygroundBtnClick,
       copyBtnText,
+      showMode,
     };
   },
 }).mount("#app");
@@ -61,6 +73,7 @@ onmessage = (event) => {
     selectedNodeName.value = name;
     selectedNodeId.value = id;
     nodeHtml.value = html;
+    showMode.value = "playground";
     return;
   }
 
@@ -71,6 +84,7 @@ onmessage = (event) => {
     selectedNodeName.value = name;
     selectedNodeId.value = id;
     nodeHtml.value = "";
+    showMode.value = "empty";
     return;
   }
 };
