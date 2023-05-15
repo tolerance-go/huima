@@ -7,18 +7,17 @@ interface NodeTree {
   textContent?: string;
 }
 
-interface FrameNode {
+interface BaseRuntimeNode {
   layoutMode: string;
-  itemSpacing?: string;
-  paddingLeft?: number;
-  paddingTop?: number;
-  paddingRight?: number;
-  paddingBottom?: number;
-  primaryAxisAlignItems?: string;
-  alignItems?: "flex-start" | "center" | "flex-end";
-  counterAxisAlignItems?: string;
-  justifyContent?: string;
-  strokes?: {
+  itemSpacing: string;
+  paddingLeft: number;
+  paddingTop: number;
+  paddingRight: number;
+  paddingBottom: number;
+  primaryAxisAlignItems: string;
+  alignItems: "flex-start" | "center" | "flex-end";
+  counterAxisAlignItems: string;
+  strokes: {
     type: string;
     color: {
       r: number;
@@ -27,14 +26,22 @@ interface FrameNode {
     };
     opacity: number;
   }[];
-  strokeWeight?: number;
-  strokeStyleId?: string;
+  strokeWeight: number;
+  strokeStyleId: string;
+  cornerRadius: number;
 }
+
+type FrameNodeRuntime = FrameNode & BaseRuntimeNode;
+
+type SceneNodeRuntime = SceneNode &
+  (BaseRuntimeNode & {
+    children: SceneNodeRuntime[];
+  });
 
 type CSSStyle = Record<string, string | number | undefined | symbol>;
 
-const getFillColor = (fills: symbol | readonly Paint[]) => {
-  let backgroundColor = undefined; // 默认背景色
+const getPaintColor = (fills: symbol | readonly Paint[]) => {
+  let color = undefined; // 默认背景色
   if (Array.isArray(fills)) {
     const solidFill = fills.find((fill) => fill.type === "SOLID") as SolidPaint;
     if (solidFill) {
@@ -42,10 +49,10 @@ const getFillColor = (fills: symbol | readonly Paint[]) => {
       const rgbaColor = `rgba(${rgb.r * 255}, ${rgb.g * 255}, ${rgb.b * 255}, ${
         solidFill.opacity
       })`;
-      backgroundColor = rgbaColor;
+      color = rgbaColor;
     }
   }
-  return backgroundColor;
+  return color;
 };
 
 function removeUndefined<T extends Object>(obj: T): T {
@@ -61,8 +68,8 @@ const isDefine = <T>(item: T) => {
   return item !== undefined && item !== null;
 };
 
-function frameNodeToFlexCSS(frameNode: FrameNode) {
-  if (frameNode.layoutMode && frameNode.layoutMode !== "NONE") {
+function frameNodeToFlexCSS(frameNode: FrameNodeRuntime) {
+  if (frameNode.layoutMode !== "NONE") {
     let css: CSSStyle = {
       display: "flex",
       ["flex-direction"]:
@@ -71,18 +78,10 @@ function frameNodeToFlexCSS(frameNode: FrameNode) {
     };
 
     // 对每个 padding 属性进行单独的设置
-    if (isDefine(frameNode.paddingLeft)) {
-      css["padding-left"] = frameNode.paddingLeft + "px";
-    }
-    if (isDefine(frameNode.paddingTop)) {
-      css["padding-top"] = frameNode.paddingTop + "px";
-    }
-    if (isDefine(frameNode.paddingRight)) {
-      css["padding-right"] = frameNode.paddingRight + "px";
-    }
-    if (isDefine(frameNode.paddingBottom)) {
-      css["padding-bottom"] = frameNode.paddingBottom + "px";
-    }
+    css["padding-left"] = frameNode.paddingLeft + "px";
+    css["padding-top"] = frameNode.paddingTop + "px";
+    css["padding-right"] = frameNode.paddingRight + "px";
+    css["padding-bottom"] = frameNode.paddingBottom + "px";
 
     // 设置主轴对齐方式
     switch (frameNode.counterAxisAlignItems) {
@@ -114,7 +113,7 @@ function frameNodeToFlexCSS(frameNode: FrameNode) {
   }
 }
 
-function convertFigmaNodeToBorderCSS(node: FrameNode): CSSStyle {
+function frameNodeToBorderCSS(node: FrameNodeRuntime): CSSStyle {
   let cssProps: CSSStyle = {};
 
   if (node.strokes && node.strokes.length > 0) {
@@ -151,15 +150,13 @@ function convertFigmaNodeToBorderCSS(node: FrameNode): CSSStyle {
   return cssProps;
 }
 
-function createNodeTree(figmaNode: SceneNode, level = 0): NodeTree {
+function createNodeTree(figmaNode: SceneNodeRuntime, level = 0): NodeTree {
   console.log("figmaNode", figmaNode, figmaNode.type);
-  const parentNode = figmaNode.parent;
 
   const getBaseStyle = () => {
-    if (
-      (parentNode as unknown as FrameNode | null)?.layoutMode &&
-      (parentNode as unknown as FrameNode | null)?.layoutMode !== "NONE"
-    ) {
+    const parentNode = figmaNode.parent as SceneNodeRuntime | null;
+
+    if (parentNode?.layoutMode !== "NONE") {
       return {
         position: "relative",
       };
@@ -177,16 +174,16 @@ function createNodeTree(figmaNode: SceneNode, level = 0): NodeTree {
 
   if (figmaNode.type === "FRAME") {
     tag = "div";
-    const shapeNode = figmaNode;
-    let backgroundColor = getFillColor(shapeNode.backgrounds);
+    const shapeNode = figmaNode as FrameNodeRuntime;
 
     style = {
       ...style,
       width: figmaNode.width + "px",
       height: figmaNode.height + "px",
-      "background-color": backgroundColor,
-      ...frameNodeToFlexCSS(figmaNode as unknown as FrameNode),
-      ...convertFigmaNodeToBorderCSS(figmaNode as unknown as FrameNode),
+      "background-color": getPaintColor(shapeNode.backgrounds),
+      "border-radius": shapeNode.cornerRadius + "px",
+      ...frameNodeToFlexCSS(shapeNode),
+      ...frameNodeToBorderCSS(shapeNode),
     };
   } else if (figmaNode.type === "GROUP") {
     tag = "dumb";
@@ -194,11 +191,11 @@ function createNodeTree(figmaNode: SceneNode, level = 0): NodeTree {
     tag = "span";
     textContent = figmaNode.characters;
     const textNode = figmaNode;
-    const color = getFillColor(textNode.fills);
+    const color = getPaintColor(textNode.fills);
 
     style = {
       ...style,
-      "font-size": figmaNode.fontSize,
+      "font-size": (figmaNode.fontSize as number) + "px",
       color,
     };
   } else if (
@@ -209,7 +206,7 @@ function createNodeTree(figmaNode: SceneNode, level = 0): NodeTree {
     tag = "div";
 
     const shapeNode = figmaNode;
-    let backgroundColor = getFillColor(shapeNode.fills);
+    let backgroundColor = getPaintColor(shapeNode.fills);
 
     // 提取 RectangleNode 或 EllipseNode 的样式信息
     style = {
@@ -285,7 +282,7 @@ figma.ui.onmessage = (message) => {
       postAction("startGen", {
         name: node.name,
         id: node.id,
-        html: createHTML(createNodeTree(node)),
+        html: createHTML(createNodeTree(node as SceneNodeRuntime)),
       });
     }
   }
