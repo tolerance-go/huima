@@ -4,13 +4,13 @@
   "description": "",
   "scripts": {
     "build": "webpack",
-    "watch": "npm run build -- --watch"
+    "dev": "npm run build -- --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@figma/plugin-typings": "^1.1.0",
+    "@figma/plugin-typings": "^1.64.0",
     "@huima/types": "workspace:^",
     "extra-watch-webpack-plugin": "^1.0.3",
     "html-webpack-plugin": "^5.5.1",
@@ -21,6 +21,7 @@
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
+    "@huima/utils": "workspace:^",
     "clipboard": "^2.0.11",
     "vue": "^3.3.2"
   }

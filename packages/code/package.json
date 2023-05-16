@@ -4,17 +4,23 @@
   "description": "",
   "scripts": {
     "build": "webpack",
-    "watch": "npm run build -- --watch"
+    "dev": "npm run build -- --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@figma/plugin-typings": "^1.1.0",
+    "@figma/plugin-typings": "^1.64.0",
     "@huima/types": "workspace:^",
+    "@types/lodash.merge": "^4.6.7",
     "ts-loader": "^9.4.2",
     "typescript": "5.0.4",
     "webpack": "^5.82.1",
     "webpack-cli": "^5.1.1"
+  },
+  "dependencies": {
+    "@huima/utils": "workspace:^",
+    "buffer": "^6.0.3",
+    "lodash.merge": "^4.6.2"
   }
 }

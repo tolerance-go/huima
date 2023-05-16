@@ -1,7 +1,8 @@
-import { Action } from "@huima/types";
+import { UIAction } from "@huima/types";
 import { createApp, ref } from "vue";
 
 import ClipboardJS from "clipboard";
+import { createHTML } from "./createHTML";
 
 const selectedNodeName = ref("未选择");
 const selectedNodeId = ref("未知");
@@ -68,8 +69,9 @@ createApp({
 onmessage = (event) => {
   if (event.data.pluginMessage.type === "startGen") {
     const {
-      payload: { name, id, html },
-    } = event.data.pluginMessage as Action<"startGen">;
+      payload: { name, id, nodeTree },
+    } = event.data.pluginMessage as UIAction<"startGen">;
+    const html = createHTML(nodeTree);
     selectedNodeName.value = name;
     selectedNodeId.value = id;
     nodeHtml.value = html;
@@ -80,7 +82,7 @@ onmessage = (event) => {
   if (event.data.pluginMessage.type === "selectionchange") {
     const {
       payload: { name, id },
-    } = event.data.pluginMessage as Action<"selectionchange">;
+    } = event.data.pluginMessage as UIAction<"selectionchange">;
     selectedNodeName.value = name;
     selectedNodeId.value = id;
     nodeHtml.value = "";

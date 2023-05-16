@@ -1,6 +1,16 @@
 import "./global";
 
-export type Events = {
+export type CSSStyle = Record<string, string | number | undefined>;
+
+export interface NodeTree {
+  tag: string;
+  style: CSSStyle;
+  children: NodeTree[];
+  textContent?: string;
+  styleMeta?: Record<string, any>;
+}
+
+export type UIEvents = {
   selectionchange: {
     name: string;
     id: string;
@@ -8,11 +18,11 @@ export type Events = {
   startGen: {
     name: string;
     id: string;
-    html: string;
+    nodeTree: NodeTree;
   };
 };
 
-export type Action<K extends keyof Events> = {
+export type UIAction<K extends keyof UIEvents> = {
   type: K;
-  payload: Events[K];
+  payload: UIEvents[K];
 };

@@ -1,0 +1,18 @@
+{
+  "name": "@huima/utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "typings": "src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "npm run build -- --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.64.0",
+    "typescript": "5.0.4"
+  }
+}
