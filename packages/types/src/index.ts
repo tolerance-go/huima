@@ -2,12 +2,15 @@ import "./global";
 
 export type CSSStyle = Record<string, string | number | undefined>;
 
+export type NodeInfo = Pick<SceneNode, "type" | "x" | "y"> &
+  Record<string, string | number>;
+
 export interface NodeTree {
   tag: string;
   style: CSSStyle;
   children: NodeTree[];
   textContent?: string;
-  styleMeta?: Record<string, any>;
+  nodeInfo: NodeInfo;
 }
 
 export type UIEvents = {

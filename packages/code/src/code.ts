@@ -1,12 +1,12 @@
-import { Events } from "@huima/types";
+import { UIEvents } from "@huima/types";
 import { createNodeTree } from "./createNodeTree";
 import { SceneNodeRuntime } from "./type";
 
 //====================== 工具函数 * 开始 ======================
 
-const postActionToUI = <T extends keyof Events>(
+const postActionToUI = <T extends keyof UIEvents>(
   type: T,
-  payload: Events[T]
+  payload: UIEvents[T]
 ) => {
   figma.ui.postMessage({
     type,

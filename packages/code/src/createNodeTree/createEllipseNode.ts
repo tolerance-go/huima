@@ -1,14 +1,17 @@
 import { generateBackgroundImageCSS } from "../generateBackgroundImageCSS";
+import { generateBorderCSS } from "../generateBorderCSS";
+import { generateFlexLayoutCSS } from "../generateFlexLayoutCSS";
 import { getPaintColor } from "../getPaintColor";
-import { CSSStyle, NodeInfo, NodeTree } from "../type";
+import { CSSStyle, FrameNodeRuntime, NodeInfo, NodeTree } from "../type";
 
-export const createRectangleNode = async (
-  node: RectangleNode,
+export const createEllipseNode = async (
+  node: EllipseNode,
   baseStyle: CSSStyle,
   nodeInfo: NodeInfo,
   children: NodeTree[]
 ): Promise<NodeTree> => {
-  console.log("createRectangleNode", node);
+  console.log("createEllipseNode", node);
+  let backgroundColor = getPaintColor(node.fills);
 
   let tag = "div";
   let style = {
@@ -16,8 +19,7 @@ export const createRectangleNode = async (
     width: node.width + "px",
     height: node.height + "px",
     "border-radius": (node.cornerRadius as number) + "px",
-    "background-color": getPaintColor(node.fills),
-    ...(await generateBackgroundImageCSS(node.fills)),
+    "background-color": backgroundColor,
   };
 
   return {

@@ -1,7 +1,12 @@
-import { getPaintColor } from "../getPaintColor";
 import { CSSStyle, NodeTree, SceneNodeRuntime } from "../type";
+import { createEllipseNode } from "./createELLIPSENode";
 import { createFrameNode } from "./createFrameNode";
+import { createGroupNode } from "./createGroupNode";
 import { createRectangleNode } from "./createRectangleNode";
+import { createTextNode } from "./createTextNode";
+import { createVectorNode } from "./createVectorNode";
+import { getBaseLayoutCSS } from "./getBaseLayoutCSS";
+import { getBaseNodeInfo } from "./getBaseNodeInfo";
 
 export async function createNodeTree(
   sceneNode: SceneNodeRuntime,
@@ -9,23 +14,10 @@ export async function createNodeTree(
 ): Promise<NodeTree> {
   console.log("sceneNode", sceneNode, sceneNode.type);
 
-  const getBaseStyle = () => {
-    const parentNode = sceneNode.parent;
+  const nodeInfo = getBaseNodeInfo(sceneNode, level);
 
-    if (
-      parentNode &&
-      "layoutMode" in parentNode &&
-      parentNode.layoutMode !== "NONE"
-    ) {
-      return {
-        position: "relative",
-      };
-    }
-    return {
-      position: level === 0 ? "relative" : "absolute",
-      left: level === 0 ? undefined : sceneNode.x + "px",
-      top: level === 0 ? undefined : sceneNode.y + "px",
-    };
+  const baseStyle: CSSStyle = {
+    ...getBaseLayoutCSS(nodeInfo, level),
   };
 
   const children: NodeTree[] =
@@ -35,46 +27,24 @@ export async function createNodeTree(
         )
       : [];
 
-  let tag: string = "";
-  let baseStyle: CSSStyle = getBaseStyle();
-  let textContent: string | undefined;
-
   if (sceneNode.type === "FRAME") {
-    return await createFrameNode(sceneNode, baseStyle, children);
+    return await createFrameNode(sceneNode, baseStyle, nodeInfo, children);
   } else if (sceneNode.type === "GROUP") {
-    tag = "dumb";
+    return createGroupNode(sceneNode, baseStyle, nodeInfo, children);
   } else if (sceneNode.type === "TEXT") {
-    tag = "span";
-    textContent = sceneNode.characters;
-    const textNode = sceneNode;
-    const color = getPaintColor(textNode.fills);
-
-    baseStyle = {
-      ...baseStyle,
-      "font-size": (sceneNode.fontSize as number) + "px",
-      color,
-    };
+    return createTextNode(sceneNode, baseStyle, nodeInfo, children);
   } else if (sceneNode.type === "RECTANGLE") {
-    return createRectangleNode(sceneNode, baseStyle, children);
-  } else if (sceneNode.type === "ELLIPSE" || sceneNode.type === "VECTOR") {
-    tag = "div";
-
-    const shapeNode = sceneNode;
-    let backgroundColor = getPaintColor(shapeNode.fills);
-
-    baseStyle = {
-      ...baseStyle,
-      width: shapeNode.width + "px",
-      height: shapeNode.height + "px",
-      "border-radius": (shapeNode.cornerRadius as number) + "px",
-      "background-color": backgroundColor,
-    };
+    return createRectangleNode(sceneNode, baseStyle, nodeInfo, children);
+  } else if (sceneNode.type === "VECTOR") {
+    return createVectorNode(sceneNode, baseStyle, nodeInfo, children);
+  } else if (sceneNode.type === "ELLIPSE") {
+    return createEllipseNode(sceneNode, baseStyle, nodeInfo, children);
   }
 
   return {
-    tag,
+    tag: "",
+    nodeInfo,
     style: baseStyle,
     children,
-    textContent,
   };
 }

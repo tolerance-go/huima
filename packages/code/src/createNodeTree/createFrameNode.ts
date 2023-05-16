@@ -2,11 +2,12 @@ import { generateBackgroundImageCSS } from "../generateBackgroundImageCSS";
 import { generateBorderCSS } from "../generateBorderCSS";
 import { generateFlexLayoutCSS } from "../generateFlexLayoutCSS";
 import { getPaintColor } from "../getPaintColor";
-import { CSSStyle, FrameNodeRuntime, NodeTree } from "../type";
+import { CSSStyle, FrameNodeRuntime, NodeInfo, NodeTree } from "../type";
 
 export const createFrameNode = async (
   node: FrameNodeRuntime,
   baseStyle: CSSStyle,
+  nodeInfo: NodeInfo,
   children: NodeTree[]
 ): Promise<NodeTree> => {
   console.log("createFrameNode", node);
@@ -24,6 +25,7 @@ export const createFrameNode = async (
   };
 
   return {
+    nodeInfo,
     tag,
     style,
     children,

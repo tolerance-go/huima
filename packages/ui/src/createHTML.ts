@@ -1,4 +1,4 @@
-import { CSSStyle, NodeTree } from "@huima/types";
+import { NodeTree } from "@huima/types";
 import { removeUndefined } from "@huima/utils";
 
 const createStyle = (node: NodeTree) => {
@@ -23,36 +23,47 @@ const createStyle = (node: NodeTree) => {
   return node.style;
 };
 
-export function createHTML(nodeTree: NodeTree, indent = 0): string {
-  if (nodeTree.tag === "dumb") {
+const getStyleString = (node: NodeTree) => {
+  const styleString = Object.entries(removeUndefined(createStyle(node)))
+    .map(([key, value]) => `${key}: ${value};`)
+    .join(" ");
+  return styleString;
+};
+
+export function createHTML(
+  node: NodeTree,
+  indent = 0,
+  parent?: NodeTree
+): string {
+  console.log("createHTML", node);
+
+  const childrenString = node.children
+    .map((child) => `\n${createHTML(child, indent + 1, node)}`)
+    .join("");
+
+  if (node.nodeInfo.type === "GROUP") {
     if (indent === 0) {
-      return `<div style="position: relative;">
-    ${nodeTree.children
-      .map((child) => createHTML(child, indent + 1))
-      .join("\n")}
-  </div>`;
+      return `<${node.tag} style="${getStyleString(node)}">
+    ${childrenString}
+  </${node.tag}>`;
     }
 
-    return nodeTree.children
-      .map((child) => createHTML(child, indent + 1))
-      .join("\n");
+    return childrenString;
   }
 
   const indentSpace = "  ".repeat(indent);
-  const styleString = Object.entries(removeUndefined(createStyle(nodeTree)))
-    .map(([key, value]) => `${key}: ${value};`)
-    .join(" ");
-  const startTag = `${indentSpace}<${nodeTree.tag} style="${styleString}">`;
-  const endTag = `</${nodeTree.tag}>\n`;
-  const textContent = nodeTree.textContent ? `${nodeTree.textContent}` : "";
-  const childrenString = nodeTree.children
-    .map((child) => `\n${createHTML(child, indent + 1)}`)
-    .join("");
+
+  const startTag = `${indentSpace}<${node.tag} style="${getStyleString(
+    node
+  )}">`;
+  const endTag = `</${node.tag}>\n`;
+  const textContent = node.textContent ? `${node.textContent}` : "";
+
   return (
     startTag +
     textContent +
     childrenString +
-    (nodeTree.children.length > 0 ? `\n${indentSpace}` : "") +
+    (node.children.length > 0 ? `\n${indentSpace}` : "") +
     endTag
   );
 }
