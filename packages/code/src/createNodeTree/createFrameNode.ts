@@ -1,5 +1,4 @@
-import merge from "lodash.merge";
-import { generateBackgroundImage } from "../generateBackgroundImage";
+import { generateBackgroundImageCSS } from "../generateBackgroundImageCSS";
 import { generateBorderCSS } from "../generateBorderCSS";
 import { generateFlexLayoutCSS } from "../generateFlexLayoutCSS";
 import { getPaintColor } from "../getPaintColor";
@@ -17,18 +16,16 @@ export const createFrameNode = async (
     ...baseStyle,
     width: node.width + "px",
     height: node.height + "px",
-    "background-color": getPaintColor(node.backgrounds),
-    "border-radius": node.cornerRadius + "px",
+    "background-color": getPaintColor(node.fills),
+    "border-radius": String(node.cornerRadius) + "px",
     ...generateFlexLayoutCSS(node),
     ...generateBorderCSS(node),
+    ...(await generateBackgroundImageCSS(node.fills)),
   };
 
-  return merge(
-    {
-      tag,
-      style,
-      children,
-    },
-    await generateBackgroundImage(node.fills)
-  );
+  return {
+    tag,
+    style,
+    children,
+  };
 };

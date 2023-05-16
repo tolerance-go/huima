@@ -1,7 +1,6 @@
+import { generateBackgroundImageCSS } from "../generateBackgroundImageCSS";
 import { getPaintColor } from "../getPaintColor";
 import { CSSStyle, NodeTree } from "../type";
-import { generateBackgroundImage } from "../generateBackgroundImage";
-import merge from "lodash.merge";
 
 export const createRectangleNode = async (
   node: RectangleNode,
@@ -17,14 +16,12 @@ export const createRectangleNode = async (
     height: node.height + "px",
     "border-radius": (node.cornerRadius as number) + "px",
     "background-color": getPaintColor(node.fills),
+    ...(await generateBackgroundImageCSS(node.fills)),
   };
 
-  return merge(
-    {
-      tag,
-      style,
-      children,
-    },
-    await generateBackgroundImage(node.fills)
-  );
+  return {
+    tag,
+    style,
+    children,
+  };
 };
