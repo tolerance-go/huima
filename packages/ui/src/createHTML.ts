@@ -1,5 +1,6 @@
 import { NodeTree } from "@huima/types";
 import { removeUndefined } from "@huima/utils";
+import { getGroupChildrenPosition } from "./getGroupChildrenPosition";
 
 const createStyle = (node: NodeTree) => {
   // console.log('createStyle', node)
@@ -30,21 +31,36 @@ const getStyleString = (node: NodeTree) => {
   return styleString;
 };
 
-export function createHTML(
-  node: NodeTree,
-  indent = 0,
-  parent?: NodeTree
-): string {
+export function createHTML(node: NodeTree, indent = 0): string {
   console.log("createHTML", node);
 
   const childrenString = node.children
-    .map((child) => `\n${createHTML(child, indent + 1, node)}`)
+    .map((child) => `\n${createHTML(child, indent + 1)}`)
     .join("");
 
   if (node.nodeInfo.type === "GROUP") {
     if (indent === 0) {
       return `<${node.tag} style="${getStyleString(node)}">
-    ${childrenString}
+    ${node.children
+      .map(
+        (child) =>
+          `\n${createHTML(
+            {
+              ...child,
+              style: {
+                ...child.style,
+                left:
+                  getGroupChildrenPosition(child.nodeInfo.x, node.nodeInfo.x) +
+                  "px",
+                top:
+                  getGroupChildrenPosition(child.nodeInfo.y, node.nodeInfo.y) +
+                  "px",
+              },
+            },
+            indent + 1
+          )}`
+      )
+      .join("")}
   </${node.tag}>`;
     }
 

@@ -7,6 +7,7 @@ import { createTextNode } from "./createTextNode";
 import { createVectorNode } from "./createVectorNode";
 import { getBaseLayoutCSS } from "./getBaseLayoutCSS";
 import { getBaseNodeInfo } from "./getBaseNodeInfo";
+import { getBaseSizeCSS } from "./getBaseSizeCSS";
 
 export async function createNodeTree(
   sceneNode: SceneNodeRuntime,
@@ -17,6 +18,7 @@ export async function createNodeTree(
   const nodeInfo = getBaseNodeInfo(sceneNode, level);
 
   const baseStyle: CSSStyle = {
+    ...getBaseSizeCSS(sceneNode),
     ...getBaseLayoutCSS(nodeInfo, level),
   };
 

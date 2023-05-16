@@ -7,11 +7,5 @@ export const getBaseNodeInfo = (sceneNode: SceneNode, level = 0) => {
     y: sceneNode.y,
   };
 
-  if (level === 0) {
-    nodeInfo.x = 0;
-    nodeInfo.y = 0;
-    return nodeInfo;
-  }
-
   return nodeInfo;
 };

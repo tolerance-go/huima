@@ -16,6 +16,7 @@ export const createTextNode = async (
     ...baseStyle,
     "font-size": String(node.fontSize) + "px",
     color,
+    display: "inline-block",
   };
 
   return {
