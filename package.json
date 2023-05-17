@@ -7,6 +7,7 @@
    "main": "code.js",
    "scripts": {
       "build": "pnpm -r --parallel run build",
+      "clean": "git clean -dfX",
       "dev": "pnpm -r --parallel run dev",
       "format": "prettier '**/(*.{css,js,jsx,ts,tsx,md,mdx,vue,html}|package.json|tsconfig.json)' --write",
       "prepare": "husky install"
