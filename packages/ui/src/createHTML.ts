@@ -83,9 +83,11 @@ const createStyle = (nodeStyle: CSSStyle, styleMeta?: StyleMeta) => {
       if (
          key === 'background-image' &&
          nodeStyle[key] &&
-         styleMeta?.bgImageBuffer
+         styleMeta?.backgroundImageBuffer
       ) {
-         const url = URL.createObjectURL(new Blob([styleMeta.bgImageBuffer]))
+         const url = URL.createObjectURL(
+            new Blob([styleMeta.backgroundImageBuffer]),
+         )
 
          style[key] = `url('${url}')`
          continue
