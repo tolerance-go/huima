@@ -1,5 +1,5 @@
 import { generateBackgroundImageCSS } from "../css-converts/generateBackgroundImageCSS";
-import { generateBorderCSS } from "../generateBorderCSS";
+import { generateBorderCSS } from "../css-converts/generateBorderCSS";
 import { generateFlexLayoutCSS } from "../css-converts/generateFlexLayoutCSS";
 import { generateOverflowCSS } from "../css-converts/generateOverflowCSS";
 import { getBackgroundColorCSS } from "../css-converts/getBackgroundColorCSS";

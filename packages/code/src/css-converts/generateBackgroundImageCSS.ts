@@ -2,7 +2,7 @@ import { Buffer } from "buffer";
 import { CSSStyle } from "../type";
 
 export async function generateBackgroundImageCSS(
-  paints: ReadonlyArray<Paint> | symbol
+  paints: Paint[]
 ): Promise<CSSStyle> {
   let style: CSSStyle = {};
 
@@ -10,23 +10,25 @@ export async function generateBackgroundImageCSS(
     return style;
   }
 
-  for (const paint of paints) {
-    console.log("paint", paint);
-    if (paint.type === "IMAGE" && paint.imageHash) {
-      const image = figma.getImageByHash(paint.imageHash);
-      if (image) {
-        const bytes = await image.getBytesAsync();
-        const buffer = Buffer.from(bytes);
+  //NOTE - 注意是倒序
+  const paint = [...paints]
+    .reverse()
+    .find(
+      (item) => item.visible && item.type === "IMAGE" && item.imageHash
+    ) as ImagePaint;
 
-        const base64Image = buffer.toString("base64");
+  if (paint?.imageHash) {
+    const image = figma.getImageByHash(paint.imageHash);
+    if (image) {
+      const bytes = await image.getBytesAsync();
+      const buffer = Buffer.from(bytes);
 
-        style[
-          "background-image"
-        ] = `url('data:image/png;base64,${base64Image}')`;
-        style["background-size"] = "cover";
-        style["background-repeat"] = "no-repeat";
-        style["background-position"] = "center";
-      }
+      const base64Image = buffer.toString("base64");
+
+      style["background-image"] = `url('data:image/png;base64,${base64Image}')`;
+      style["background-size"] = "cover";
+      style["background-repeat"] = "no-repeat";
+      style["background-position"] = "center";
     }
   }
 

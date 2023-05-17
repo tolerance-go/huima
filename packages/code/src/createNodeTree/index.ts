@@ -1,4 +1,7 @@
-import { CSSStyle, NodeTree, SceneNodeRuntime } from "../type";
+import { getBaseLayoutCSS } from "../css-converts/getBaseLayoutCSS";
+import { getBaseSizeCSS } from "../css-converts/getBaseSizeCSS";
+import { getBaseNodeInfo } from "../getBaseNodeInfo";
+import { CSSStyle, NodeTree } from "../type";
 import { createComponentNode } from "./createComponentNode";
 import { createEllipseNode } from "./createEllipseNode";
 import { createFrameNode } from "./createFrameNode";
@@ -7,17 +10,15 @@ import { createInstanceNode } from "./createInstanceNode";
 import { createRectangleNode } from "./createRectangleNode";
 import { createTextNode } from "./createTextNode";
 import { createVectorNode } from "./createVectorNode";
-import { getBaseLayoutCSS } from "../css-converts/getBaseLayoutCSS";
-import { getBaseNodeInfo } from "../css-converts/getBaseNodeInfo";
-import { getBaseSizeCSS } from "../css-converts/getBaseSizeCSS";
 
 export async function createNodeTree(
-  sceneNode: SceneNodeRuntime,
+  sceneNode: SceneNode,
+  visible: boolean = sceneNode.visible,
   level = 0
 ): Promise<NodeTree> {
   console.log("sceneNode", sceneNode, sceneNode.type);
 
-  const nodeInfo = getBaseNodeInfo(sceneNode, level);
+  const nodeInfo = getBaseNodeInfo(sceneNode, visible, level);
 
   const baseStyle: CSSStyle = {
     ...getBaseSizeCSS(sceneNode),
@@ -25,21 +26,28 @@ export async function createNodeTree(
   };
 
   const children: NodeTree[] =
-    "children" in sceneNode
+    sceneNode.type === "BOOLEAN_OPERATION"
+      ? []
+      : "children" in sceneNode
       ? await Promise.all(
-          sceneNode.children.map((item) => createNodeTree(item, level + 1))
+          sceneNode.children.map((item) =>
+            createNodeTree(item, visible && item.visible, level + 1)
+          )
         )
       : [];
 
   if (sceneNode.type === "FRAME") {
-    return await createFrameNode(sceneNode, baseStyle, nodeInfo, children);
+    return createFrameNode(sceneNode, baseStyle, nodeInfo, children);
   } else if (sceneNode.type === "GROUP") {
     return createGroupNode(sceneNode, baseStyle, nodeInfo, children);
   } else if (sceneNode.type === "TEXT") {
     return createTextNode(sceneNode, baseStyle, nodeInfo, children);
   } else if (sceneNode.type === "RECTANGLE") {
     return createRectangleNode(sceneNode, baseStyle, nodeInfo, children);
-  } else if (sceneNode.type === "VECTOR") {
+  } else if (
+    sceneNode.type === "VECTOR" ||
+    sceneNode.type === "BOOLEAN_OPERATION"
+  ) {
     return createVectorNode(sceneNode, baseStyle, nodeInfo, children);
   } else if (sceneNode.type === "ELLIPSE") {
     return createEllipseNode(sceneNode, baseStyle, nodeInfo, children);
