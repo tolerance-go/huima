@@ -1,14 +1,17 @@
 import { generateBackgroundImageCSS } from "../generateBackgroundImageCSS";
+import { generateBorderCSS } from "../generateBorderCSS";
+import { generateFlexLayoutCSS } from "../generateFlexLayoutCSS";
+import { generateOverflowCSS } from "../generateOverflowCSS";
 import { getBackgroundColorCSS } from "../getBackgroundColorCSS";
-import { CSSStyle, NodeInfo, NodeTree } from "../type";
+import { CSSStyle, FrameNodeRuntime, NodeInfo, NodeTree } from "../type";
 
-export const createRectangleNode = async (
-  node: RectangleNode,
+export const createInstanceNode = async (
+  node: InstanceNode,
   baseStyle: CSSStyle,
   nodeInfo: NodeInfo,
   children: NodeTree[]
 ): Promise<NodeTree> => {
-  console.log("createRectangleNode", node);
+  console.log("createInstanceNode", node);
 
   let tag = "div";
   let style = {
@@ -16,6 +19,9 @@ export const createRectangleNode = async (
     width: node.width + "px",
     height: node.height + "px",
     ...getBackgroundColorCSS(node.fills),
+    ...generateOverflowCSS(node),
+    ...generateFlexLayoutCSS(node),
+    ...generateBorderCSS(node),
     ...(await generateBackgroundImageCSS(node.fills)),
   };
 

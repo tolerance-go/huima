@@ -5,6 +5,7 @@ export const getBaseNodeInfo = (sceneNode: SceneNode, level = 0) => {
     type: sceneNode.type,
     x: sceneNode.x,
     y: sceneNode.y,
+    visible: sceneNode.visible,
   };
 
   return nodeInfo;

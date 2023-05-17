@@ -1,12 +1,24 @@
-import { FrameNodeRuntime, CSSStyle } from "./type";
+import { CSSStyle } from "./type";
 
-export function generateFlexLayoutCSS(frameNode: FrameNodeRuntime) {
+export function generateFlexLayoutCSS(
+  frameNode: Pick<
+    FrameNode,
+    | "layoutMode"
+    | "itemSpacing"
+    | "paddingLeft"
+    | "paddingTop"
+    | "paddingRight"
+    | "paddingBottom"
+    | "counterAxisAlignItems"
+    | "primaryAxisAlignItems"
+  >
+) {
   if (frameNode.layoutMode !== "NONE") {
     let css: CSSStyle = {
       display: "flex",
       ["flex-direction"]:
         frameNode.layoutMode.toLowerCase() === "horizontal" ? "row" : "column",
-      gap: frameNode.itemSpacing ? frameNode.itemSpacing + "px" : "0px",
+      gap: frameNode.itemSpacing ? frameNode.itemSpacing + "px" : undefined,
     };
 
     // 对每个 padding 属性进行单独的设置

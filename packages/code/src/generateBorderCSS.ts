@@ -1,7 +1,14 @@
-import { FrameNodeRuntime, CSSStyle } from "./type";
+import { CSSStyle } from "./type";
 
-export function generateBorderCSS(node: FrameNodeRuntime): CSSStyle {
-  let cssProps: CSSStyle = {};
+export function generateBorderCSS(
+  node: Pick<
+    FrameNode,
+    "strokes" | "strokes" | "strokeWeight" | "strokeStyleId" | "cornerRadius"
+  >
+): CSSStyle {
+  let cssProps: CSSStyle = {
+    "border-radius": String(node.cornerRadius) + "px",
+  };
 
   if (node.strokes && node.strokes.length > 0) {
     const stroke = node.strokes[0];

@@ -1,31 +1,9 @@
-import { NodeTree } from "@huima/types";
+import { CSSStyle, NodeTree } from "@huima/types";
 import { removeUndefined } from "@huima/utils";
 import { getGroupChildrenPosition } from "./getGroupChildrenPosition";
 
-const createStyle = (node: NodeTree) => {
-  // console.log('createStyle', node)
-  // let style: CSSStyle = {};
-  // for (const key in node.style) {
-  //   if (
-  //     key === "background-image" &&
-  //     node.style[key] &&
-  //     node.styleMeta?.backgroundImageBuffer
-  //   ) {
-  //     const url = URL.createObjectURL(
-  //       new Blob([node.styleMeta.backgroundImageBuffer])
-  //     );
-
-  //     style[key] = String(node.style[key]).replace("$url", url);
-  //     continue;
-  //   }
-  //   style[key] = node.style[key];
-  // }
-
-  return node.style;
-};
-
-const getStyleString = (node: NodeTree) => {
-  const styleString = Object.entries(removeUndefined(createStyle(node)))
+const getStyleString = (style: CSSStyle) => {
+  const styleString = Object.entries(removeUndefined(style))
     .map(([key, value]) => `${key}: ${value};`)
     .join(" ");
   return styleString;
@@ -34,13 +12,23 @@ const getStyleString = (node: NodeTree) => {
 export function createHTML(node: NodeTree, indent = 0): string {
   console.log("createHTML", node);
 
+  if (node.nodeInfo.visible === false) return "";
+
+  if (node.element) {
+    return node.element.replace(
+      `<${node.tag}`,
+      `<${node.tag} style="${getStyleString(node.style)}"`
+    );
+  }
+
   const childrenString = node.children
     .map((child) => `\n${createHTML(child, indent + 1)}`)
     .join("");
 
   if (node.nodeInfo.type === "GROUP") {
+    //NOTE - Group 第一层子元素坐标位置需要进行偏移计算
     if (indent === 0) {
-      return `<${node.tag} style="${getStyleString(node)}">
+      return `<${node.tag} style="${getStyleString(node.style)}">
     ${node.children
       .map(
         (child) =>
@@ -70,7 +58,7 @@ export function createHTML(node: NodeTree, indent = 0): string {
   const indentSpace = "  ".repeat(indent);
 
   const startTag = `${indentSpace}<${node.tag} style="${getStyleString(
-    node
+    node.style
   )}">`;
   const endTag = `</${node.tag}>\n`;
   const textContent = node.textContent ? `${node.textContent}` : "";
@@ -83,3 +71,25 @@ export function createHTML(node: NodeTree, indent = 0): string {
     endTag
   );
 }
+
+// const createStyle = (node: NodeTree) => {
+//   // console.log('createStyle', node)
+//   // let style: CSSStyle = {};
+//   // for (const key in node.style) {
+//   //   if (
+//   //     key === "background-image" &&
+//   //     node.style[key] &&
+//   //     node.styleMeta?.backgroundImageBuffer
+//   //   ) {
+//   //     const url = URL.createObjectURL(
+//   //       new Blob([node.styleMeta.backgroundImageBuffer])
+//   //     );
+
+//   //     style[key] = String(node.style[key]).replace("$url", url);
+//   //     continue;
+//   //   }
+//   //   style[key] = node.style[key];
+//   // }
+
+//   return node.style;
+// };

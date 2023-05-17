@@ -1,4 +1,6 @@
-import { getPaintColor } from "../getPaintColor";
+import { removeUndefined } from "@huima/utils";
+import { generateBorderCSS } from "../generateBorderCSS";
+import { getBackgroundColorCSS } from "../getBackgroundColorCSS";
 import { CSSStyle, NodeInfo, NodeTree } from "../type";
 
 export const createVectorNode = async (
@@ -8,15 +10,17 @@ export const createVectorNode = async (
   children: NodeTree[]
 ): Promise<NodeTree> => {
   console.log("createVectorNode", node);
-  let backgroundColor = getPaintColor(node.fills);
 
-  let tag = "div";
+  // NOTE - 隐藏的元素导出会报错
+  const svgStr = node.visible
+    ? await node.exportAsync({ format: "SVG_STRING" })
+    : undefined;
+
+  let tag = "svg";
   let style = {
     ...baseStyle,
     width: node.width + "px",
     height: node.height + "px",
-    "border-radius": (node.cornerRadius as number) + "px",
-    "background-color": backgroundColor,
   };
 
   return {
@@ -24,5 +28,6 @@ export const createVectorNode = async (
     tag,
     style,
     children,
+    element: svgStr,
   };
 };

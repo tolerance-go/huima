@@ -1,7 +1,9 @@
 import { CSSStyle, NodeTree, SceneNodeRuntime } from "../type";
-import { createEllipseNode } from "./createELLIPSENode";
+import { createComponentNode } from "./createComponentNode";
+import { createEllipseNode } from "./createEllipseNode";
 import { createFrameNode } from "./createFrameNode";
 import { createGroupNode } from "./createGroupNode";
+import { createInstanceNode } from "./createInstanceNode";
 import { createRectangleNode } from "./createRectangleNode";
 import { createTextNode } from "./createTextNode";
 import { createVectorNode } from "./createVectorNode";
@@ -41,6 +43,10 @@ export async function createNodeTree(
     return createVectorNode(sceneNode, baseStyle, nodeInfo, children);
   } else if (sceneNode.type === "ELLIPSE") {
     return createEllipseNode(sceneNode, baseStyle, nodeInfo, children);
+  } else if (sceneNode.type === "COMPONENT") {
+    return createComponentNode(sceneNode, baseStyle, nodeInfo, children);
+  } else if (sceneNode.type === "INSTANCE") {
+    return createInstanceNode(sceneNode, baseStyle, nodeInfo, children);
   }
 
   return {

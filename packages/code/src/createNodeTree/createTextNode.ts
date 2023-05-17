@@ -1,4 +1,4 @@
-import { getPaintColor } from "../getPaintColor";
+import { getFillSolidColor } from "../getFillSolidColor";
 import { CSSStyle, NodeInfo, NodeTree } from "../type";
 
 export const createTextNode = async (
@@ -8,14 +8,13 @@ export const createTextNode = async (
   children: NodeTree[]
 ): Promise<NodeTree> => {
   console.log("createTextNode", node);
-  const color = getPaintColor(node.fills);
 
   let tag = "span";
   let textContent = node.characters;
   let style = {
     ...baseStyle,
     "font-size": String(node.fontSize) + "px",
-    color,
+    color: getFillSolidColor(node.fills),
     display: "inline-block",
   };
 

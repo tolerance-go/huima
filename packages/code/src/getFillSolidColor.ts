@@ -1,4 +1,4 @@
-export const getPaintColor = (fills: symbol | readonly Paint[]) => {
+export const getFillSolidColor = (fills: symbol | readonly Paint[]) => {
   let color = undefined; // 默认背景色
   if (Array.isArray(fills)) {
     const solidFill = fills.find((fill) => fill.type === "SOLID") as SolidPaint;

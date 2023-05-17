@@ -1,11 +1,12 @@
 import { generateBackgroundImageCSS } from "../generateBackgroundImageCSS";
 import { generateBorderCSS } from "../generateBorderCSS";
 import { generateFlexLayoutCSS } from "../generateFlexLayoutCSS";
-import { getPaintColor } from "../getPaintColor";
-import { CSSStyle, FrameNodeRuntime, NodeInfo, NodeTree } from "../type";
+import { generateOverflowCSS } from "../generateOverflowCSS";
+import { getBackgroundColorCSS } from "../getBackgroundColorCSS";
+import { CSSStyle, NodeInfo, NodeTree } from "../type";
 
 export const createFrameNode = async (
-  node: FrameNodeRuntime,
+  node: FrameNode,
   baseStyle: CSSStyle,
   nodeInfo: NodeInfo,
   children: NodeTree[]
@@ -17,8 +18,8 @@ export const createFrameNode = async (
     ...baseStyle,
     width: node.width + "px",
     height: node.height + "px",
-    "background-color": getPaintColor(node.fills),
-    "border-radius": String(node.cornerRadius) + "px",
+    ...getBackgroundColorCSS(node.fills),
+    ...generateOverflowCSS(node),
     ...generateFlexLayoutCSS(node),
     ...generateBorderCSS(node),
     ...(await generateBackgroundImageCSS(node.fills)),

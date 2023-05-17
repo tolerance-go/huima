@@ -1,8 +1,6 @@
-import { generateBackgroundImageCSS } from "../generateBackgroundImageCSS";
 import { generateBorderCSS } from "../generateBorderCSS";
-import { generateFlexLayoutCSS } from "../generateFlexLayoutCSS";
-import { getPaintColor } from "../getPaintColor";
-import { CSSStyle, FrameNodeRuntime, NodeInfo, NodeTree } from "../type";
+import { getBackgroundColorCSS } from "../getBackgroundColorCSS";
+import { CSSStyle, NodeInfo, NodeTree } from "../type";
 
 export const createEllipseNode = async (
   node: EllipseNode,
@@ -11,15 +9,15 @@ export const createEllipseNode = async (
   children: NodeTree[]
 ): Promise<NodeTree> => {
   console.log("createEllipseNode", node);
-  let backgroundColor = getPaintColor(node.fills);
 
   let tag = "div";
   let style = {
     ...baseStyle,
     width: node.width + "px",
     height: node.height + "px",
-    "border-radius": (node.cornerRadius as number) + "px",
-    "background-color": backgroundColor,
+    ...getBackgroundColorCSS(node.fills),
+    ...generateBorderCSS(node),
+    "border-radius": "100%",
   };
 
   return {
