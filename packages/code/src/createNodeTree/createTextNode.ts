@@ -34,7 +34,7 @@ export const createTextNode = async (
       node.textAlignVertical === "CENTER"
         ? "middle"
         : node.textAlignVertical.toLowerCase(),
-    color: getFillSolidColor(node.fills as Paint[]),
+    color: getFillSolidColor(node.fills),
     display: "inline-block",
   };
 

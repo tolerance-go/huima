@@ -1,16 +1,18 @@
-export const getFillSolidColor = (fills: Paint[]) => {
-  let color = undefined; // 默认背景色
+export const getFillSolidColor = (
+  fills: readonly Paint[] | symbol
+): string | undefined => {
   if (Array.isArray(fills)) {
-    const solidFill = fills
-      .filter((item) => item.visible)
-      .find((fill) => fill.type === "SOLID") as SolidPaint;
+    const solidFill = (fills as readonly Paint[]).find((fill) => {
+      return fill.visible && fill.type === "SOLID";
+    }) as SolidPaint | undefined;
+
     if (solidFill) {
-      const rgb = solidFill.color;
-      const rgbaColor = `rgba(${rgb.r * 255}, ${rgb.g * 255}, ${rgb.b * 255}, ${
-        solidFill.opacity
-      })`;
-      color = rgbaColor;
+      const { r, g, b } = solidFill.color;
+      const opacity = solidFill.opacity;
+      const rgbaColor = `rgba(${r * 255}, ${g * 255}, ${b * 255}, ${opacity})`;
+      return rgbaColor;
     }
   }
-  return color;
+
+  return undefined;
 };

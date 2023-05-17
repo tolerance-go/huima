@@ -18,11 +18,11 @@ export const createInstanceNode = async (
     ...baseStyle,
     width: node.width + "px",
     height: node.height + "px",
-    ...getBackgroundColorCSS(node.fills),
+    ...getBackgroundColorCSS(node.fills ),
     ...generateOverflowCSS(node),
     ...generateFlexLayoutCSS(node),
     ...generateBorderCSS(node),
-    ...(await generateBackgroundImageCSS(node.fills)),
+    ...(await generateBackgroundImageCSS(node.fills )),
   };
 
   return {

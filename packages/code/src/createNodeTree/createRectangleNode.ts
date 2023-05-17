@@ -17,8 +17,8 @@ export const createRectangleNode = async (
     width: node.width + "px",
     height: node.height + "px",
     ...generateBorderCSS(node),
-    ...getBackgroundColorCSS(node.fills),
-    ...(await generateBackgroundImageCSS(node.fills)),
+    ...getBackgroundColorCSS(node.fills ),
+    ...(await generateBackgroundImageCSS(node.fills )),
   };
 
   return {

@@ -22,7 +22,7 @@ export const createFrameNode = async (
     ...generateOverflowCSS(node),
     ...generateFlexLayoutCSS(node),
     ...generateBorderCSS(node),
-    ...(await generateBackgroundImageCSS(node.fills)),
+    ...(await generateBackgroundImageCSS(node.fills )),
   };
 
   return {
