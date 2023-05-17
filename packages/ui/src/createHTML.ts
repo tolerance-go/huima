@@ -1,9 +1,11 @@
-import { CSSStyle, NodeTree } from '@huima/types'
+import { CSSStyle, NodeTree, StyleMeta } from '@huima/types'
 import { removeUndefined } from '@huima/utils'
 import { getGroupChildrenPosition } from './getGroupChildrenPosition'
 
-const getStyleString = (style: CSSStyle) => {
-   const styleString = Object.entries(removeUndefined(style))
+const getStyleString = (style: CSSStyle, styleMeta?: StyleMeta) => {
+   const styleString = Object.entries(
+      createStyle(removeUndefined(style), styleMeta),
+   )
       .map(([key, value]) => `${key}: ${value};`)
       .join(' ')
    return styleString
@@ -17,7 +19,7 @@ export function createHTML(node: NodeTree, indent = 0): string {
    if (node.element) {
       return node.element.replace(
          `<${node.tag}`,
-         `<${node.tag} style="${getStyleString(node.style)}"`,
+         `<${node.tag} style="${getStyleString(node.style, node.styleMeta)}"`,
       )
    }
 
@@ -34,7 +36,10 @@ export function createHTML(node: NodeTree, indent = 0): string {
             'layoutMode' in node.nodeInfo.parentNodeInfo &&
             node.nodeInfo.parentNodeInfo.layoutMode !== 'NONE')
       ) {
-         return `<${node.tag} style="${getStyleString(node.style)}">
+         return `<${node.tag} style="${getStyleString(
+            node.style,
+            node.styleMeta,
+         )}">
 ${node.children
    .map(
       (child) =>
@@ -65,30 +70,28 @@ ${node.children
       return childrenString
    }
 
-   return `<${node.tag} style="${getStyleString(node.style)}">
+   return `<${node.tag} style="${getStyleString(node.style, node.styleMeta)}">
 ${node.textContent ?? ''}
 ${childrenString}
 </${node.tag}>`
 }
 
-// const createStyle = (node: NodeTree) => {
-//   // console.log('createStyle', node)
-//   // let style: CSSStyle = {};
-//   // for (const key in node.style) {
-//   //   if (
-//   //     key === "background-image" &&
-//   //     node.style[key] &&
-//   //     node.styleMeta?.backgroundImageBuffer
-//   //   ) {
-//   //     const url = URL.createObjectURL(
-//   //       new Blob([node.styleMeta.backgroundImageBuffer])
-//   //     );
+const createStyle = (nodeStyle: CSSStyle, styleMeta?: StyleMeta) => {
+   console.log('createStyle', nodeStyle)
+   let style: CSSStyle = {}
+   for (const key in nodeStyle) {
+      if (
+         key === 'background-image' &&
+         nodeStyle[key] &&
+         styleMeta?.bgImageBuffer
+      ) {
+         const url = URL.createObjectURL(new Blob([styleMeta.bgImageBuffer]))
 
-//   //     style[key] = String(node.style[key]).replace("$url", url);
-//   //     continue;
-//   //   }
-//   //   style[key] = node.style[key];
-//   // }
+         style[key] = `url('${url}')`
+         continue
+      }
+      style[key] = nodeStyle[key]
+   }
 
-//   return node.style;
-// };
+   return style
+}

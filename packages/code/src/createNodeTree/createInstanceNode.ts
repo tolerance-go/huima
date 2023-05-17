@@ -13,6 +13,10 @@ export const createInstanceNode = async (
 ): Promise<NodeTree> => {
    console.log('createInstanceNode', node)
 
+   const { style: bgStyle, styleMeta } = await generateBackgroundImageCSS(
+      node.fills,
+   )
+
    let tag = 'div'
    let style = {
       ...baseStyle,
@@ -22,10 +26,11 @@ export const createInstanceNode = async (
       ...generateOverflowCSS(node),
       ...generateFlexLayoutCSS(node),
       ...generateBorderCSS(node),
-      ...(await generateBackgroundImageCSS(node.fills)),
+      ...bgStyle,
    }
 
    return {
+      styleMeta,
       nodeInfo,
       tag,
       style,

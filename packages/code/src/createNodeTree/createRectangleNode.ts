@@ -11,6 +11,9 @@ export const createRectangleNode = async (
 ): Promise<NodeTree> => {
    console.log('createRectangleNode', node)
 
+   const { style: bgStyle, styleMeta } = await generateBackgroundImageCSS(
+      node.fills,
+   )
    let tag = 'div'
    let style = {
       ...baseStyle,
@@ -18,10 +21,11 @@ export const createRectangleNode = async (
       height: node.height + 'px',
       ...generateBorderCSS(node),
       ...getBackgroundColorCSS(node.fills),
-      ...(await generateBackgroundImageCSS(node.fills)),
+      ...bgStyle,
    }
 
    return {
+      styleMeta,
       nodeInfo,
       tag,
       style,

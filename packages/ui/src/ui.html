@@ -274,13 +274,49 @@
                v-else-if="showMode === 'code'"
                class="group relative h-full w-full overflow-auto"
             >
-               <button
-                  id="copyBtn"
-                  type="button"
-                  class="absolute bottom-2 right-2 hidden bg-gray-950 rounded-md px-4 py-1.5 text-white group-hover:block"
+               <div
+                  class="inline-flex rounded-md shadow-sm absolute bottom-2 right-2"
+                  role="group"
                >
-                  {{ copyBtnText }}
-               </button>
+                  <button
+                     id="copyBtn"
+                     type="button"
+                     class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black rounded-l-lg hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
+                  >
+                     <svg
+                        aria-hidden="true"
+                        class="w-3.5 h-3.5 mr-2 fill-current"
+                        fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 384 512"
+                     >
+                        <path
+                           d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM112 192H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
+                        />
+                     </svg>
+                     {{ copyBtnText }}
+                  </button>
+                  <button
+                     type="button"
+                     class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black rounded-r-md hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
+                  >
+                     <svg
+                        aria-hidden="true"
+                        class="w-4 h-4 mr-2 fill-current"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                     >
+                        <path
+                           fill-rule="evenodd"
+                           d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z"
+                           clip-rule="evenodd"
+                        ></path>
+                     </svg>
+                     导出
+                  </button>
+               </div>
+
                <pre class="overflow-auto text-sm h-full w-full">
             {{ nodeHtml }}</pre
                >

@@ -1,6 +1,7 @@
 import './global'
 
 export type CSSStyle = Record<string, string | number | undefined>
+export type StyleMeta = Record<string, any>
 
 export type NonFunctionPropertyNames<T> = {
    [K in keyof T]: T[K] extends (...args: any[]) => any ? never : K
@@ -17,6 +18,7 @@ export type NodeInfo = NonFunctionProperties<Omit<SceneNode, 'parent'>> & {
 export interface NodeTree {
    tag: string
    style: CSSStyle
+   styleMeta?: StyleMeta
    children: NodeTree[]
    textContent?: string
    nodeInfo: NodeInfo

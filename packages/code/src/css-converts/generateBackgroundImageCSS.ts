@@ -1,10 +1,11 @@
 import { Buffer } from 'buffer'
-import { CSSStyle } from '../type'
+import { CSSStyle, StyleMeta } from '../type'
 
 export async function generateBackgroundImageCSS(
    paints: readonly Paint[] | symbol,
-): Promise<CSSStyle> {
+): Promise<{ style: CSSStyle; styleMeta: StyleMeta }> {
    let style: CSSStyle = {}
+   let styleMeta: Record<string, any> = {}
 
    if (Array.isArray(paints)) {
       //NOTE - 注意是倒序
@@ -19,12 +20,10 @@ export async function generateBackgroundImageCSS(
          if (image) {
             const bytes = await image.getBytesAsync()
             const buffer = Buffer.from(bytes)
+            // const base64Image = buffer.toString('base64')
+            styleMeta['backgroundImageBuffer'] = buffer
 
-            const base64Image = buffer.toString('base64')
-
-            style[
-               'background-image'
-            ] = `url('data:image/png;base64,${base64Image}')`
+            style['background-image'] = `url('')`
             style['background-size'] = 'cover'
             style['background-repeat'] = 'no-repeat'
             style['background-position'] = 'center'
@@ -32,5 +31,5 @@ export async function generateBackgroundImageCSS(
       }
    }
 
-   return style
+   return { style, styleMeta }
 }

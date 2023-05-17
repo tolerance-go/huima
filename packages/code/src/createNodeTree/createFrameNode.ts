@@ -12,6 +12,9 @@ export const createFrameNode = async (
    children: NodeTree[],
 ): Promise<NodeTree> => {
    console.log('createFrameNode', node)
+   const { style: bgStyle, styleMeta } = await generateBackgroundImageCSS(
+      node.fills,
+   )
 
    let tag = 'div'
    let style = {
@@ -22,11 +25,12 @@ export const createFrameNode = async (
       ...generateOverflowCSS(node),
       ...generateFlexLayoutCSS(node),
       ...generateBorderCSS(node),
-      ...(await generateBackgroundImageCSS(node.fills)),
+      ...bgStyle,
    }
 
    return {
       nodeInfo,
+      styleMeta,
       tag,
       style,
       children,

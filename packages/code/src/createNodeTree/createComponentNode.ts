@@ -13,6 +13,9 @@ export const createComponentNode = async (
 ): Promise<NodeTree> => {
    console.log('createComponentNode', node)
 
+   const { style: bgStyle, styleMeta } = await generateBackgroundImageCSS(
+      node.fills,
+   )
    let tag = 'div'
    let style = {
       ...baseStyle,
@@ -22,7 +25,7 @@ export const createComponentNode = async (
       ...generateOverflowCSS(node),
       ...generateFlexLayoutCSS(node),
       ...generateBorderCSS(node),
-      ...(await generateBackgroundImageCSS(node.fills)),
+      ...bgStyle,
    }
 
    return {
@@ -30,5 +33,6 @@ export const createComponentNode = async (
       tag,
       style,
       children,
+      styleMeta,
    }
 }
