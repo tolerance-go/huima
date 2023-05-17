@@ -22,7 +22,7 @@ export function createHTML(node: NodeTree, indent = 0): string {
    }
 
    const childrenString = node.children
-      .map((child) => `\n${createHTML(child, indent + 1)}`)
+      .map((child) => `${createHTML(child, indent + 1)}`)
       .join('')
 
    if (node.nodeInfo.type === 'GROUP') {
@@ -35,31 +35,31 @@ export function createHTML(node: NodeTree, indent = 0): string {
             node.nodeInfo.parentNodeInfo.layoutMode !== 'NONE')
       ) {
          return `<${node.tag} style="${getStyleString(node.style)}">
-    ${node.children
-       .map(
-          (child) =>
-             `\n${createHTML(
-                {
-                   ...child,
-                   style: {
-                      ...child.style,
-                      left:
-                         getGroupChildrenPosition(
-                            child.nodeInfo.x,
-                            node.nodeInfo.x,
-                         ) + 'px',
-                      top:
-                         getGroupChildrenPosition(
-                            child.nodeInfo.y,
-                            node.nodeInfo.y,
-                         ) + 'px',
-                   },
-                },
-                indent + 1,
-             )}`,
-       )
-       .join('')}
-  </${node.tag}>`
+${node.children
+   .map(
+      (child) =>
+         `${createHTML(
+            {
+               ...child,
+               style: {
+                  ...child.style,
+                  left:
+                     getGroupChildrenPosition(
+                        child.nodeInfo.x,
+                        node.nodeInfo.x,
+                     ) + 'px',
+                  top:
+                     getGroupChildrenPosition(
+                        child.nodeInfo.y,
+                        node.nodeInfo.y,
+                     ) + 'px',
+               },
+            },
+            indent + 1,
+         )}`,
+   )
+   .join('')}
+</${node.tag}>`
       }
 
       return childrenString
@@ -68,7 +68,7 @@ export function createHTML(node: NodeTree, indent = 0): string {
    return `<${node.tag} style="${getStyleString(node.style)}">
 ${node.textContent ?? ''}
 ${childrenString}
-</${node.tag}>\n`
+</${node.tag}>`
 }
 
 // const createStyle = (node: NodeTree) => {

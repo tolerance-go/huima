@@ -13,7 +13,7 @@ import { createVectorNode } from './createVectorNode'
 
 export async function createNodeTree(
    sceneNode: SceneNode,
-   parentNodeInfo: NodeInfo,
+   parentNodeInfo: NodeInfo | undefined = undefined,
    visible: boolean = sceneNode.visible,
    level = 0,
 ): Promise<NodeTree> {

@@ -3,7 +3,7 @@ import { filterObjFuncAndSymbol } from './utils/filterObjFuncAndSymbol'
 
 export const getBaseNodeInfo = (
    sceneNode: SceneNode,
-   parentNodeInfo: NodeInfo,
+   parentNodeInfo: NodeInfo | undefined = undefined,
    visible: boolean,
    level = 0,
 ) => {
