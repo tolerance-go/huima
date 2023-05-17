@@ -12,4 +12,4 @@
 -  [x] 支持组件和实例基本样式转换
 -  [ ] 支持转换 tailwindcss 相关类名
 
-![](demo.png)
+![](cover.jpg)

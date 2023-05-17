@@ -14,4 +14,4 @@
 -  [x] Support for basic style conversion of components and instances
 -  [ ] Support conversion of tailwindcss related class names
 
-![](demo.png)
+![](cover.jpg)
