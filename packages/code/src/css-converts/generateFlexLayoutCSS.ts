@@ -40,6 +40,9 @@ export function generateFlexLayoutCSS(
          case 'MAX':
             css['align-items'] = 'flex-end'
             break
+         case 'BASELINE':
+            css['align-items'] = 'baseline'
+            break
       }
 
       // 设置次轴对齐方式
@@ -52,6 +55,9 @@ export function generateFlexLayoutCSS(
             break
          case 'MAX':
             css['justify-content'] = 'flex-end'
+            break
+         case 'SPACE_BETWEEN':
+            css['justify-content'] = 'space-between'
             break
       }
 

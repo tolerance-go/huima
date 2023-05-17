@@ -14,7 +14,9 @@ export const getBaseLayoutCSS = (
    if (
       node.parent &&
       'layoutMode' in node.parent &&
-      node.parent.layoutMode !== 'NONE'
+      node.parent.layoutMode !== 'NONE' &&
+      'layoutPositioning' in node &&
+      node.layoutPositioning !== 'ABSOLUTE'
    ) {
       return {
          position: 'relative',

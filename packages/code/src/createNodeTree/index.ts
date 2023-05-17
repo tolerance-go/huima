@@ -1,7 +1,7 @@
 import { getBaseLayoutCSS } from '../css-converts/getBaseLayoutCSS'
 import { getBaseSizeCSS } from '../css-converts/getBaseSizeCSS'
 import { getBaseNodeInfo } from '../getBaseNodeInfo'
-import { CSSStyle, NodeTree } from '../type'
+import { CSSStyle, NodeInfo, NodeTree } from '../type'
 import { createComponentNode } from './createComponentNode'
 import { createEllipseNode } from './createEllipseNode'
 import { createFrameNode } from './createFrameNode'
@@ -13,12 +13,13 @@ import { createVectorNode } from './createVectorNode'
 
 export async function createNodeTree(
    sceneNode: SceneNode,
+   parentNodeInfo: NodeInfo,
    visible: boolean = sceneNode.visible,
    level = 0,
 ): Promise<NodeTree> {
    console.log('sceneNode', sceneNode, sceneNode.type)
 
-   const nodeInfo = getBaseNodeInfo(sceneNode, visible, level)
+   const nodeInfo = getBaseNodeInfo(sceneNode, parentNodeInfo, visible, level)
 
    const baseStyle: CSSStyle = {
       ...getBaseSizeCSS(sceneNode),
@@ -31,7 +32,12 @@ export async function createNodeTree(
          : 'children' in sceneNode
          ? await Promise.all(
               sceneNode.children.map((item) =>
-                 createNodeTree(item, visible && item.visible, level + 1),
+                 createNodeTree(
+                    item,
+                    nodeInfo,
+                    visible && item.visible,
+                    level + 1,
+                 ),
               ),
            )
          : []

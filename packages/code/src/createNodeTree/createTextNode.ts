@@ -19,10 +19,25 @@ export const createTextNode = async (
       lineHeightStyle = 'normal'
    }
 
+   let letterSpacingStyle = {}
+   const letterSpacing = node.letterSpacing as LetterSpacing
+   if (letterSpacing.unit === 'PIXELS') {
+      letterSpacingStyle = {
+         'letter-spacing': String(letterSpacing.value) + 'px',
+      }
+   } else if (letterSpacing.unit === 'PERCENT') {
+      // 在 CSS 中，字母间距的百分比是相对于字体大小的，所以我们需要将其转换为像素
+      letterSpacingStyle = {
+         'letter-spacing':
+            String((letterSpacing.value / 100) * Number(node.fontSize)) + 'px',
+      }
+   }
+
    let tag = 'span'
    let textContent = node.characters
    let style = {
       ...baseStyle,
+      ...letterSpacingStyle,
       'font-size': String(node.fontSize) + 'px',
       'font-weight': String(node.fontWeight),
       'line-height':

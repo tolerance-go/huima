@@ -27,7 +27,13 @@ export function createHTML(node: NodeTree, indent = 0): string {
 
    if (node.nodeInfo.type === 'GROUP') {
       //NOTE - Group 第一层子元素坐标位置需要进行偏移计算
-      if (indent === 0) {
+      //NOTE - 如果 Group 在一个 auto layout 节点内，那么当做一个 div 进行渲染
+      if (
+         indent === 0 ||
+         (node.nodeInfo.parentNodeInfo &&
+            'layoutMode' in node.nodeInfo.parentNodeInfo &&
+            node.nodeInfo.parentNodeInfo.layoutMode !== 'NONE')
+      ) {
          return `<${node.tag} style="${getStyleString(node.style)}">
     ${node.children
        .map(
@@ -59,21 +65,10 @@ export function createHTML(node: NodeTree, indent = 0): string {
       return childrenString
    }
 
-   const indentSpace = '  '.repeat(indent)
-
-   const startTag = `${indentSpace}<${node.tag} style="${getStyleString(
-      node.style,
-   )}">`
-   const endTag = `</${node.tag}>\n`
-   const textContent = node.textContent ? `${node.textContent}` : ''
-
-   return (
-      startTag +
-      textContent +
-      childrenString +
-      (node.children.length > 0 ? `\n${indentSpace}` : '') +
-      endTag
-   )
+   return `<${node.tag} style="${getStyleString(node.style)}">
+${node.textContent ?? ''}
+${childrenString}
+</${node.tag}>\n`
 }
 
 // const createStyle = (node: NodeTree) => {
