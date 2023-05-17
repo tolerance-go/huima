@@ -1,5 +1,5 @@
-import { generateBorderCSS } from "../generateBorderCSS";
-import { getBackgroundColorCSS } from "../getBackgroundColorCSS";
+import { generateBorderCSS } from "../css-converts/generateBorderCSS";
+import { getBackgroundColorCSS } from "../css-converts/getBackgroundColorCSS";
 import { CSSStyle, NodeInfo, NodeTree } from "../type";
 
 export const createEllipseNode = async (

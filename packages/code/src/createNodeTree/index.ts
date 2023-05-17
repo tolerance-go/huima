@@ -7,9 +7,9 @@ import { createInstanceNode } from "./createInstanceNode";
 import { createRectangleNode } from "./createRectangleNode";
 import { createTextNode } from "./createTextNode";
 import { createVectorNode } from "./createVectorNode";
-import { getBaseLayoutCSS } from "./getBaseLayoutCSS";
-import { getBaseNodeInfo } from "./getBaseNodeInfo";
-import { getBaseSizeCSS } from "./getBaseSizeCSS";
+import { getBaseLayoutCSS } from "../css-converts/getBaseLayoutCSS";
+import { getBaseNodeInfo } from "../css-converts/getBaseNodeInfo";
+import { getBaseSizeCSS } from "../css-converts/getBaseSizeCSS";
 
 export async function createNodeTree(
   sceneNode: SceneNodeRuntime,

@@ -1,4 +1,4 @@
-import { CSSStyle } from "./type";
+import { CSSStyle } from "../type";
 
 export function generateOverflowCSS(
   node: Pick<FrameNode, "clipsContent">

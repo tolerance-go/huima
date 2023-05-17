@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { CSSStyle } from "./type";
+import { CSSStyle } from "../type";
 
 export async function generateBackgroundImageCSS(
   paints: ReadonlyArray<Paint> | symbol

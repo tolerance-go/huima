@@ -1,8 +1,8 @@
-import { generateBackgroundImageCSS } from "../generateBackgroundImageCSS";
+import { generateBackgroundImageCSS } from "../css-converts/generateBackgroundImageCSS";
 import { generateBorderCSS } from "../generateBorderCSS";
-import { generateFlexLayoutCSS } from "../generateFlexLayoutCSS";
-import { generateOverflowCSS } from "../generateOverflowCSS";
-import { getBackgroundColorCSS } from "../getBackgroundColorCSS";
+import { generateFlexLayoutCSS } from "../css-converts/generateFlexLayoutCSS";
+import { generateOverflowCSS } from "../css-converts/generateOverflowCSS";
+import { getBackgroundColorCSS } from "../css-converts/getBackgroundColorCSS";
 import { CSSStyle, NodeInfo, NodeTree } from "../type";
 
 export const createFrameNode = async (

@@ -1,4 +1,4 @@
-import { getFillSolidColor } from "../getFillSolidColor";
+import { getFillSolidColor } from "../utils/getFillSolidColor";
 import { CSSStyle, NodeInfo, NodeTree } from "../type";
 
 export const createTextNode = async (

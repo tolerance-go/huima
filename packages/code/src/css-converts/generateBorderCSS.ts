@@ -1,4 +1,4 @@
-import { CSSStyle } from "./type";
+import { CSSStyle } from "../type";
 
 export function generateBorderCSS(
   node: Pick<
