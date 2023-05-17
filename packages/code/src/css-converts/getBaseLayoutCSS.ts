@@ -1,7 +1,21 @@
 import { NodeInfo } from '@huima/types'
 
-export const getBaseLayoutCSS = (nodeInfo: NodeInfo, level = 0) => {
+export const getBaseLayoutCSS = (
+   node: SceneNode,
+   nodeInfo: NodeInfo,
+   level = 0,
+) => {
    if (level === 0) {
+      return {
+         position: 'relative',
+      }
+   }
+
+   if (
+      node.parent &&
+      'layoutMode' in node.parent &&
+      node.parent.layoutMode !== 'NONE'
+   ) {
       return {
          position: 'relative',
       }

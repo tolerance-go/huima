@@ -22,7 +22,7 @@ export async function createNodeTree(
 
    const baseStyle: CSSStyle = {
       ...getBaseSizeCSS(sceneNode),
-      ...getBaseLayoutCSS(nodeInfo, level),
+      ...getBaseLayoutCSS(sceneNode, nodeInfo, level),
    }
 
    const children: NodeTree[] =

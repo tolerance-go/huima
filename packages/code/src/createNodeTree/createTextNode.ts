@@ -24,7 +24,7 @@ export const createTextNode = async (
    let style = {
       ...baseStyle,
       'font-size': String(node.fontSize) + 'px',
-      //NOTE - 如果 figma 中设置了文本垂直居中，那么转换成 css 的时候，需要将 line-height 设置成和 height 一样，这样才能达到一样效果
+      'font-weight': String(node.fontWeight),
       'line-height':
          node.textAlignVertical === 'CENTER'
             ? node.height + 'px'
@@ -36,6 +36,9 @@ export const createTextNode = async (
             : node.textAlignVertical.toLowerCase(),
       color: getFillSolidColor(node.fills),
       display: 'inline-block',
+      'text-overflow': node.textAutoResize === 'TRUNCATE' ? 'ellipsis' : 'clip',
+      'white-space': node.textAutoResize === 'TRUNCATE' ? 'nowrap' : 'normal',
+      overflow: node.textAutoResize === 'TRUNCATE' ? 'hidden' : 'visible',
    }
 
    return {
