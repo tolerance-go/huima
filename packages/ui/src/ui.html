@@ -1,291 +1,291 @@
 <!-- https://play.tailwindcss.com/kTa2WJIvox -->
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  </head>
-  <body>
-    <div id="app" class="h-screen">
-      <div
-        role="header"
-        class="flex-none flex items-center min-h-[53px] justify-between border-b px-4 py-2"
-      >
-        <div role="marker" class="relative max-w-[200px]">
-          <div
-            role="bg-rect"
-            class="absolute -left-2 bottom-0 -z-10 h-3 w-full bg-[#F7F680]"
-          ></div>
-          <div class="truncate">
-            <span class="z-10 font-medium"
-              >{{ selectedNodeName }}({{ selectedNodeId }})</span
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+   </head>
+   <body>
+      <div id="app" class="h-screen">
+         <div
+            role="header"
+            class="flex-none flex items-center min-h-[53px] justify-between border-b px-4 py-2"
+         >
+            <div role="marker" class="relative max-w-[200px]">
+               <div
+                  role="bg-rect"
+                  class="absolute -left-2 bottom-0 -z-10 h-3 w-full bg-[#F7F680]"
+               ></div>
+               <div class="truncate">
+                  <span class="z-10 font-medium"
+                     >{{ selectedNodeName }}({{ selectedNodeId }})</span
+                  >
+               </div>
+            </div>
+            <div role="toolbar" class="flex items-center justify-end gap-8">
+               <button
+                  v-if="showMode === 'empty'"
+                  @click="handleGenCode"
+                  class="rounded-md bg-gray-950 px-4 py-1.5 text-white"
+               >
+                  Generate
+               </button>
+               <svg
+                  class="cursor-pointer"
+                  v-if="showMode === 'playground'"
+                  @click="handleShowCodeBtnClick"
+                  width="27"
+                  height="19.5"
+                  viewBox="0 0 18 13"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+               >
+                  <path
+                     d="M7.56926 0.944489L10.6803 12.0555"
+                     stroke="black"
+                     stroke-width="1.24835"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                  />
+                  <path
+                     d="M13.7918 3.16669L16.9028 6.27778L13.7918 9.38887"
+                     stroke="black"
+                     stroke-width="1.24835"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                  />
+                  <path
+                     d="M4.01392 3.16669L0.902875 6.27778L4.01392 9.38887"
+                     stroke="black"
+                     stroke-width="1.24835"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                  />
+               </svg>
+               <svg
+                  class="cursor-pointer"
+                  v-else-if="showMode === 'code'"
+                  @click="handleShowPlaygroundBtnClick"
+                  width="27"
+                  height="25.5"
+                  viewBox="0 0 18 17"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+               >
+                  <g clip-path="url(#clip0_52_1571)">
+                     <path
+                        d="M1.61121 8.50001C1.61121 8.50001 4.44454 2.83334 9.40287 2.83334C14.3612 2.83334 17.1945 8.50001 17.1945 8.50001C17.1945 8.50001 14.3612 14.1667 9.40287 14.1667C4.44454 14.1667 1.61121 8.50001 1.61121 8.50001Z"
+                        stroke="black"
+                        stroke-width="1.2581"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                     <path
+                        d="M9.40283 10.625C10.5764 10.625 11.5278 9.6736 11.5278 8.5C11.5278 7.32639 10.5764 6.375 9.40283 6.375C8.22923 6.375 7.27783 7.32639 7.27783 8.5C7.27783 9.6736 8.22923 10.625 9.40283 10.625Z"
+                        stroke="black"
+                        stroke-width="1.2581"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                  </g>
+                  <defs>
+                     <clipPath id="clip0_52_1571">
+                        <rect
+                           width="17"
+                           height="17"
+                           fill="white"
+                           transform="translate(0.902832)"
+                        />
+                     </clipPath>
+                  </defs>
+               </svg>
+               <svg
+                  class="cursor-pointer"
+                  v-if="showMode !== 'empty'"
+                  width="24"
+                  height="22.5"
+                  viewBox="0 0 16 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+               >
+                  <path
+                     d="M9.30271 13.4499H2.30281C1.52962 13.4499 0.902832 12.8231 0.902832 12.0499V2.24981C0.902832 1.4766 1.52962 0.849792 2.30281 0.849792H13.5026C14.2759 0.849792 14.9026 1.4766 14.9026 2.24981V8.54987"
+                     stroke="black"
+                     stroke-width="1.09224"
+                     stroke-linecap="round"
+                  />
+                  <path
+                     d="M0.902832 3.64987H14.9026"
+                     stroke="black"
+                     stroke-width="1.09224"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                  />
+                  <path
+                     d="M3.00317 2.26351L3.01602 2.24924"
+                     stroke="black"
+                     stroke-width="1.09224"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                  />
+                  <path
+                     d="M5.10327 2.26348L5.11612 2.24921"
+                     stroke="black"
+                     stroke-width="1.09224"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                  />
+                  <path
+                     d="M7.20288 2.26348L7.21573 2.24921"
+                     stroke="black"
+                     stroke-width="1.09224"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                  />
+                  <path
+                     d="M13.1528 14.1498V9.94974M13.1528 9.94974L11.4028 11.6998M13.1528 9.94974L14.9028 11.6998"
+                     stroke="black"
+                     stroke-width="1.09224"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                  />
+               </svg>
+
+               <div class="h-[10px] w-[1px] bg-gray-300"></div>
+
+               <svg
+                  class="cursor-pointer"
+                  width="24"
+                  height="22.5"
+                  viewBox="0 0 16 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+               >
+                  <g clip-path="url(#clip0_47_1511)">
+                     <path
+                        d="M3.40283 13.1249V8.74994"
+                        stroke="black"
+                        stroke-width="1.15736"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                     <path
+                        d="M3.40283 6.24999V1.875"
+                        stroke="black"
+                        stroke-width="1.15736"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                     <path
+                        d="M8.40271 13.125V7.49997"
+                        stroke="black"
+                        stroke-width="1.15736"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                     <path
+                        d="M8.40271 4.99999V1.875"
+                        stroke="black"
+                        stroke-width="1.15736"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                     <path
+                        d="M13.4028 13.125V9.99997"
+                        stroke="black"
+                        stroke-width="1.15736"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                     <path
+                        d="M13.4028 7.49999V1.875"
+                        stroke="black"
+                        stroke-width="1.15736"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                     <path
+                        d="M1.52783 8.74994H5.27783"
+                        stroke="black"
+                        stroke-width="1.15736"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                     <path
+                        d="M6.52783 4.99997H10.2778"
+                        stroke="black"
+                        stroke-width="1.15736"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                     <path
+                        d="M11.5278 9.99997H15.2778"
+                        stroke="black"
+                        stroke-width="1.15736"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                     />
+                  </g>
+                  <defs>
+                     <clipPath id="clip0_47_1511">
+                        <rect
+                           width="15"
+                           height="15"
+                           fill="white"
+                           transform="translate(0.902832)"
+                        />
+                     </clipPath>
+                  </defs>
+               </svg>
+               <svg
+                  class="cursor-pointer"
+                  width="19.5"
+                  height="22.5"
+                  viewBox="0 0 13 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+               >
+                  <path
+                     d="M0.902832 13.8412V13.0486C0.902832 9.98417 3.38702 7.5 6.45142 7.5C9.51582 7.5 12 9.98417 12 13.0486V13.8412"
+                     stroke="black"
+                     stroke-width="1.18897"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                  />
+                  <path
+                     d="M6.45114 7.50002C8.20219 7.50002 9.62176 6.08046 9.62176 4.32941C9.62176 2.57834 8.20219 1.15881 6.45114 1.15881C4.70005 1.15881 3.28052 2.57834 3.28052 4.32941C3.28052 6.08046 4.70005 7.50002 6.45114 7.50002Z"
+                     stroke="black"
+                     stroke-width="1.18897"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                  />
+               </svg>
+            </div>
+         </div>
+         <div role="body" class="h-[calc(100vh_-_53px)]">
+            <div
+               v-if="showMode === 'playground'"
+               v-html="nodeHtml"
+               class="w-full h-full overflow-auto"
+            ></div>
+            <div
+               v-else-if="showMode === 'code'"
+               class="group relative h-full w-full overflow-auto"
             >
-          </div>
-        </div>
-        <div role="toolbar" class="flex items-center justify-end gap-8">
-          <button
-            v-if="showMode === 'empty'"
-            @click="handleGenCode"
-            class="rounded-md bg-gray-950 px-4 py-1.5 text-white"
-          >
-            Generate
-          </button>
-          <svg
-            class="cursor-pointer"
-            v-if="showMode === 'playground'"
-            @click="handleShowCodeBtnClick"
-            width="27"
-            height="19.5"
-            viewBox="0 0 18 13"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7.56926 0.944489L10.6803 12.0555"
-              stroke="black"
-              stroke-width="1.24835"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M13.7918 3.16669L16.9028 6.27778L13.7918 9.38887"
-              stroke="black"
-              stroke-width="1.24835"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M4.01392 3.16669L0.902875 6.27778L4.01392 9.38887"
-              stroke="black"
-              stroke-width="1.24835"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          <svg
-            class="cursor-pointer"
-            v-else-if="showMode === 'code'"
-            @click="handleShowPlaygroundBtnClick"
-            width="27"
-            height="25.5"
-            viewBox="0 0 18 17"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clip-path="url(#clip0_52_1571)">
-              <path
-                d="M1.61121 8.50001C1.61121 8.50001 4.44454 2.83334 9.40287 2.83334C14.3612 2.83334 17.1945 8.50001 17.1945 8.50001C17.1945 8.50001 14.3612 14.1667 9.40287 14.1667C4.44454 14.1667 1.61121 8.50001 1.61121 8.50001Z"
-                stroke="black"
-                stroke-width="1.2581"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M9.40283 10.625C10.5764 10.625 11.5278 9.6736 11.5278 8.5C11.5278 7.32639 10.5764 6.375 9.40283 6.375C8.22923 6.375 7.27783 7.32639 7.27783 8.5C7.27783 9.6736 8.22923 10.625 9.40283 10.625Z"
-                stroke="black"
-                stroke-width="1.2581"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_52_1571">
-                <rect
-                  width="17"
-                  height="17"
-                  fill="white"
-                  transform="translate(0.902832)"
-                />
-              </clipPath>
-            </defs>
-          </svg>
-          <svg
-            class="cursor-pointer"
-            v-if="showMode !== 'empty'"
-            width="24"
-            height="22.5"
-            viewBox="0 0 16 15"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M9.30271 13.4499H2.30281C1.52962 13.4499 0.902832 12.8231 0.902832 12.0499V2.24981C0.902832 1.4766 1.52962 0.849792 2.30281 0.849792H13.5026C14.2759 0.849792 14.9026 1.4766 14.9026 2.24981V8.54987"
-              stroke="black"
-              stroke-width="1.09224"
-              stroke-linecap="round"
-            />
-            <path
-              d="M0.902832 3.64987H14.9026"
-              stroke="black"
-              stroke-width="1.09224"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M3.00317 2.26351L3.01602 2.24924"
-              stroke="black"
-              stroke-width="1.09224"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M5.10327 2.26348L5.11612 2.24921"
-              stroke="black"
-              stroke-width="1.09224"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M7.20288 2.26348L7.21573 2.24921"
-              stroke="black"
-              stroke-width="1.09224"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M13.1528 14.1498V9.94974M13.1528 9.94974L11.4028 11.6998M13.1528 9.94974L14.9028 11.6998"
-              stroke="black"
-              stroke-width="1.09224"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-
-          <div class="h-[10px] w-[1px] bg-gray-300"></div>
-
-          <svg
-            class="cursor-pointer"
-            width="24"
-            height="22.5"
-            viewBox="0 0 16 15"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clip-path="url(#clip0_47_1511)">
-              <path
-                d="M3.40283 13.1249V8.74994"
-                stroke="black"
-                stroke-width="1.15736"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M3.40283 6.24999V1.875"
-                stroke="black"
-                stroke-width="1.15736"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M8.40271 13.125V7.49997"
-                stroke="black"
-                stroke-width="1.15736"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M8.40271 4.99999V1.875"
-                stroke="black"
-                stroke-width="1.15736"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M13.4028 13.125V9.99997"
-                stroke="black"
-                stroke-width="1.15736"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M13.4028 7.49999V1.875"
-                stroke="black"
-                stroke-width="1.15736"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M1.52783 8.74994H5.27783"
-                stroke="black"
-                stroke-width="1.15736"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M6.52783 4.99997H10.2778"
-                stroke="black"
-                stroke-width="1.15736"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M11.5278 9.99997H15.2778"
-                stroke="black"
-                stroke-width="1.15736"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_47_1511">
-                <rect
-                  width="15"
-                  height="15"
-                  fill="white"
-                  transform="translate(0.902832)"
-                />
-              </clipPath>
-            </defs>
-          </svg>
-          <svg
-            class="cursor-pointer"
-            width="19.5"
-            height="22.5"
-            viewBox="0 0 13 15"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0.902832 13.8412V13.0486C0.902832 9.98417 3.38702 7.5 6.45142 7.5C9.51582 7.5 12 9.98417 12 13.0486V13.8412"
-              stroke="black"
-              stroke-width="1.18897"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M6.45114 7.50002C8.20219 7.50002 9.62176 6.08046 9.62176 4.32941C9.62176 2.57834 8.20219 1.15881 6.45114 1.15881C4.70005 1.15881 3.28052 2.57834 3.28052 4.32941C3.28052 6.08046 4.70005 7.50002 6.45114 7.50002Z"
-              stroke="black"
-              stroke-width="1.18897"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </div>
-      </div>
-      <div role="body" class="h-[calc(100vh_-_53px)]">
-        <div
-          v-if="showMode === 'playground'"
-          v-html="nodeHtml"
-          class="w-full h-full overflow-auto"
-        ></div>
-        <div
-          v-else-if="showMode === 'code'"
-          class="group relative h-full w-full overflow-auto"
-        >
-          <button
-            id="copyBtn"
-            type="button"
-            class="absolute bottom-2 right-2 hidden bg-gray-950 rounded-md px-4 py-1.5 text-white group-hover:block"
-          >
-            {{ copyBtnText }}
-          </button>
-          <pre class="overflow-auto text-sm h-full w-full">
+               <button
+                  id="copyBtn"
+                  type="button"
+                  class="absolute bottom-2 right-2 hidden bg-gray-950 rounded-md px-4 py-1.5 text-white group-hover:block"
+               >
+                  {{ copyBtnText }}
+               </button>
+               <pre class="overflow-auto text-sm h-full w-full">
             {{ nodeHtml }}</pre
-          >
-        </div>
+               >
+            </div>
+         </div>
       </div>
-    </div>
-  </body>
+   </body>
 </html>

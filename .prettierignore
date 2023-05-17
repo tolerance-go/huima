@@ -1,0 +1,7 @@
+es/
+lib/
+dist/
+coverage/
+/docs/.vitepress/cache/
+tpls/
+packages/blocks-online/public/blocks.json

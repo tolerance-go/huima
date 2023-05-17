@@ -1,3 +1,3 @@
 export const isDefine = <T>(item: T) => {
-  return item !== undefined && item !== null;
-};
+   return item !== undefined && item !== null
+}

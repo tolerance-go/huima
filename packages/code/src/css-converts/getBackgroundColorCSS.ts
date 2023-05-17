@@ -1,7 +1,7 @@
-import { getFillSolidColor } from "../utils/getFillSolidColor";
+import { getFillSolidColor } from '../utils/getFillSolidColor'
 
 export const getBackgroundColorCSS = (fills: readonly Paint[] | symbol) => {
-  return {
-    "background-color": getFillSolidColor(fills),
-  };
-};
+   return {
+      'background-color': getFillSolidColor(fills),
+   }
+}

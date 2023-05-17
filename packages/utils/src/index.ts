@@ -1,1 +1,1 @@
-export * from "./removeUndefined";
+export * from './removeUndefined'

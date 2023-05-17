@@ -1,2 +1,2 @@
-export * from "./utils";
 export * from '@huima/utils'
+export * from './utils'

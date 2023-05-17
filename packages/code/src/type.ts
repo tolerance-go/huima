@@ -1,5 +1,5 @@
-export * from "@huima/types";
+export * from '@huima/types'
 
-export type FrameNodeRuntime = FrameNode;
+export type FrameNodeRuntime = FrameNode
 
-export type SceneNodeRuntime = SceneNode;
+export type SceneNodeRuntime = SceneNode

@@ -1,12 +1,21 @@
 {
-  "name": "huima",
-  "version": "1.0.0",
-  "description": "Your Figma Plugin",
-  "main": "code.js",
-  "scripts": {
-    "dev": "pnpm -r --parallel run dev",
-    "build": "pnpm -r --parallel run build"
-  },
-  "author": "",
-  "license": ""
+   "name": "huima",
+   "version": "1.0.0",
+   "description": "Your Figma Plugin",
+   "license": "",
+   "author": "",
+   "main": "code.js",
+   "scripts": {
+      "build": "pnpm -r --parallel run build",
+      "dev": "pnpm -r --parallel run dev",
+      "format": "prettier '**/(*.{css,js,jsx,ts,tsx,md,mdx,vue,html}|package.json|tsconfig.json)' --write",
+      "prepare": "husky install"
+   },
+   "devDependencies": {
+      "husky": "^8.0.3",
+      "lint-staged": "^13.1.2",
+      "prettier": "^2.8.3",
+      "prettier-plugin-organize-imports": "^3.2.2",
+      "prettier-plugin-packagejson": "^2.4.0"
+   }
 }

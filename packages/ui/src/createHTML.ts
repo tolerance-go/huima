@@ -1,75 +1,79 @@
-import { CSSStyle, NodeTree } from "@huima/types";
-import { removeUndefined } from "@huima/utils";
-import { getGroupChildrenPosition } from "./getGroupChildrenPosition";
+import { CSSStyle, NodeTree } from '@huima/types'
+import { removeUndefined } from '@huima/utils'
+import { getGroupChildrenPosition } from './getGroupChildrenPosition'
 
 const getStyleString = (style: CSSStyle) => {
-  const styleString = Object.entries(removeUndefined(style))
-    .map(([key, value]) => `${key}: ${value};`)
-    .join(" ");
-  return styleString;
-};
+   const styleString = Object.entries(removeUndefined(style))
+      .map(([key, value]) => `${key}: ${value};`)
+      .join(' ')
+   return styleString
+}
 
 export function createHTML(node: NodeTree, indent = 0): string {
-  console.log("createHTML", node);
+   console.log('createHTML', node)
 
-  if (node.nodeInfo.visible === false) return "";
+   if (node.nodeInfo.visible === false) return ''
 
-  if (node.element) {
-    return node.element.replace(
-      `<${node.tag}`,
-      `<${node.tag} style="${getStyleString(node.style)}"`
-    );
-  }
-
-  const childrenString = node.children
-    .map((child) => `\n${createHTML(child, indent + 1)}`)
-    .join("");
-
-  if (node.nodeInfo.type === "GROUP") {
-    //NOTE - Group 第一层子元素坐标位置需要进行偏移计算
-    if (indent === 0) {
-      return `<${node.tag} style="${getStyleString(node.style)}">
-    ${node.children
-      .map(
-        (child) =>
-          `\n${createHTML(
-            {
-              ...child,
-              style: {
-                ...child.style,
-                left:
-                  getGroupChildrenPosition(child.nodeInfo.x, node.nodeInfo.x) +
-                  "px",
-                top:
-                  getGroupChildrenPosition(child.nodeInfo.y, node.nodeInfo.y) +
-                  "px",
-              },
-            },
-            indent + 1
-          )}`
+   if (node.element) {
+      return node.element.replace(
+         `<${node.tag}`,
+         `<${node.tag} style="${getStyleString(node.style)}"`,
       )
-      .join("")}
-  </${node.tag}>`;
-    }
+   }
 
-    return childrenString;
-  }
+   const childrenString = node.children
+      .map((child) => `\n${createHTML(child, indent + 1)}`)
+      .join('')
 
-  const indentSpace = "  ".repeat(indent);
+   if (node.nodeInfo.type === 'GROUP') {
+      //NOTE - Group 第一层子元素坐标位置需要进行偏移计算
+      if (indent === 0) {
+         return `<${node.tag} style="${getStyleString(node.style)}">
+    ${node.children
+       .map(
+          (child) =>
+             `\n${createHTML(
+                {
+                   ...child,
+                   style: {
+                      ...child.style,
+                      left:
+                         getGroupChildrenPosition(
+                            child.nodeInfo.x,
+                            node.nodeInfo.x,
+                         ) + 'px',
+                      top:
+                         getGroupChildrenPosition(
+                            child.nodeInfo.y,
+                            node.nodeInfo.y,
+                         ) + 'px',
+                   },
+                },
+                indent + 1,
+             )}`,
+       )
+       .join('')}
+  </${node.tag}>`
+      }
 
-  const startTag = `${indentSpace}<${node.tag} style="${getStyleString(
-    node.style
-  )}">`;
-  const endTag = `</${node.tag}>\n`;
-  const textContent = node.textContent ? `${node.textContent}` : "";
+      return childrenString
+   }
 
-  return (
-    startTag +
-    textContent +
-    childrenString +
-    (node.children.length > 0 ? `\n${indentSpace}` : "") +
-    endTag
-  );
+   const indentSpace = '  '.repeat(indent)
+
+   const startTag = `${indentSpace}<${node.tag} style="${getStyleString(
+      node.style,
+   )}">`
+   const endTag = `</${node.tag}>\n`
+   const textContent = node.textContent ? `${node.textContent}` : ''
+
+   return (
+      startTag +
+      textContent +
+      childrenString +
+      (node.children.length > 0 ? `\n${indentSpace}` : '') +
+      endTag
+   )
 }
 
 // const createStyle = (node: NodeTree) => {

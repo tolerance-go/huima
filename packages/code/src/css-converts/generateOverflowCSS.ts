@@ -1,11 +1,11 @@
-import { CSSStyle } from "../type";
+import { CSSStyle } from '../type'
 
 export function generateOverflowCSS(
-  node: Pick<FrameNode, "clipsContent">
+   node: Pick<FrameNode, 'clipsContent'>,
 ): CSSStyle {
-  let cssProps: CSSStyle = {
-    overflow: node.clipsContent ? "hidden" : undefined,
-  };
+   let cssProps: CSSStyle = {
+      overflow: node.clipsContent ? 'hidden' : undefined,
+   }
 
-  return cssProps;
+   return cssProps
 }
