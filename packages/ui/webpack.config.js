@@ -6,16 +6,15 @@ const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin')
 
 module.exports = (env, argv) => {
    return {
-      mode: argv.mode === 'production' ? 'production' : 'development',
-
+      mode:
+         env.WEBPACK_WATCH || env.WEBPACK_SERVE ? 'development' : 'production',
       devServer: {
          compress: true,
          port: 9000,
          hot: true, // 启用热更新
       },
-
       // This is necessary because Figma's 'eval' works differently than normal eval
-      devtool: argv.mode === 'production' ? false : 'inline-source-map',
+      devtool: env.WEBPACK_BUNDLE ? 'inline-source-map' : false,
       entry: {
          ui: './src/ui.ts', // This is the entry point for our plugin code.
       },
@@ -53,6 +52,7 @@ module.exports = (env, argv) => {
          prismjs: 'Prism',
          clipboard: 'ClipboardJS',
          vue: 'Vue',
+         jszip: 'JSZip',
       },
       plugins: [
          new HtmlWebpackPlugin({
