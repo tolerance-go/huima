@@ -10,6 +10,7 @@
 -  [x] 支持 AutoLayout 到 Flex CSS 样式转换
 -  [x] 支持图片基本样式转换
 -  [x] 支持组件和实例基本样式转换
+-  [x] 支持复制代码及导出图片资源
 -  [ ] 支持转换 tailwindcss 相关类名
 
 ![](cover.jpg)

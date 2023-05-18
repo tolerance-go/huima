@@ -1,4 +1,4 @@
 2023 年 05 月 18 日
 
--  [x] 复制代码，替换图片 url 为 name，后缀和导出一致
--  [x] 支持导出代码，图片资源同步下载
+-  [x] fix: solving the problem of image ur ls relying on internal environments when copying code
+-  [x] feat: support for exporting code and synchronously downloading image resources
