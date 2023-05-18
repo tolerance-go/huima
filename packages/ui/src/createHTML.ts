@@ -25,18 +25,41 @@ export function createHTML(
          if (
             key === 'background-image' &&
             nodeStyle[key] &&
-            styleMeta?.backgroundImageBuffer
+            styleMeta?.backgroundImageMeta
          ) {
             if (options?.getBgImgUrl) {
                style[key] = `url('${options.getBgImgUrl(node)}')`
                continue
             }
 
-            const url = URL.createObjectURL(
-               new Blob([styleMeta.backgroundImageBuffer]),
-            )
+            const {
+               backgroundImageBytes,
+               backgroundImageExtension,
+               backgroundImageByteLength,
+            } = styleMeta.backgroundImageMeta
 
-            style[key] = `url('${url}')`
+            let sizeInKB = backgroundImageByteLength / 1024
+
+            // 如果用 createObjectURL，是不是每次都需要 revoke，可能会有性能问题，关闭浏览器就自动释放了
+            // 小图片直接用 base64，大图片用 createObjectURL，减少网络请求
+            if (sizeInKB < 10) {
+               // 不引入 Buffer 库，减少体积
+               const base64Image = window.btoa(
+                  String.fromCharCode(...new Uint8Array(backgroundImageBytes)),
+               )
+
+               style[
+                  key
+               ] = `url('data:image/${backgroundImageExtension};base64,${base64Image}')`
+            } else {
+               const url = URL.createObjectURL(
+                  new Blob([backgroundImageBytes], {
+                     type: `image/${backgroundImageExtension}`,
+                  }),
+               )
+               style[key] = `url('${url}')`
+            }
+
             continue
          }
          style[key] = nodeStyle[key]

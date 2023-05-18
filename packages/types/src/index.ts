@@ -1,7 +1,18 @@
 import './global'
 
+// TODO: 设置 CSSProperty 的类型
 export type CSSStyle = Record<string, string | number | undefined>
-export type StyleMeta = Record<string, any>
+export type StyleMeta = {
+   backgroundImageMeta?: {
+      backgroundImageBytes: ArrayBuffer
+      backgroundImageSize: {
+         width: number
+         height: number
+      }
+      backgroundImageByteLength: number
+      backgroundImageExtension: string
+   }
+}
 
 export type NonFunctionPropertyNames<T> = {
    [K in keyof T]: T[K] extends (...args: any[]) => any ? never : K

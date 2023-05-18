@@ -1,4 +1,5 @@
-import { showMode } from '../states'
+import { copiedNodeHtml, showMode } from '../states'
+import { exportZip } from '../utils/exportZip'
 
 export const handleGenCode = () => {
    console.log('handleGenCode')
@@ -19,4 +20,14 @@ export const handleShowCodeBtnClick = () => {
 
 export const handleShowPlaygroundBtnClick = () => {
    showMode.value = 'playground'
+}
+
+// 处理导出按钮点击事件
+export const handleExportBtnClick = () => {
+   exportZip([
+      {
+         path: 'index.html',
+         content: copiedNodeHtml.value,
+      },
+   ])
 }

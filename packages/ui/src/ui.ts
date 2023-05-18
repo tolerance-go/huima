@@ -1,9 +1,10 @@
 import { createApp } from 'vue'
 import {
+   handleExportBtnClick,
    handleGenCode,
    handleShowCodeBtnClick,
    handleShowPlaygroundBtnClick,
-} from './methods/index'
+} from './methods'
 import { baseRendererNodeHtml, copiedNodeHtml } from './states/index'
 
 import './styles.css'
@@ -52,6 +53,7 @@ createApp({
          handleGenCode,
          handleShowCodeBtnClick,
          handleShowPlaygroundBtnClick,
+         handleExportBtnClick,
       }
    },
 }).mount('#app')
@@ -61,13 +63,18 @@ window.onmessage = (event) => {
       return
    }
 
+   // TODO: 弄清楚为什么会有这个判断
+   if (!event.data.pluginMessage) return
+
    if (event.data.pluginMessage.type === 'startGen') {
       const {
          payload: { name, id, nodeTree },
       } = event.data.pluginMessage as UIAction<'startGen'>
       baseCopiedNodeHtml.value = createHTML(nodeTree, {
          getBgImgUrl(node) {
-            return `./assets/${node.nodeInfo.name}.png`
+            return `./assets/${node.nodeInfo.name}_${node.nodeInfo.id}.${
+               node.styleMeta?.backgroundImageExtension ?? 'png'
+            }`
          },
       })
       selectedNodeName.value = name
