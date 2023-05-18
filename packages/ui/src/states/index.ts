@@ -1,3 +1,4 @@
+import { NodeTree } from '@huima/types'
 import parsers from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
 import Prism from 'prismjs'
@@ -10,6 +11,8 @@ export const copyBtnText = ref('复制')
 
 export const baseRendererNodeHtml = ref('')
 export const showMode = ref<'code' | 'playground' | 'empty'>('empty')
+
+export const nodeMaps = ref<Record<string, NodeTree>>({})
 
 // export const showMode = ref<'code' | 'playground' | 'empty'>('code')
 // export const baseRendererNodeHtml = ref(`

@@ -4,7 +4,7 @@ import JSZip from 'jszip'
 export const exportZip = (
    data: {
       path: string
-      content: string
+      content: string | ArrayBuffer
    }[],
    filename: string = 'files',
 ) => {

@@ -5,7 +5,7 @@ import {
    handleShowCodeBtnClick,
    handleShowPlaygroundBtnClick,
 } from './methods'
-import { baseRendererNodeHtml, copiedNodeHtml } from './states/index'
+import { baseRendererNodeHtml, copiedNodeHtml, nodeMaps } from './states/index'
 
 import './styles.css'
 
@@ -20,6 +20,7 @@ import {
    showMode,
    shownNodeHtml,
 } from './states'
+import { flattenNodes } from './utils'
 
 const clipboard = new ClipboardJS('#copyBtn', {
    text: () => {
@@ -72,13 +73,18 @@ window.onmessage = (event) => {
       } = event.data.pluginMessage as UIAction<'startGen'>
       baseCopiedNodeHtml.value = createHTML(nodeTree, {
          getBgImgUrl(backgroundImageMeta, node) {
-            return `./assets/${node.nodeInfo.name}_${node.nodeInfo.id}.${backgroundImageMeta.backgroundImageExtension}`
+            return `assets/${node.nodeInfo.name}_${
+               // 文件名称不能有冒号
+               node.nodeInfo.id.replace(':', '-')
+            }.${backgroundImageMeta.backgroundImageExtension}`
          },
       })
       selectedNodeName.value = name
       selectedNodeId.value = id
       baseRendererNodeHtml.value = createHTML(nodeTree)
       showMode.value = 'playground'
+
+      nodeMaps.value = flattenNodes(nodeTree)
       return
    }
 

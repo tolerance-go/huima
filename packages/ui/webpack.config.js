@@ -64,7 +64,7 @@ module.exports = (env, argv) => {
             inline: /ui.js$/, // 将匹配这个正则表达式的文件内联到 HTML 中
          }),
          new ExtraWatchWebpackPlugin({
-            files: ['src/*.ts'], // 监听 script 重新生成 html
+            files: ['src/**/*.ts'], // 监听 script 重新生成 html
          }),
          new webpack.DefinePlugin({
             'process.env.WEBPACK_SERVE': JSON.stringify(

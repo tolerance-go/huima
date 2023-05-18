@@ -1,6 +1,5 @@
 import { UIEvents } from '@huima/types'
 import { createNodeTree } from './createNodeTree'
-import { SceneNodeRuntime } from './type'
 
 //====================== 工具函数 * 开始 ======================
 
@@ -22,7 +21,7 @@ figma.ui.onmessage = async (message) => {
       if (figma.currentPage.selection.length === 1) {
          const [node] = figma.currentPage.selection
 
-         const nodeTree = await createNodeTree(node as SceneNodeRuntime)
+         const nodeTree = await createNodeTree(node)
 
          postActionToUI('startGen', {
             name: node.name,
