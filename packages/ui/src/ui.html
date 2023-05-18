@@ -4,6 +4,28 @@
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link
+         rel="stylesheet"
+         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"
+      />
+
+      <!-- Prettier -->
+      <script src="https://cdn.jsdelivr.net/npm/prettier@2.8.3/standalone.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/prettier@2.8.3/parser-html.min.js"></script>
+      <!-- Prism -->
+      <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+      <!-- ClipboardJS -->
+      <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+
+      <style>
+         pre[class*='language-'] {
+            margin: 0;
+         }
+         code[class*='language-'],
+         pre[class*='language-'] {
+            font-size: 12px;
+         }
+      </style>
       <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
    </head>
    <body>
@@ -27,16 +49,14 @@
                <button
                   v-if="showMode === 'empty'"
                   @click="handleGenCode"
-                  class="rounded-md bg-gray-950 px-4 py-1.5 text-white"
+                  class="rounded-md bg-gray-950 px-4 py-2 text-white text-sm"
                >
                   Generate
                </button>
                <svg
-                  class="cursor-pointer"
+                  class="w-5 h-5 cursor-pointer"
                   v-if="showMode === 'playground'"
                   @click="handleShowCodeBtnClick"
-                  width="27"
-                  height="19.5"
                   viewBox="0 0 18 13"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -64,11 +84,9 @@
                   />
                </svg>
                <svg
-                  class="cursor-pointer"
+                  class="w-5 h-5 cursor-pointer"
                   v-else-if="showMode === 'code'"
                   @click="handleShowPlaygroundBtnClick"
-                  width="27"
-                  height="25.5"
                   viewBox="0 0 18 17"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -101,10 +119,8 @@
                   </defs>
                </svg>
                <svg
-                  class="cursor-pointer"
+                  class="w-5 h-5 cursor-pointer"
                   v-if="showMode !== 'empty'"
-                  width="24"
-                  height="22.5"
                   viewBox="0 0 16 15"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -155,9 +171,7 @@
                <div class="h-[10px] w-[1px] bg-gray-300"></div>
 
                <svg
-                  class="cursor-pointer"
-                  width="24"
-                  height="22.5"
+                  class="w-5 h-5 cursor-pointer"
                   viewBox="0 0 16 15"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -239,9 +253,7 @@
                   </defs>
                </svg>
                <svg
-                  class="cursor-pointer"
-                  width="19.5"
-                  height="22.5"
+                  class="w-5 h-5 cursor-pointer"
                   viewBox="0 0 13 15"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -274,7 +286,7 @@
                class="group relative h-full w-full overflow-auto"
             >
                <div
-                  class="hidden group-hover:inline-flex rounded-md shadow-sm absolute bottom-2 right-2"
+                  class="z-10 hidden group-hover:inline-flex rounded-md shadow-sm absolute bottom-2 right-2"
                   role="group"
                >
                   <button
@@ -315,10 +327,10 @@
                      导出
                   </button>
                </div>
-
-               <pre class="overflow-auto text-sm h-full w-full">
-            {{ nodeHtml }}</pre
-               >
+               <pre
+                  class="line-numbers language-html overflow-auto h-full w-full"
+               ><code class="language-html"
+               v-html="nodeHtmlWithHighlight"></code></pre>
             </div>
          </div>
       </div>

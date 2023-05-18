@@ -13,12 +13,16 @@
    "dependencies": {
       "@huima/utils": "workspace:^",
       "clipboard": "^2.0.11",
+      "prettier": "^2.8.3",
+      "prismjs": "^1.29.0",
       "vue": "^3.3.2"
    },
    "devDependencies": {
       "@figma/plugin-typings": "^1.64.0",
       "@huima/types": "workspace:^",
       "@types/node": "^20.2.0",
+      "@types/prettier": "^2.7.2",
+      "@types/prismjs": "^1.26.0",
       "autoprefixer": "^10.4.14",
       "css-loader": "^6.7.3",
       "extra-watch-webpack-plugin": "^1.0.3",

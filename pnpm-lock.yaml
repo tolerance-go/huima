@@ -68,6 +68,12 @@ importers:
       clipboard:
         specifier: ^2.0.11
         version: 2.0.11
+      prettier:
+        specifier: ^2.8.3
+        version: 2.8.3
+      prismjs:
+        specifier: ^1.29.0
+        version: 1.29.0
       vue:
         specifier: ^3.3.2
         version: 3.3.2
@@ -81,6 +87,12 @@ importers:
       '@types/node':
         specifier: ^20.2.0
         version: 20.2.0
+      '@types/prettier':
+        specifier: ^2.7.2
+        version: 2.7.2
+      '@types/prismjs':
+        specifier: ^1.26.0
+        version: 1.26.0
       autoprefixer:
         specifier: ^10.4.14
         version: 10.4.14(postcss@8.4.23)
@@ -584,6 +596,14 @@ packages:
 
   /@types/node@20.2.0:
     resolution: {integrity: sha512-3iD2jaCCziTx04uudpJKwe39QxXgSUnpxXSvRQjRvHPxFQfmfP4NXIm/NURVeNlTCc+ru4WqjYGTmpXrW9uMlw==}
+    dev: true
+
+  /@types/prettier@2.7.2:
+    resolution: {integrity: sha512-KufADq8uQqo1pYKVIYzfKbJfBAc0sOeXqGbFaSpv8MRmC/zXgowNZmFcbngndGk922QDmOASEXUZCaY48gs4cg==}
+    dev: true
+
+  /@types/prismjs@1.26.0:
+    resolution: {integrity: sha512-ZTaqn/qSqUuAq1YwvOFQfVW1AR/oQJlLSZVustdjwI+GZ8kr0MSHBj0tsXPW1EqHubx50gtBEjbPGsdZwQwCjQ==}
     dev: true
 
   /@types/qs@6.9.7:
@@ -3054,7 +3074,6 @@ packages:
     resolution: {integrity: sha512-tJ/oJ4amDihPoufT5sM0Z1SKEuKay8LfVAMlbbhnnkvt6BUserZylqo2PN+p9KeljLr0OHa2rXHU1T8reeoTrw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
-    dev: true
 
   /pretty-error@4.0.0:
     resolution: {integrity: sha512-AoJ5YMAcXKYxKhuJGdcvse+Voc6v1RgnsR3nWcYU7q4t6z0Q6T86sv5Zq8VIRbOWWFpvdGE83LtdSMNd+6Y0xw==}
@@ -3062,6 +3081,11 @@ packages:
       lodash: 4.17.21
       renderkid: 3.0.0
     dev: true
+
+  /prismjs@1.29.0:
+    resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
+    engines: {node: '>=6'}
+    dev: false
 
   /process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}

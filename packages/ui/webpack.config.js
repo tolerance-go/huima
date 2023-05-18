@@ -48,6 +48,10 @@ module.exports = (env, argv) => {
          path: path.resolve(__dirname, 'dist'),
       },
       externals: {
+         'prettier/standalone': 'prettier',
+         'prettier/parser-html': 'prettierPlugins.html',
+         prismjs: 'Prism',
+         clipboard: 'ClipboardJS',
          vue: 'Vue',
       },
       plugins: [
