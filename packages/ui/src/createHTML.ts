@@ -1,11 +1,16 @@
-import { CSSStyle, NodeTree, StyleMeta } from '@huima/types'
+import {
+   BackgroundImageMeta,
+   CSSStyle,
+   NodeTree,
+   StyleMeta,
+} from '@huima/types'
 import { removeUndefined } from '@huima/utils'
 import { getGroupChildrenPosition } from './getGroupChildrenPosition'
 
 export function createHTML(
    node: NodeTree,
    options?: {
-      getBgImgUrl?: (node: NodeTree) => string
+      getBgImgUrl?: (bgImgMeta: BackgroundImageMeta, node: NodeTree) => string
    },
    indent = 0,
 ): string {
@@ -28,7 +33,10 @@ export function createHTML(
             styleMeta?.backgroundImageMeta
          ) {
             if (options?.getBgImgUrl) {
-               style[key] = `url('${options.getBgImgUrl(node)}')`
+               style[key] = `url('${options.getBgImgUrl(
+                  styleMeta.backgroundImageMeta,
+                  node,
+               )}')`
                continue
             }
 

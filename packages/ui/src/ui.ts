@@ -71,10 +71,8 @@ window.onmessage = (event) => {
          payload: { name, id, nodeTree },
       } = event.data.pluginMessage as UIAction<'startGen'>
       baseCopiedNodeHtml.value = createHTML(nodeTree, {
-         getBgImgUrl(node) {
-            return `./assets/${node.nodeInfo.name}_${node.nodeInfo.id}.${
-               node.styleMeta?.backgroundImageExtension ?? 'png'
-            }`
+         getBgImgUrl(backgroundImageMeta, node) {
+            return `./assets/${node.nodeInfo.name}_${node.nodeInfo.id}.${backgroundImageMeta.backgroundImageExtension}`
          },
       })
       selectedNodeName.value = name
