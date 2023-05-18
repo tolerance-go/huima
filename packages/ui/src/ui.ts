@@ -1,6 +1,7 @@
-import { UIAction } from '@huima/types'
 import { createApp, ref } from 'vue'
+import './styles.css'
 
+import { UIAction } from '@huima/types'
 import ClipboardJS from 'clipboard'
 import { createHTML } from './createHTML'
 
@@ -67,6 +68,10 @@ createApp({
 }).mount('#app')
 
 onmessage = (event) => {
+   if (process.env.WEBPACK_SERVE) {
+      return
+   }
+
    if (event.data.pluginMessage.type === 'startGen') {
       const {
          payload: { name, id, nodeTree },
