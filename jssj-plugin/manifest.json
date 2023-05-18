@@ -1,0 +1,10 @@
+{
+  "name": "绘码",
+  "id": "Wet1fwxaQZGxfUy6E5g1V",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": [
+    "jsDesign"
+  ]
+}

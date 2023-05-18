@@ -15,6 +15,7 @@ import { createHTML } from './createHTML'
 import {
    baseCopiedNodeHtml,
    copyBtnText,
+   hoverCodePlayground,
    selectedNodeId,
    selectedNodeName,
    showMode,
@@ -51,6 +52,7 @@ createApp({
          copyBtnText,
          showMode,
          shownNodeHtml,
+         hoverCodePlayground,
          handleGenCode,
          handleShowCodeBtnClick,
          handleShowPlaygroundBtnClick,

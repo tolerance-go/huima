@@ -44,7 +44,9 @@ module.exports = (env, argv) => {
       },
       output: {
          filename: '[name].js',
-         path: path.resolve(__dirname, '../../figma-plugin'),
+         path: process.env.IS_JSSJ
+            ? path.resolve(__dirname, '../../jssj-plugin')
+            : path.resolve(__dirname, '../../figma-plugin'),
       },
       externals: {
          'prettier/standalone': 'prettier',

@@ -1,3 +1,4 @@
+import { isJsDesign, pluginApi } from '../pluginApi'
 import { CSSStyle, StyleMeta } from '../type'
 
 export async function generateBackgroundImageCSS(
@@ -15,11 +16,13 @@ export async function generateBackgroundImageCSS(
          ) as ImagePaint
 
       if (paint?.imageHash) {
-         const image = figma.getImageByHash(paint.imageHash)
+         const image = pluginApi.getImageByHash(paint.imageHash)
          if (image) {
             const bytes = await image.getBytesAsync()
             // 必须在获取 bytes 之后才能获取 size
-            const size = await image.getSizeAsync()
+            const size = isJsDesign
+               ? { width: 0, height: 0 }
+               : await image.getSizeAsync()
             // JSON.stringify 传输会丢失 buffer，这里用最原始的 buffer 传输
             const backgroundImageBytes = bytes
             const backgroundImageSize = size

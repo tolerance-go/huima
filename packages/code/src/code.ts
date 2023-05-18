@@ -1,5 +1,10 @@
 import { UIEvents } from '@huima/types'
 import { createNodeTree } from './createNodeTree'
+import { pluginApi } from './pluginApi'
+
+declare global {
+   const jsDesign: typeof figma
+}
 
 //====================== 工具函数 * 开始 ======================
 
@@ -7,7 +12,7 @@ const postActionToUI = <T extends keyof UIEvents>(
    type: T,
    payload: UIEvents[T],
 ) => {
-   figma.ui.postMessage({
+   pluginApi.ui.postMessage({
       type,
       payload,
    })
@@ -16,10 +21,10 @@ const postActionToUI = <T extends keyof UIEvents>(
 //====================== 工具函数 * 结束 ======================
 
 //====================== UI 事件处理 * 开始 ======================
-figma.ui.onmessage = async (message) => {
+pluginApi.ui.onmessage = async (message) => {
    if (message.type === 'genCode') {
-      if (figma.currentPage.selection.length === 1) {
-         const [node] = figma.currentPage.selection
+      if (pluginApi.currentPage.selection.length === 1) {
+         const [node] = pluginApi.currentPage.selection
 
          const nodeTree = await createNodeTree(node)
 
@@ -32,9 +37,9 @@ figma.ui.onmessage = async (message) => {
    }
 }
 
-figma.on('selectionchange', () => {
-   if (figma.currentPage.selection.length === 1) {
-      const [node] = figma.currentPage.selection
+pluginApi.on('selectionchange', () => {
+   if (pluginApi.currentPage.selection.length === 1) {
+      const [node] = pluginApi.currentPage.selection
 
       postActionToUI('selectionchange', {
          name: node.name,
@@ -45,7 +50,7 @@ figma.on('selectionchange', () => {
 
 //====================== UI 事件处理 * 结束 ======================
 
-figma.showUI(__html__, {
+pluginApi.showUI(__html__, {
    height: 600,
    width: 800,
 })

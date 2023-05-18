@@ -46,7 +46,7 @@
                   >
                </div>
             </div>
-            <div role="toolbar" class="flex items-center justify-end gap-8">
+            <div role="toolbar" class="flex items-center justify-end gap-6">
                <button
                   v-if="showMode === 'empty'"
                   @click="handleGenCode"
@@ -55,7 +55,7 @@
                   Generate
                </button>
                <svg
-                  class="w-5 h-5 cursor-pointer"
+                  class="w-6 h-6 cursor-pointer"
                   v-if="showMode === 'playground'"
                   @click="handleShowCodeBtnClick"
                   viewBox="0 0 18 13"
@@ -85,7 +85,7 @@
                   />
                </svg>
                <svg
-                  class="w-5 h-5 cursor-pointer"
+                  class="w-6 h-6 cursor-pointer"
                   v-else-if="showMode === 'code'"
                   @click="handleShowPlaygroundBtnClick"
                   viewBox="0 0 18 17"
@@ -119,160 +119,105 @@
                      </clipPath>
                   </defs>
                </svg>
-               <svg
-                  class="w-5 h-5 cursor-pointer"
-                  v-if="showMode !== 'empty'"
-                  viewBox="0 0 16 15"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-               >
-                  <path
-                     d="M9.30271 13.4499H2.30281C1.52962 13.4499 0.902832 12.8231 0.902832 12.0499V2.24981C0.902832 1.4766 1.52962 0.849792 2.30281 0.849792H13.5026C14.2759 0.849792 14.9026 1.4766 14.9026 2.24981V8.54987"
-                     stroke="black"
-                     stroke-width="1.09224"
-                     stroke-linecap="round"
-                  />
-                  <path
-                     d="M0.902832 3.64987H14.9026"
-                     stroke="black"
-                     stroke-width="1.09224"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                  />
-                  <path
-                     d="M3.00317 2.26351L3.01602 2.24924"
-                     stroke="black"
-                     stroke-width="1.09224"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                  />
-                  <path
-                     d="M5.10327 2.26348L5.11612 2.24921"
-                     stroke="black"
-                     stroke-width="1.09224"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                  />
-                  <path
-                     d="M7.20288 2.26348L7.21573 2.24921"
-                     stroke="black"
-                     stroke-width="1.09224"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                  />
-                  <path
-                     d="M13.1528 14.1498V9.94974M13.1528 9.94974L11.4028 11.6998M13.1528 9.94974L14.9028 11.6998"
-                     stroke="black"
-                     stroke-width="1.09224"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                  />
-               </svg>
-
                <div class="h-[10px] w-[1px] bg-gray-300"></div>
 
                <svg
-                  class="w-5 h-5 cursor-pointer"
+                  class="w-6 h-6 cursor-pointer"
                   viewBox="0 0 16 15"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                >
-                  <g clip-path="url(#clip0_47_1511)">
-                     <path
-                        d="M3.40283 13.1249V8.74994"
-                        stroke="black"
-                        stroke-width="1.15736"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
-                     <path
-                        d="M3.40283 6.24999V1.875"
-                        stroke="black"
-                        stroke-width="1.15736"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
-                     <path
-                        d="M8.40271 13.125V7.49997"
-                        stroke="black"
-                        stroke-width="1.15736"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
-                     <path
-                        d="M8.40271 4.99999V1.875"
-                        stroke="black"
-                        stroke-width="1.15736"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
-                     <path
-                        d="M13.4028 13.125V9.99997"
-                        stroke="black"
-                        stroke-width="1.15736"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
-                     <path
-                        d="M13.4028 7.49999V1.875"
-                        stroke="black"
-                        stroke-width="1.15736"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
-                     <path
-                        d="M1.52783 8.74994H5.27783"
-                        stroke="black"
-                        stroke-width="1.15736"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
-                     <path
-                        d="M6.52783 4.99997H10.2778"
-                        stroke="black"
-                        stroke-width="1.15736"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
-                     <path
-                        d="M11.5278 9.99997H15.2778"
-                        stroke="black"
-                        stroke-width="1.15736"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
+                  <g clip-path="url(#clip0_62_13)">
+                     <mask
+                        id="mask0_62_13"
+                        style="mask-type: luminance"
+                        maskUnits="userSpaceOnUse"
+                        x="1"
+                        y="0"
+                        width="15"
+                        height="15"
+                     >
+                        <path
+                           d="M15.1126 0.75H1.61261V14.25H15.1126V0.75Z"
+                           fill="white"
+                        />
+                     </mask>
+                     <g mask="url(#mask0_62_13)">
+                        <path
+                           d="M3.86261 12.5624V8.62494"
+                           stroke="black"
+                           stroke-width="1.04162"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                        />
+                        <path
+                           d="M3.86261 6.37499V2.4375"
+                           stroke="black"
+                           stroke-width="1.04162"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                        />
+                        <path
+                           d="M8.36249 12.5625V7.49997"
+                           stroke="black"
+                           stroke-width="1.04162"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                        />
+                        <path
+                           d="M8.36249 5.24999V2.4375"
+                           stroke="black"
+                           stroke-width="1.04162"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                        />
+                        <path
+                           d="M12.8626 12.5625V9.74997"
+                           stroke="black"
+                           stroke-width="1.04162"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                        />
+                        <path
+                           d="M12.8626 7.49999V2.4375"
+                           stroke="black"
+                           stroke-width="1.04162"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                        />
+                        <path
+                           d="M2.17511 8.62494H5.55011"
+                           stroke="black"
+                           stroke-width="1.04162"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                        />
+                        <path
+                           d="M6.67511 5.24997H10.0501"
+                           stroke="black"
+                           stroke-width="1.04162"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                        />
+                        <path
+                           d="M11.1751 9.74997H14.5501"
+                           stroke="black"
+                           stroke-width="1.04162"
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                        />
+                     </g>
                   </g>
                   <defs>
-                     <clipPath id="clip0_47_1511">
+                     <clipPath id="clip0_62_13">
                         <rect
-                           width="15"
-                           height="15"
+                           width="14.4"
+                           height="13.5"
                            fill="white"
-                           transform="translate(0.902832)"
+                           transform="translate(0.800049 0.75)"
                         />
                      </clipPath>
                   </defs>
-               </svg>
-               <svg
-                  class="w-5 h-5 cursor-pointer"
-                  viewBox="0 0 13 15"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-               >
-                  <path
-                     d="M0.902832 13.8412V13.0486C0.902832 9.98417 3.38702 7.5 6.45142 7.5C9.51582 7.5 12 9.98417 12 13.0486V13.8412"
-                     stroke="black"
-                     stroke-width="1.18897"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                  />
-                  <path
-                     d="M6.45114 7.50002C8.20219 7.50002 9.62176 6.08046 9.62176 4.32941C9.62176 2.57834 8.20219 1.15881 6.45114 1.15881C4.70005 1.15881 3.28052 2.57834 3.28052 4.32941C3.28052 6.08046 4.70005 7.50002 6.45114 7.50002Z"
-                     stroke="black"
-                     stroke-width="1.18897"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                  />
                </svg>
             </div>
          </div>
@@ -282,12 +227,19 @@
                v-html="baseRendererNodeHtml"
                class="w-full h-full overflow-auto"
             ></div>
+            <!-- 在即时设计里面悬停失效，所以使用状态代替 tailwindcss 的 group-hover -->
             <div
                v-else-if="showMode === 'code'"
-               class="group relative h-full w-full overflow-auto"
+               class="relative h-full w-full overflow-auto"
+               @mouseenter="hoverCodePlayground = true"
+               @mouseleave="hoverCodePlayground = false"
             >
                <div
-                  class="z-10 hidden group-hover:inline-flex rounded-md shadow-sm absolute bottom-2 right-2"
+                  :class="{
+                     'hidden': !hoverCodePlayground,
+                     'inline-flex': hoverCodePlayground
+                  }"
+                  class="z-10 rounded-md shadow-sm absolute bottom-3 right-2"
                   role="group"
                >
                   <button

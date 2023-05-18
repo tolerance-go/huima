@@ -14,6 +14,8 @@ export const showMode = ref<'code' | 'playground' | 'empty'>('empty')
 
 export const nodeMaps = ref<Record<string, NodeTree>>({})
 
+export const hoverCodePlayground = ref(false)
+
 // export const showMode = ref<'code' | 'playground' | 'empty'>('code')
 // export const baseRendererNodeHtml = ref(`
 // <div

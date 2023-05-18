@@ -10,3 +10,6 @@ dist
 
 figma-plugin/code.js
 figma-plugin/ui.html
+
+jssj-plugin/code.js
+jssj-plugin/ui.html
