@@ -55,20 +55,23 @@ export const handleExportBtnClick = () => {
 
    const assets = extractAndSplitUrls(copiedNodeHtml.value)
 
-   exportZip([
-      {
-         path: 'page/index.html',
-         content: copiedNodeHtml.value,
-      },
-      ...assets.map((item) => {
-         // figma 的 node 的 id 是用 : 分隔的，所以这里要替换一下，是一个约定
-         const figmaNodeId = item.id.replace('-', ':')
-         return {
-            path: `page/${item.path}/${item.name}_${item.id}.${item.suffix}`,
-            content:
-               nodeMaps.value[figmaNodeId].styleMeta?.backgroundImageMeta
-                  ?.backgroundImageBytes ?? '',
-         }
-      }),
-   ])
+   exportZip(
+      [
+         {
+            path: 'page/index.html',
+            content: copiedNodeHtml.value,
+         },
+         ...assets.map((item) => {
+            // figma 的 node 的 id 是用 : 分隔的，所以这里要替换一下，是一个约定
+            const figmaNodeId = item.id.replace('-', ':')
+            return {
+               path: `page/${item.path}/${item.name}_${item.id}.${item.suffix}`,
+               content:
+                  nodeMaps.value[figmaNodeId].styleMeta?.backgroundImageMeta
+                     ?.backgroundImageBytes ?? '',
+            }
+         }),
+      ],
+      'page',
+   )
 }
