@@ -7,3 +7,6 @@ out
 dist
 
 .DS_Store
+
+figma-plugin/code.js
+figma-plugin/ui.html
