@@ -28,8 +28,8 @@ export function createHTML(node: NodeTree, indent = 0): string {
       .join('')
 
    if (node.nodeInfo.type === 'GROUP') {
-      //NOTE - Group 第一层子元素坐标位置需要进行偏移计算
-      //NOTE - 如果 Group 在一个 auto layout 节点内，那么当做一个 div 进行渲染
+      // Group 第一层子元素坐标位置需要进行偏移计算
+      // 如果 Group 在一个 auto layout 节点内，那么当做一个 div 进行渲染
       if (
          indent === 0 ||
          (node.nodeInfo.parentNodeInfo &&
