@@ -2,16 +2,49 @@ import { CSSStyle, NodeTree, StyleMeta } from '@huima/types'
 import { removeUndefined } from '@huima/utils'
 import { getGroupChildrenPosition } from './getGroupChildrenPosition'
 
-const getStyleString = (style: CSSStyle, styleMeta?: StyleMeta) => {
-   const styleString = Object.entries(
-      createStyle(removeUndefined(style), styleMeta),
-   )
-      .map(([key, value]) => `${key}: ${value};`)
-      .join(' ')
-   return styleString
-}
+export function createHTML(
+   node: NodeTree,
+   options?: {
+      getBgImgUrl?: (node: NodeTree) => string
+   },
+   indent = 0,
+): string {
+   const getStyleString = (style: CSSStyle, styleMeta?: StyleMeta) => {
+      const styleString = Object.entries(
+         createStyle(removeUndefined(style), styleMeta),
+      )
+         .map(([key, value]) => `${key}: ${value};`)
+         .join(' ')
+      return styleString
+   }
 
-export function createHTML(node: NodeTree, indent = 0): string {
+   const createStyle = (nodeStyle: CSSStyle, styleMeta?: StyleMeta) => {
+      console.log('createStyle', nodeStyle)
+      let style: CSSStyle = {}
+      for (const key in nodeStyle) {
+         if (
+            key === 'background-image' &&
+            nodeStyle[key] &&
+            styleMeta?.backgroundImageBuffer
+         ) {
+            if (options?.getBgImgUrl) {
+               style[key] = `url('${options.getBgImgUrl(node)}')`
+               continue
+            }
+
+            const url = URL.createObjectURL(
+               new Blob([styleMeta.backgroundImageBuffer]),
+            )
+
+            style[key] = `url('${url}')`
+            continue
+         }
+         style[key] = nodeStyle[key]
+      }
+
+      return style
+   }
+
    console.log('createHTML', node)
 
    if (node.nodeInfo.visible === false) return ''
@@ -24,7 +57,7 @@ export function createHTML(node: NodeTree, indent = 0): string {
    }
 
    const childrenString = node.children
-      .map((child) => `${createHTML(child, indent + 1)}`)
+      .map((child) => `${createHTML(child, options, indent + 1)}`)
       .join('')
 
    if (node.nodeInfo.type === 'GROUP') {
@@ -60,6 +93,7 @@ ${node.children
                      ) + 'px',
                },
             },
+            options,
             indent + 1,
          )}`,
    )
@@ -74,26 +108,4 @@ ${node.children
 ${node.textContent ?? ''}
 ${childrenString}
 </${node.tag}>`
-}
-
-const createStyle = (nodeStyle: CSSStyle, styleMeta?: StyleMeta) => {
-   console.log('createStyle', nodeStyle)
-   let style: CSSStyle = {}
-   for (const key in nodeStyle) {
-      if (
-         key === 'background-image' &&
-         nodeStyle[key] &&
-         styleMeta?.backgroundImageBuffer
-      ) {
-         const url = URL.createObjectURL(
-            new Blob([styleMeta.backgroundImageBuffer]),
-         )
-
-         style[key] = `url('${url}')`
-         continue
-      }
-      style[key] = nodeStyle[key]
-   }
-
-   return style
 }

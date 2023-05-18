@@ -278,7 +278,7 @@
          <div role="body" class="h-[calc(100vh_-_53px)]">
             <div
                v-if="showMode === 'playground'"
-               v-html="nodeHtml"
+               v-html="baseRendererNodeHtml"
                class="w-full h-full overflow-auto"
             ></div>
             <div
@@ -330,7 +330,7 @@
                <pre
                   class="line-numbers language-html overflow-auto h-full w-full"
                ><code class="language-html"
-               v-html="nodeHtmlWithHighlight"></code></pre>
+               v-html="shownNodeHtml"></code></pre>
             </div>
          </div>
       </div>
