@@ -111,3 +111,23 @@ export const handleViewportSizeChange = () => {
       '*',
    )
 }
+
+export const convertPxValueToRelative = (value: number) => {
+   if (settings.enablePxConvert) {
+      if (settings.pxConvertConfigs.pxConvertFormat === 'rem') {
+         // 这里的算法是把像素转换为 rem
+         // 在大多数浏览器中，1 rem 的默认值是 16 px
+         // 所以我们用 px 值除以 baseSize
+         let remValue = value / settings.pxConvertConfigs.pxConvertBaseFontSize
+         return `${remValue}rem`
+      } else if (settings.pxConvertConfigs.pxConvertFormat === 'vw') {
+         // 这里的算法是把像素转换为 vw
+         // 在假设的视口宽度为1000px中，1vw等于10px
+         // 所以我们用 px 值除以 (viewportWidth / 100)
+         let vwValue = value / (settings.pxConvertConfigs.viewportWidth / 100)
+         return `${vwValue}vw`
+      }
+   }
+
+   return `${value}px`
+}

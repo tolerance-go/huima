@@ -42,11 +42,11 @@ export function createHTML(
                      // 转换 px 值为 rem 值，并替换原来的 px 值
                      let numberValue = parseFloat(pxValue)
                      let remValue = convertPxValue!(numberValue)
-                     nodeStyle[key] = value.replace(pxValue, remValue)
+                     style[key] = value.replace(pxValue, remValue)
                   })
+                  // 注意不要被后面的 style[key] = nodeStyle[key] 覆盖
+                  continue
                }
-               style[key] = nodeStyle[key]
-               continue
             }
          }
 
@@ -93,6 +93,7 @@ export function createHTML(
 
             continue
          }
+
          style[key] = nodeStyle[key]
       }
 

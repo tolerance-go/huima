@@ -10,16 +10,18 @@ import {
    VIEWPORT_HEIGHT,
    VIEWPORT_WIDTH,
 } from '../constants'
+import { createHTML } from '../createHTML'
+import { convertPxValueToRelative } from '../methods'
 
 export const selectedNodeName = ref('未选择')
 export const selectedNodeId = ref('未知')
 
 export const copyBtnText = ref('复制')
 
-export const baseRendererNodeHtml = ref('')
 export const showMode = ref<'code' | 'playground' | 'settings' | 'empty'>(
    'empty',
 )
+export const selectedNodeTree = ref<NodeTree | null>(null)
 
 export const nodeMaps = ref<Record<string, NodeTree>>({})
 
@@ -59,16 +61,7 @@ export const defaultSettings = reactive<BaseSettings>({
 })
 
 export const settings = reactive<Settings>({
-   uiHeaderHeight: DEFAULT_UI_HEADER_HEIGHT,
-   uiViewportSize: {
-      width: VIEWPORT_WIDTH,
-      height: VIEWPORT_HEIGHT,
-   },
-   pxConvertConfigs: {
-      pxConvertFormat: DEFAULT_PX_CONVERT_FORMAT,
-      viewportWidth: VIEWPORT_WIDTH,
-      pxConvertBaseFontSize: DEFAULT_BASE_FONT_SIZE,
-   },
+   ...defaultSettings,
    enablePxConvert: false,
 })
 
@@ -95,7 +88,44 @@ export const settings = reactive<Settings>({
 // </div>
 // `)
 
-export const baseCopiedNodeHtml = ref('')
+export const baseRendererNodeHtml = computed(() => {
+   if (selectedNodeTree.value) {
+      return createHTML(selectedNodeTree.value, {
+         convertPxValue: convertPxValueToRelative,
+      })
+   }
+   return ''
+})
+
+export const rendererNodeHtml = computed(() => {
+   // 创建一个样式字符串
+   const style = `
+<style>
+html {
+   font-size: ${settings.pxConvertConfigs.pxConvertBaseFontSize}px;
+}
+</style>`
+
+   // 将样式字符串添加到 baseHtml 前面
+   return `${style}${baseRendererNodeHtml.value}`
+})
+
+export const baseCopiedNodeHtml = computed(() => {
+   if (selectedNodeTree.value) {
+      const result = createHTML(selectedNodeTree.value, {
+         getBgImgUrl(backgroundImageMeta, node) {
+            return `assets/${node.nodeInfo.name}_${
+               // 文件名称不能有冒号
+               node.nodeInfo.id.replace(':', '-')
+            }.${backgroundImageMeta.backgroundImageExtension}`
+         },
+         convertPxValue: convertPxValueToRelative,
+      })
+
+      return result
+   }
+   return ''
+})
 
 // 复制到剪贴板的 html 代码
 export const copiedNodeHtml = computed(() => {

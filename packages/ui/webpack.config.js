@@ -14,7 +14,7 @@ module.exports = (env, argv) => {
          hot: true, // 启用热更新
       },
       // This is necessary because Figma's 'eval' works differently than normal eval
-      devtool: env.WEBPACK_BUNDLE ? 'inline-source-map' : false,
+      devtool: env.WEBPACK_BUNDLE ? false : 'inline-source-map',
       entry: {
          ui: './src/ui.ts', // This is the entry point for our plugin code.
       },
