@@ -55,7 +55,7 @@
                   @click="handleGenCode"
                   class="rounded-md bg-gray-950 px-4 py-2 text-white text-sm"
                >
-                  Generate
+                  生成
                </button>
 
                <svg
@@ -151,7 +151,7 @@
             >
                <div class="w-full">
                   <form @change="handleFormChange">
-                     <h2 class="text-2xl font-bold">Settings</h2>
+                     <h2 class="text-2xl font-bold">配置</h2>
                      <div class="mt-8 max-w-md">
                         <div class="grid grid-cols-1 gap-6">
                            <h3 class="text-gray-700">基础</h3>
@@ -199,7 +199,7 @@
                            </div>
                            <div
                               class="grid grid-cols-1 gap-6 pl-6"
-                              v-show="formSettings.enablePxConvert"
+                              v-if="formSettings.enablePxConvert"
                            >
                               <label class="block">
                                  <span class="text-gray-700">目标格式</span>
@@ -212,7 +212,7 @@
                                  </select>
                               </label>
                               <label
-                                 v-show="formSettings.pxConvertConfigs.pxConvertFormat === 'vw'"
+                                 v-if="formSettings.pxConvertConfigs.pxConvertFormat === 'vw'"
                                  class="block"
                               >
                                  <span class="text-gray-700"
@@ -226,7 +226,7 @@
                                  />
                               </label>
                               <label
-                                 v-show="formSettings.pxConvertConfigs.pxConvertFormat === 'rem'"
+                                 v-if="formSettings.pxConvertConfigs.pxConvertFormat === 'rem'"
                                  class="block"
                               >
                                  <span class="text-gray-700">基础字号大小</span>
@@ -309,19 +309,19 @@
                </div>
             </div>
             <div
-               v-show="showMode === 'empty'"
+               v-else-if="showMode === 'empty'"
                class="text-gray-600 h-full flex justify-center items-center italic text-lg"
             >
                “请选择场景元素后，点击生成按钮”
             </div>
             <iframe
-               v-show="showMode === 'playground'"
+               v-else-if="showMode === 'playground'"
                class="w-full h-full"
                :srcdoc="rendererNodeHtml"
             ></iframe>
             <!-- 在即时设计里面悬停失效，所以使用状态代替 tailwindcss 的 group-hover -->
             <div
-               v-show="showMode === 'code'"
+               v-else-if="showMode === 'code'"
                class="relative h-full w-full overflow-auto"
                @mouseenter="hoverCodeArea = true"
                @mouseleave="hoverCodeArea = false"
