@@ -6,7 +6,7 @@ module.exports = (env, argv) => {
       mode:
          env.WEBPACK_WATCH || env.WEBPACK_SERVE ? 'development' : 'production',
       // This is necessary because Figma's 'eval' works differently than normal eval
-      devtool: env.WEBPACK_BUNDLE ? 'inline-source-map' : false,
+      devtool: env.WEBPACK_BUNDLE ? false : 'inline-source-map',
       entry: {
          code: './src/code.ts', // This is the entry point for our plugin code.
       },
