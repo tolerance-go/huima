@@ -152,7 +152,7 @@
                   <h2 class="text-2xl font-bold">Settings</h2>
                   <div class="mt-8 max-w-md">
                      <div class="grid grid-cols-1 gap-6">
-                        <h3 class="text-gray-700">全局</h3>
+                        <h3 class="text-gray-700">基础</h3>
                         <div class="flex gap-3">
                            <label class="block flex-auto">
                               <span class="text-gray-700">视口宽度</span>
@@ -188,9 +188,7 @@
                                        type="checkbox"
                                        class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
                                     />
-                                    <span class="ml-2"
-                                       >启用 px 单位自动转换</span
-                                    >
+                                    <span class="ml-2">启用 px 单位转换</span>
                                  </label>
                               </div>
                            </div>
@@ -302,19 +300,19 @@
                </div>
             </div>
             <div
-               v-if="showMode === 'empty'"
+               v-show="showMode === 'empty'"
                class="text-gray-600 h-full flex justify-center items-center italic text-lg"
             >
                “请选择场景元素后，点击生成按钮”
             </div>
-            <div
-               v-if="showMode === 'playground'"
-               v-html="baseRendererNodeHtml"
-               class="w-full h-full overflow-auto"
-            ></div>
+            <iframe
+               v-show="showMode === 'playground'"
+               class="w-full h-full"
+               :srcdoc="baseRendererNodeHtml"
+            ></iframe>
             <!-- 在即时设计里面悬停失效，所以使用状态代替 tailwindcss 的 group-hover -->
             <div
-               v-else-if="showMode === 'code'"
+               v-show="showMode === 'code'"
                class="relative h-full w-full overflow-auto"
                @mouseenter="hoverCodeArea = true"
                @mouseleave="hoverCodeArea = false"

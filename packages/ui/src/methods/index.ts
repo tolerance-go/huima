@@ -31,7 +31,9 @@ export const handleShowPlaygroundBtnClick = () => {
 }
 
 export const handleSettingsBtnClick = () => {
-   currentMode.value = showMode.value
+   if (showMode.value !== 'settings') {
+      currentMode.value = showMode.value
+   }
    showMode.value = 'settings'
 }
 
