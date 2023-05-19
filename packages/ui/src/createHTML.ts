@@ -11,9 +11,12 @@ export function createHTML(
    node: NodeTree,
    options?: {
       getBgImgUrl?: (bgImgMeta: BackgroundImageMeta, node: NodeTree) => string
+      convertPxValue?: (value: number) => string
    },
    indent = 0,
 ): string {
+   const { convertPxValue } = options ?? {}
+
    const getStyleString = (style: CSSStyle, styleMeta?: StyleMeta) => {
       const styleString = Object.entries(
          createStyle(removeUndefined(style), styleMeta),
@@ -27,6 +30,26 @@ export function createHTML(
       console.log('createStyle', nodeStyle)
       let style: CSSStyle = {}
       for (const key in nodeStyle) {
+         const value = nodeStyle[key]
+
+         if (convertPxValue) {
+            // 判断 value 是否是 px 值
+            if (typeof value === 'string' && value.includes('px')) {
+               // 使用正则表达式找出所有的 px 值
+               let pxValues = value.match(/\d+px/g)
+               if (pxValues) {
+                  pxValues.forEach((pxValue) => {
+                     // 转换 px 值为 rem 值，并替换原来的 px 值
+                     let numberValue = parseFloat(pxValue)
+                     let remValue = convertPxValue!(numberValue)
+                     nodeStyle[key] = value.replace(pxValue, remValue)
+                  })
+               }
+               style[key] = nodeStyle[key]
+               continue
+            }
+         }
+
          if (
             key === 'background-image' &&
             nodeStyle[key] &&

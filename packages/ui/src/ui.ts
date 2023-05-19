@@ -6,6 +6,7 @@ import {
    handleSettingsBtnClick,
    handleShowCodeBtnClick,
    handleShowPlaygroundBtnClick,
+   handleViewportSizeChange,
 } from './methods'
 import {
    baseRendererNodeHtml,
@@ -22,6 +23,7 @@ import { createHTML } from './createHTML'
 import {
    baseCopiedNodeHtml,
    copyBtnText,
+   defaultSettings,
    hoverCodeArea,
    selectedNodeId,
    selectedNodeName,
@@ -62,7 +64,9 @@ createApp({
          shownNodeHtml,
          hoverCodeArea,
          settings,
+         defaultSettings,
          currentMode,
+         handleViewportSizeChange,
          handleBackFromSettingsBtnClick,
          handleSettingsBtnClick,
          handleGenCode,
@@ -92,6 +96,28 @@ window.onmessage = (event) => {
                node.nodeInfo.id.replace(':', '-')
             }.${backgroundImageMeta.backgroundImageExtension}`
          },
+         convertPxValue: settings.enablePxConvert
+            ? (value: number) => {
+                 if (settings.pxConvertConfigs.pxConvertFormat === 'rem') {
+                    // 这里的算法是把像素转换为 rem
+                    // 在大多数浏览器中，1 rem 的默认值是 16 px
+                    // 所以我们用 px 值除以 baseSize
+                    let remValue =
+                       value / settings.pxConvertConfigs.pxConvertBaseFontSize
+                    return `${remValue}rem`
+                 } else if (
+                    settings.pxConvertConfigs.pxConvertFormat === 'vw'
+                 ) {
+                    // 这里的算法是把像素转换为 vw
+                    // 在假设的视口宽度为1000px中，1vw等于10px
+                    // 所以我们用 px 值除以 (viewportWidth / 100)
+                    let vwValue =
+                       value / (settings.pxConvertConfigs.viewportWidth / 100)
+                    return `${vwValue}vw`
+                 }
+                 return `${value}px`
+              }
+            : undefined,
       })
       selectedNodeName.value = name
       selectedNodeId.value = id

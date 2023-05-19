@@ -1,4 +1,12 @@
-import { copiedNodeHtml, currentMode, nodeMaps, showMode } from '../states'
+import { DEFAULT_UI_HEADER_HEIGHT } from '@huima/utils'
+import { VIEWPORT_HEIGHT, VIEWPORT_WIDTH } from '../constants'
+import {
+   copiedNodeHtml,
+   currentMode,
+   nodeMaps,
+   settings,
+   showMode,
+} from '../states'
 import { exportZip } from '../utils/exportZip'
 
 export const handleGenCode = () => {
@@ -82,5 +90,22 @@ export const handleExportBtnClick = () => {
          }),
       ],
       'page',
+   )
+}
+
+export const handleViewportSizeChange = () => {
+   parent.postMessage(
+      {
+         pluginMessage: {
+            type: 'resize',
+            payload: {
+               width: settings.uiViewportSize.width ?? VIEWPORT_WIDTH,
+               height:
+                  (settings.uiViewportSize.height ?? VIEWPORT_HEIGHT) +
+                  DEFAULT_UI_HEADER_HEIGHT,
+            },
+         },
+      },
+      '*',
    )
 }

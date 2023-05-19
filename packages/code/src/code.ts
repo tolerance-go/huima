@@ -1,4 +1,9 @@
 import { UIEvents } from '@huima/types'
+import {
+   DEFAULT_UI_HEADER_HEIGHT,
+   VIEWPORT_HEIGHT,
+   VIEWPORT_WIDTH,
+} from '@huima/utils'
 import { createNodeTree } from './createNodeTree'
 import { pluginApi } from './pluginApi'
 
@@ -35,6 +40,10 @@ pluginApi.ui.onmessage = async (message) => {
          })
       }
    }
+
+   if (message.type === 'resize') {
+      pluginApi.ui.resize(message.payload.width, message.payload.height)
+   }
 }
 
 pluginApi.on('selectionchange', () => {
@@ -51,6 +60,6 @@ pluginApi.on('selectionchange', () => {
 //====================== UI 事件处理 * 结束 ======================
 
 pluginApi.showUI(__html__, {
-   height: 785,
-   width: 840,
+   height: VIEWPORT_HEIGHT + DEFAULT_UI_HEADER_HEIGHT,
+   width: VIEWPORT_WIDTH,
 })

@@ -1,8 +1,15 @@
 import { NodeTree } from '@huima/types'
+import { DEFAULT_UI_HEADER_HEIGHT } from '@huima/utils'
 import parsers from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
 import Prism from 'prismjs'
 import { computed, reactive, ref } from 'vue'
+import {
+   DEFAULT_BASE_FONT_SIZE,
+   DEFAULT_PX_CONVERT_FORMAT,
+   VIEWPORT_HEIGHT,
+   VIEWPORT_WIDTH,
+} from '../constants'
 
 export const selectedNodeName = ref('未选择')
 export const selectedNodeId = ref('未知')
@@ -21,26 +28,48 @@ export const hoverCodeArea = ref(false)
 // 跳转 settings 前的 mode 状态
 export const currentMode = ref<typeof showMode.value>(showMode.value)
 
-export const settings = reactive<{
-   enablePxConvert: boolean
+export type BaseSettings = {
+   uiHeaderHeight: number
+   uiViewportSize: {
+      width: number
+      height: number
+   }
    pxConvertConfigs: {
       pxConvertFormat: 'rem' | 'vw'
-      pxConvertBaseSize: {
-         width: number
-         height: number
-      }
+      viewportWidth: number
       pxConvertBaseFontSize: number
    }
-}>({
-   enablePxConvert: false,
-   pxConvertConfigs: {
-      pxConvertFormat: 'rem',
-      pxConvertBaseSize: {
-         width: 1920,
-         height: 1080,
-      },
-      pxConvertBaseFontSize: 16,
+}
+
+export type Settings = BaseSettings & {
+   enablePxConvert: boolean
+}
+
+export const defaultSettings = reactive<BaseSettings>({
+   uiHeaderHeight: DEFAULT_UI_HEADER_HEIGHT,
+   uiViewportSize: {
+      width: VIEWPORT_WIDTH,
+      height: VIEWPORT_HEIGHT,
    },
+   pxConvertConfigs: {
+      pxConvertFormat: DEFAULT_PX_CONVERT_FORMAT,
+      viewportWidth: VIEWPORT_WIDTH,
+      pxConvertBaseFontSize: DEFAULT_BASE_FONT_SIZE,
+   },
+})
+
+export const settings = reactive<Settings>({
+   uiHeaderHeight: DEFAULT_UI_HEADER_HEIGHT,
+   uiViewportSize: {
+      width: VIEWPORT_WIDTH,
+      height: VIEWPORT_HEIGHT,
+   },
+   pxConvertConfigs: {
+      pxConvertFormat: DEFAULT_PX_CONVERT_FORMAT,
+      viewportWidth: VIEWPORT_WIDTH,
+      pxConvertBaseFontSize: DEFAULT_BASE_FONT_SIZE,
+   },
+   enablePxConvert: false,
 })
 
 // export const showMode = ref<'code' | 'playground' | 'empty'>('code')
