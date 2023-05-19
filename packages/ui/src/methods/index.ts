@@ -136,4 +136,4 @@ export const convertPxValueToRelative = (value: number) => {
 
 export const handleFormChange = debounce(() => {
    Object.assign(settings, formSettings)
-}, 350)
+}, 300)
