@@ -1,6 +1,6 @@
 import { NodeInfo } from '@huima/types'
 
-export const getBaseLayoutCSS = (
+export const getLayoutCSS = (
    node: SceneNode,
    nodeInfo: NodeInfo,
    level = 0,

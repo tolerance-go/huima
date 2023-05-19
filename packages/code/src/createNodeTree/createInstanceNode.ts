@@ -1,8 +1,8 @@
-import { generateBackgroundImageCSS } from '../css-converts/generateBackgroundImageCSS'
-import { generateBorderCSS } from '../css-converts/generateBorderCSS'
-import { generateFlexLayoutCSS } from '../css-converts/generateFlexLayoutCSS'
-import { generateOverflowCSS } from '../css-converts/generateOverflowCSS'
 import { getBackgroundColorCSS } from '../css-converts/getBackgroundColorCSS'
+import { generateBackgroundImageCSS } from '../css-converts/getBackgroundImageCSS'
+import { generateBorderCSS } from '../css-converts/getBorderCSS'
+import { generateFlexLayoutCSS } from '../css-converts/getFlexLayoutCSS'
+import { generateOverflowCSS } from '../css-converts/getOverflowCSS'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 
 export const createInstanceNode = async (

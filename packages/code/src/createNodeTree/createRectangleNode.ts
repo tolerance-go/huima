@@ -1,6 +1,6 @@
-import { generateBackgroundImageCSS } from '../css-converts/generateBackgroundImageCSS'
-import { generateBorderCSS } from '../css-converts/generateBorderCSS'
 import { getBackgroundColorCSS } from '../css-converts/getBackgroundColorCSS'
+import { generateBackgroundImageCSS } from '../css-converts/getBackgroundImageCSS'
+import { generateBorderCSS } from '../css-converts/getBorderCSS'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 
 export const createRectangleNode = async (
