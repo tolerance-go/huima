@@ -12,6 +12,7 @@ import {
 } from '../constants'
 import { createHTML } from '../createHTML'
 import { convertPxValueToRelative } from '../methods'
+import { normalizeCss } from './normalize.css'
 
 export const selectedNodeName = ref('未选择')
 export const selectedNodeId = ref('未知')
@@ -115,6 +116,7 @@ export const rendererNodeHtml = computed(() => {
 html {
    font-size: ${settings.pxConvertConfigs.pxConvertBaseFontSize}px;
 }
+${normalizeCss}
 </style>`
 
    // 将样式字符串添加到 baseHtml 前面

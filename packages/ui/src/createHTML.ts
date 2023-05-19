@@ -36,7 +36,8 @@ export function createHTML(
             // 判断 value 是否是 px 值
             if (typeof value === 'string' && value.includes('px')) {
                // 使用正则表达式找出所有的 px 值
-               let pxValues = value.match(/\d+px/g)
+               // 这样，你的代码现在应该能够正确地处理像 10.5px 这样的小数像素值了
+               let pxValues = value.match(/\d+(\.\d+)?px/g)
                if (pxValues) {
                   pxValues.forEach((pxValue) => {
                      // 转换 px 值为 rem 值，并替换原来的 px 值
