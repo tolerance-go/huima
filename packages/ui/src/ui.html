@@ -54,178 +54,216 @@
                >
                   Generate
                </button>
-               <svg
-                  class="w-6 h-6 cursor-pointer"
-                  v-if="showMode === 'playground'"
-                  @click="handleShowCodeBtnClick"
-                  viewBox="0 0 18 13"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-               >
-                  <path
-                     d="M7.56926 0.944489L10.6803 12.0555"
-                     stroke="black"
-                     stroke-width="1.24835"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                  />
-                  <path
-                     d="M13.7918 3.16669L16.9028 6.27778L13.7918 9.38887"
-                     stroke="black"
-                     stroke-width="1.24835"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                  />
-                  <path
-                     d="M4.01392 3.16669L0.902875 6.27778L4.01392 9.38887"
-                     stroke="black"
-                     stroke-width="1.24835"
-                     stroke-linecap="round"
-                     stroke-linejoin="round"
-                  />
-               </svg>
+
                <svg
                   class="w-6 h-6 cursor-pointer"
                   v-else-if="showMode === 'code'"
                   @click="handleShowPlaygroundBtnClick"
-                  viewBox="0 0 18 17"
-                  fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
                >
-                  <g clip-path="url(#clip0_52_1571)">
-                     <path
-                        d="M1.61121 8.50001C1.61121 8.50001 4.44454 2.83334 9.40287 2.83334C14.3612 2.83334 17.1945 8.50001 17.1945 8.50001C17.1945 8.50001 14.3612 14.1667 9.40287 14.1667C4.44454 14.1667 1.61121 8.50001 1.61121 8.50001Z"
-                        stroke="black"
-                        stroke-width="1.2581"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
-                     <path
-                        d="M9.40283 10.625C10.5764 10.625 11.5278 9.6736 11.5278 8.5C11.5278 7.32639 10.5764 6.375 9.40283 6.375C8.22923 6.375 7.27783 7.32639 7.27783 8.5C7.27783 9.6736 8.22923 10.625 9.40283 10.625Z"
-                        stroke="black"
-                        stroke-width="1.2581"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                     />
-                  </g>
-                  <defs>
-                     <clipPath id="clip0_52_1571">
-                        <rect
-                           width="17"
-                           height="17"
-                           fill="white"
-                           transform="translate(0.902832)"
-                        />
-                     </clipPath>
-                  </defs>
+                  <path
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                  />
+                  <path
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
                </svg>
-               <div class="h-[10px] w-[1px] bg-gray-300"></div>
 
                <svg
                   class="w-6 h-6 cursor-pointer"
-                  viewBox="0 0 16 15"
-                  fill="none"
+                  v-if="showMode === 'playground'"
+                  @click="handleShowCodeBtnClick"
                   xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
                >
-                  <mask
-                     id="mask0_62_67"
-                     style="mask-type: luminance"
-                     maskUnits="userSpaceOnUse"
-                     x="0"
-                     y="0"
-                     width="16"
-                     height="15"
-                  >
-                     <path
-                        d="M15.056 0.88501H0.94397V14.115H15.056V0.88501Z"
-                        fill="white"
-                     />
-                  </mask>
-                  <g mask="url(#mask0_62_67)">
-                     <mask
-                        id="mask1_62_67"
-                        style="mask-type: luminance"
-                        maskUnits="userSpaceOnUse"
-                        x="1"
-                        y="0"
-                        width="14"
-                        height="15"
-                     >
-                        <path
-                           d="M14.9702 0.88501H1.74023V14.115H14.9702V0.88501Z"
-                           fill="white"
-                        />
-                     </mask>
-                     <g mask="url(#mask1_62_67)">
-                        <path
-                           d="M3.94531 12.4612V8.60245"
-                           stroke="black"
-                           stroke-width="1.02079"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                        <path
-                           d="M3.94531 6.3975V2.53876"
-                           stroke="black"
-                           stroke-width="1.02079"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                        <path
-                           d="M8.3551 12.4612V7.49997"
-                           stroke="black"
-                           stroke-width="1.02079"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                        <path
-                           d="M8.3551 5.295V2.53876"
-                           stroke="black"
-                           stroke-width="1.02079"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                        <path
-                           d="M12.7653 12.4613V9.70499"
-                           stroke="black"
-                           stroke-width="1.02079"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                        <path
-                           d="M12.7653 7.5V2.53876"
-                           stroke="black"
-                           stroke-width="1.02079"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                        <path
-                           d="M2.2915 8.60245H5.599"
-                           stroke="black"
-                           stroke-width="1.02079"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                        <path
-                           d="M6.70154 5.29498H10.009"
-                           stroke="black"
-                           stroke-width="1.02079"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                        <path
-                           d="M11.1115 9.70499H14.419"
-                           stroke="black"
-                           stroke-width="1.02079"
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                        />
-                     </g>
-                  </g>
+                  <path
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"
+                  />
+               </svg>
+
+               <svg
+                  @click="handleBackFromSettingsBtnClick"
+                  v-if="showMode === 'settings'"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6 cursor-pointer"
+               >
+                  <path
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+                  />
+               </svg>
+               <div class="h-[10px] w-[1px] bg-gray-300"></div>
+               <svg
+                  @click="handleSettingsBtnClick"
+                  class="w-6 h-6 cursor-pointer"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+               >
+                  <path
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
+                  />
+                  <path
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
                </svg>
             </div>
          </div>
          <div role="body" class="h-[calc(100vh_-_53px)]">
+            <div
+               v-if="showMode === 'settings'"
+               class="h-full px-6 py-10 overflow-auto"
+            >
+               <div class="w-full">
+                  <h2 class="text-2xl font-bold">Settings</h2>
+                  <div class="mt-8 max-w-md">
+                     <div class="grid grid-cols-1 gap-6">
+                        <h3 class="text-gray-700">导出</h3>
+                        <div class="block">
+                           <div class="mt-2">
+                              <div>
+                                 <label class="inline-flex items-center">
+                                    <input
+                                       v-model="settings.enablePxConvert"
+                                       type="checkbox"
+                                       class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
+                                    />
+                                    <span class="ml-2"
+                                       >启用 px 单位自动转换</span
+                                    >
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                        <div
+                           class="grid grid-cols-1 gap-6 pl-6"
+                           v-show="settings.enablePxConvert"
+                        >
+                           <label class="block">
+                              <span class="text-gray-700">目标格式</span>
+                              <select
+                                 class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+                              >
+                                 <option>rem</option>
+                                 <option>vw</option>
+                              </select>
+                           </label>
+                           <label class="block">
+                              <span class="text-gray-700">设计稿标准尺寸</span>
+                              <input
+                                 type="number"
+                                 class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
+                                 placeholder="1920x980"
+                              />
+                           </label>
+                           <label class="block">
+                              <span class="text-gray-700">标准字号大小</span>
+                              <input
+                                 type="number"
+                                 class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
+                                 placeholder="14px"
+                              />
+                           </label>
+                        </div>
+                        <div class="block">
+                           <div class="mt-2">
+                              <div>
+                                 <label class="inline-flex items-center">
+                                    <input
+                                       type="checkbox"
+                                       class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
+                                    />
+                                    <span class="ml-2"
+                                       >启用 CSS 转 Tailwindcss</span
+                                    >
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="block">
+                           <div class="mt-2">
+                              <div>
+                                 <label class="inline-flex items-center">
+                                    <input
+                                       type="checkbox"
+                                       class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
+                                    />
+                                    <span class="ml-2">启用图片压缩</span>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                        <label class="block">
+                           <span class="text-gray-700"
+                              >压缩率（越高则图片大小越小，清晰度越低）</span
+                           >
+                           <select
+                              class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+                           >
+                              <option>高</option>
+                              <option>中</option>
+                              <option>低</option>
+                           </select>
+                        </label>
+                        <div class="block">
+                           <div class="mt-2">
+                              <div>
+                                 <label class="inline-flex items-center">
+                                    <input
+                                       type="checkbox"
+                                       class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
+                                    />
+                                    <span class="ml-2">启用图片转 base64</span>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                        <label class="block">
+                           <span class="text-gray-700"
+                              >图片大小阈值（小于该值的图片将自动转换）</span
+                           >
+                           <input
+                              type="number"
+                              class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
+                              placeholder="10kb"
+                           />
+                        </label>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div
+               v-if="showMode === 'empty'"
+               class="text-gray-600 h-full flex justify-center items-center italic text-lg"
+            >
+               “请选择场景元素后，点击生成按钮”
+            </div>
             <div
                v-if="showMode === 'playground'"
                v-html="baseRendererNodeHtml"
@@ -235,13 +273,13 @@
             <div
                v-else-if="showMode === 'code'"
                class="relative h-full w-full overflow-auto"
-               @mouseenter="hoverCodePlayground = true"
-               @mouseleave="hoverCodePlayground = false"
+               @mouseenter="hoverCodeArea = true"
+               @mouseleave="hoverCodeArea = false"
             >
                <div
                   :class="{
-                     'hidden': !hoverCodePlayground,
-                     'inline-flex': hoverCodePlayground
+                     'hidden': !hoverCodeArea,
+                     'inline-flex': hoverCodeArea
                   }"
                   class="z-10 rounded-md shadow-sm absolute bottom-3 right-2"
                   role="group"

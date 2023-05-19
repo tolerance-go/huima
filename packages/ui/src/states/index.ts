@@ -2,7 +2,7 @@ import { NodeTree } from '@huima/types'
 import parsers from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
 import Prism from 'prismjs'
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 export const selectedNodeName = ref('未选择')
 export const selectedNodeId = ref('未知')
@@ -10,11 +10,38 @@ export const selectedNodeId = ref('未知')
 export const copyBtnText = ref('复制')
 
 export const baseRendererNodeHtml = ref('')
-export const showMode = ref<'code' | 'playground' | 'empty'>('empty')
+export const showMode = ref<'code' | 'playground' | 'settings' | 'empty'>(
+   'empty',
+)
 
 export const nodeMaps = ref<Record<string, NodeTree>>({})
 
-export const hoverCodePlayground = ref(false)
+export const hoverCodeArea = ref(false)
+
+// 跳转 settings 前的 mode 状态
+export const currentMode = ref<typeof showMode.value>(showMode.value)
+
+export const settings = reactive<{
+   enablePxConvert: boolean
+   pxConvertConfigs: {
+      pxConvertFormat: 'rem' | 'vw'
+      pxConvertBaseSize: {
+         width: number
+         height: number
+      }
+      pxConvertBaseFontSize: number
+   }
+}>({
+   enablePxConvert: false,
+   pxConvertConfigs: {
+      pxConvertFormat: 'rem',
+      pxConvertBaseSize: {
+         width: 1920,
+         height: 1080,
+      },
+      pxConvertBaseFontSize: 16,
+   },
+})
 
 // export const showMode = ref<'code' | 'playground' | 'empty'>('code')
 // export const baseRendererNodeHtml = ref(`

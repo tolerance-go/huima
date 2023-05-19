@@ -24,6 +24,7 @@
    "devDependencies": {
       "@figma/plugin-typings": "^1.64.0",
       "@huima/types": "workspace:^",
+      "@tailwindcss/forms": "^0.5.3",
       "@types/file-saver": "^2.0.5",
       "@types/node": "^20.2.0",
       "@types/prettier": "^2.7.2",

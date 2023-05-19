@@ -1,4 +1,4 @@
-import { copiedNodeHtml, nodeMaps, showMode } from '../states'
+import { copiedNodeHtml, currentMode, nodeMaps, showMode } from '../states'
 import { exportZip } from '../utils/exportZip'
 
 export const handleGenCode = () => {
@@ -20,6 +20,15 @@ export const handleShowCodeBtnClick = () => {
 
 export const handleShowPlaygroundBtnClick = () => {
    showMode.value = 'playground'
+}
+
+export const handleSettingsBtnClick = () => {
+   currentMode.value = showMode.value
+   showMode.value = 'settings'
+}
+
+export const handleBackFromSettingsBtnClick = () => {
+   showMode.value = currentMode.value
 }
 
 interface UrlParts {

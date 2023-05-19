@@ -51,6 +51,6 @@ pluginApi.on('selectionchange', () => {
 //====================== UI 事件处理 * 结束 ======================
 
 pluginApi.showUI(__html__, {
-   height: 600,
-   width: 800,
+   height: 785,
+   width: 840,
 })

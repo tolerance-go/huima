@@ -1,11 +1,18 @@
 import { createApp } from 'vue'
 import {
+   handleBackFromSettingsBtnClick,
    handleExportBtnClick,
    handleGenCode,
+   handleSettingsBtnClick,
    handleShowCodeBtnClick,
    handleShowPlaygroundBtnClick,
 } from './methods'
-import { baseRendererNodeHtml, copiedNodeHtml, nodeMaps } from './states/index'
+import {
+   baseRendererNodeHtml,
+   copiedNodeHtml,
+   currentMode,
+   nodeMaps,
+} from './states'
 
 import './styles.css'
 
@@ -15,9 +22,10 @@ import { createHTML } from './createHTML'
 import {
    baseCopiedNodeHtml,
    copyBtnText,
-   hoverCodePlayground,
+   hoverCodeArea,
    selectedNodeId,
    selectedNodeName,
+   settings,
    showMode,
    shownNodeHtml,
 } from './states'
@@ -52,7 +60,11 @@ createApp({
          copyBtnText,
          showMode,
          shownNodeHtml,
-         hoverCodePlayground,
+         hoverCodeArea,
+         settings,
+         currentMode,
+         handleBackFromSettingsBtnClick,
+         handleSettingsBtnClick,
          handleGenCode,
          handleShowCodeBtnClick,
          handleShowPlaygroundBtnClick,
