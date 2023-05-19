@@ -47,23 +47,34 @@ export type Settings = BaseSettings & {
    enablePxConvert: boolean
 }
 
-export const defaultSettings = reactive<BaseSettings>({
-   uiHeaderHeight: DEFAULT_UI_HEADER_HEIGHT,
-   uiViewportSize: {
-      width: VIEWPORT_WIDTH,
-      height: VIEWPORT_HEIGHT,
-   },
-   pxConvertConfigs: {
-      pxConvertFormat: DEFAULT_PX_CONVERT_FORMAT,
-      viewportWidth: VIEWPORT_WIDTH,
-      pxConvertBaseFontSize: DEFAULT_BASE_FONT_SIZE,
-   },
-})
+// 用函数返回新对象，避免对象类型的 value 会共享
+export const getDefaultSettings = (): BaseSettings => {
+   return {
+      uiHeaderHeight: DEFAULT_UI_HEADER_HEIGHT,
+      uiViewportSize: {
+         width: VIEWPORT_WIDTH,
+         height: VIEWPORT_HEIGHT,
+      },
+      pxConvertConfigs: {
+         pxConvertFormat: DEFAULT_PX_CONVERT_FORMAT,
+         viewportWidth: VIEWPORT_WIDTH,
+         pxConvertBaseFontSize: DEFAULT_BASE_FONT_SIZE,
+      },
+   }
+}
 
-export const settings = reactive<Settings>({
-   ...defaultSettings,
-   enablePxConvert: false,
-})
+export const getSettings = (): Settings => {
+   return {
+      ...getDefaultSettings(),
+      enablePxConvert: false,
+   }
+}
+
+export const defaultSettings = reactive<BaseSettings>(getDefaultSettings())
+
+export const formSettings = reactive<Settings>(getSettings())
+
+export const settings = reactive<Settings>(getSettings())
 
 // export const showMode = ref<'code' | 'playground' | 'empty'>('code')
 // export const baseRendererNodeHtml = ref(`

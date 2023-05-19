@@ -101,6 +101,7 @@
 
                <svg
                   @click="handleBackFromSettingsBtnClick"
+                  @mousedown="handleBackFromSettingsBtnMouseDown"
                   v-if="showMode === 'settings'"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -149,154 +150,162 @@
                class="h-full px-6 py-10 overflow-auto"
             >
                <div class="w-full">
-                  <h2 class="text-2xl font-bold">Settings</h2>
-                  <div class="mt-8 max-w-md">
-                     <div class="grid grid-cols-1 gap-6">
-                        <h3 class="text-gray-700">基础</h3>
-                        <div class="flex gap-3">
-                           <label class="block flex-auto">
-                              <span class="text-gray-700">视口宽度</span>
-                              <input
-                                 @blur="handleViewportSizeChange"
-                                 v-model="settings.uiViewportSize.width"
-                                 type="number"
-                                 class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
-                                 :placeholder="defaultSettings.uiViewportSize.width"
-                              />
-                           </label>
-                           <label class="block flex-auto">
-                              <span class="text-gray-700"
-                                 >视口高度（不包括头部）</span
-                              >
-                              <input
-                                 @blur="handleViewportSizeChange"
-                                 v-model="settings.uiViewportSize.height"
-                                 type="number"
-                                 class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
-                                 :placeholder="defaultSettings.uiViewportSize.height"
-                              />
-                           </label>
-                        </div>
+                  <form @change="handleFormChange">
+                     <h2 class="text-2xl font-bold">Settings</h2>
+                     <div class="mt-8 max-w-md">
+                        <div class="grid grid-cols-1 gap-6">
+                           <h3 class="text-gray-700">基础</h3>
+                           <div class="flex gap-3">
+                              <label class="block flex-auto">
+                                 <span class="text-gray-700">视口宽度</span>
+                                 <input
+                                    @blur="handleViewportSizeChange"
+                                    v-model="formSettings.uiViewportSize.width"
+                                    type="number"
+                                    class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
+                                    :placeholder="defaultSettings.uiViewportSize.width"
+                                 />
+                              </label>
+                              <label class="block flex-auto">
+                                 <span class="text-gray-700"
+                                    >视口高度（不包括头部）</span
+                                 >
+                                 <input
+                                    @blur="handleViewportSizeChange"
+                                    v-model="formSettings.uiViewportSize.height"
+                                    type="number"
+                                    class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
+                                    :placeholder="defaultSettings.uiViewportSize.height"
+                                 />
+                              </label>
+                           </div>
 
-                        <h3 class="text-gray-700">导出</h3>
-                        <div class="block">
-                           <div class="mt-2">
-                              <div>
-                                 <label class="inline-flex items-center">
-                                    <input
-                                       v-model="settings.enablePxConvert"
-                                       type="checkbox"
-                                       class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
-                                    />
-                                    <span class="ml-2">启用 px 单位转换</span>
-                                 </label>
+                           <h3 class="text-gray-700">导出</h3>
+                           <div class="block">
+                              <div class="mt-2">
+                                 <div>
+                                    <label class="inline-flex items-center">
+                                       <input
+                                          v-model="formSettings.enablePxConvert"
+                                          type="checkbox"
+                                          class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
+                                       />
+                                       <span class="ml-2"
+                                          >启用 px 单位转换</span
+                                       >
+                                    </label>
+                                 </div>
                               </div>
                            </div>
-                        </div>
-                        <div
-                           class="grid grid-cols-1 gap-6 pl-6"
-                           v-show="settings.enablePxConvert"
-                        >
+                           <div
+                              class="grid grid-cols-1 gap-6 pl-6"
+                              v-show="formSettings.enablePxConvert"
+                           >
+                              <label class="block">
+                                 <span class="text-gray-700">目标格式</span>
+                                 <select
+                                    v-model="formSettings.pxConvertConfigs.pxConvertFormat"
+                                    class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
+                                 >
+                                    <option>rem</option>
+                                    <option>vw</option>
+                                 </select>
+                              </label>
+                              <label
+                                 v-show="formSettings.pxConvertConfigs.pxConvertFormat === 'vw'"
+                                 class="block"
+                              >
+                                 <span class="text-gray-700"
+                                    >设计稿视口宽度</span
+                                 >
+                                 <input
+                                    v-model="formSettings.pxConvertConfigs.viewportWidth"
+                                    type="number"
+                                    class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
+                                    :placeholder="defaultSettings.uiViewportSize.viewportWidth"
+                                 />
+                              </label>
+                              <label
+                                 v-show="formSettings.pxConvertConfigs.pxConvertFormat === 'rem'"
+                                 class="block"
+                              >
+                                 <span class="text-gray-700">基础字号大小</span>
+                                 <input
+                                    v-model="formSettings.pxConvertConfigs.pxConvertBaseFontSize"
+                                    type="number"
+                                    class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
+                                    :placeholder="defaultSettings.pxConvertConfigs.pxConvertBaseFontSize"
+                                 />
+                              </label>
+                           </div>
+                           <div class="block">
+                              <div class="mt-2">
+                                 <div>
+                                    <label class="inline-flex items-center">
+                                       <input
+                                          type="checkbox"
+                                          class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
+                                       />
+                                       <span class="ml-2"
+                                          >启用 CSS 转 Tailwindcss</span
+                                       >
+                                    </label>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="block">
+                              <div class="mt-2">
+                                 <div>
+                                    <label class="inline-flex items-center">
+                                       <input
+                                          type="checkbox"
+                                          class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
+                                       />
+                                       <span class="ml-2">启用图片压缩</span>
+                                    </label>
+                                 </div>
+                              </div>
+                           </div>
                            <label class="block">
-                              <span class="text-gray-700">目标格式</span>
+                              <span class="text-gray-700"
+                                 >压缩率（越高则图片大小越小，清晰度越低）</span
+                              >
                               <select
-                                 v-model="settings.pxConvertConfigs.pxConvertFormat"
                                  class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
                               >
-                                 <option>rem</option>
-                                 <option>vw</option>
+                                 <option>高</option>
+                                 <option>中</option>
+                                 <option>低</option>
                               </select>
                            </label>
-                           <label
-                              v-show="settings.pxConvertConfigs.pxConvertFormat === 'vw'"
-                              class="block"
-                           >
-                              <span class="text-gray-700">设计稿视口宽度</span>
+                           <div class="block">
+                              <div class="mt-2">
+                                 <div>
+                                    <label class="inline-flex items-center">
+                                       <input
+                                          type="checkbox"
+                                          class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
+                                       />
+                                       <span class="ml-2"
+                                          >启用图片转 base64</span
+                                       >
+                                    </label>
+                                 </div>
+                              </div>
+                           </div>
+                           <label class="block">
+                              <span class="text-gray-700"
+                                 >图片大小阈值（小于该值的图片将自动转换）</span
+                              >
                               <input
-                                 v-model="settings.pxConvertConfigs.viewportWidth"
                                  type="number"
                                  class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
-                                 :placeholder="defaultSettings.uiViewportSize.viewportWidth"
-                              />
-                           </label>
-                           <label
-                              v-show="settings.pxConvertConfigs.pxConvertFormat === 'rem'"
-                              class="block"
-                           >
-                              <span class="text-gray-700">基础字号大小</span>
-                              <input
-                                 v-model="settings.pxConvertConfigs.pxConvertBaseFontSize"
-                                 type="number"
-                                 class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
-                                 :placeholder="defaultSettings.pxConvertConfigs.pxConvertBaseFontSize"
+                                 placeholder="10kb"
                               />
                            </label>
                         </div>
-                        <div class="block">
-                           <div class="mt-2">
-                              <div>
-                                 <label class="inline-flex items-center">
-                                    <input
-                                       type="checkbox"
-                                       class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
-                                    />
-                                    <span class="ml-2"
-                                       >启用 CSS 转 Tailwindcss</span
-                                    >
-                                 </label>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="block">
-                           <div class="mt-2">
-                              <div>
-                                 <label class="inline-flex items-center">
-                                    <input
-                                       type="checkbox"
-                                       class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
-                                    />
-                                    <span class="ml-2">启用图片压缩</span>
-                                 </label>
-                              </div>
-                           </div>
-                        </div>
-                        <label class="block">
-                           <span class="text-gray-700"
-                              >压缩率（越高则图片大小越小，清晰度越低）</span
-                           >
-                           <select
-                              class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
-                           >
-                              <option>高</option>
-                              <option>中</option>
-                              <option>低</option>
-                           </select>
-                        </label>
-                        <div class="block">
-                           <div class="mt-2">
-                              <div>
-                                 <label class="inline-flex items-center">
-                                    <input
-                                       type="checkbox"
-                                       class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
-                                    />
-                                    <span class="ml-2">启用图片转 base64</span>
-                                 </label>
-                              </div>
-                           </div>
-                        </div>
-                        <label class="block">
-                           <span class="text-gray-700"
-                              >图片大小阈值（小于该值的图片将自动转换）</span
-                           >
-                           <input
-                              type="number"
-                              class="mt-1 block w-full rounded-md border-transparent bg-gray-100 focus:border-gray-500 focus:bg-white focus:ring-0"
-                              placeholder="10kb"
-                           />
-                        </label>
                      </div>
-                  </div>
+                  </form>
                </div>
             </div>
             <div

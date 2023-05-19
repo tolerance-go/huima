@@ -1,8 +1,10 @@
 import { DEFAULT_UI_HEADER_HEIGHT } from '@huima/utils'
+import debounce from 'lodash.debounce'
 import { VIEWPORT_HEIGHT, VIEWPORT_WIDTH } from '../constants'
 import {
    copiedNodeHtml,
    currentMode,
+   formSettings,
    nodeMaps,
    settings,
    showMode,
@@ -101,9 +103,9 @@ export const handleViewportSizeChange = () => {
          pluginMessage: {
             type: 'resize',
             payload: {
-               width: settings.uiViewportSize.width ?? VIEWPORT_WIDTH,
+               width: formSettings.uiViewportSize.width ?? VIEWPORT_WIDTH,
                height:
-                  (settings.uiViewportSize.height ?? VIEWPORT_HEIGHT) +
+                  (formSettings.uiViewportSize.height ?? VIEWPORT_HEIGHT) +
                   DEFAULT_UI_HEADER_HEIGHT,
             },
          },
@@ -131,3 +133,7 @@ export const convertPxValueToRelative = (value: number) => {
 
    return `${value}px`
 }
+
+export const handleFormChange = debounce(() => {
+   Object.assign(settings, formSettings)
+}, 350)

@@ -8,10 +8,12 @@ import {
    handleShowPlaygroundBtnClick,
    handleViewportSizeChange,
 } from './methods'
+import { handleFormChange } from './methods/index'
 import {
    baseRendererNodeHtml,
    copiedNodeHtml,
    currentMode,
+   formSettings,
    nodeMaps,
    rendererNodeHtml,
    selectedNodeTree,
@@ -71,6 +73,8 @@ createApp({
          settings,
          defaultSettings,
          currentMode,
+         formSettings,
+         handleFormChange,
          handleViewportSizeChange,
          handleBackFromSettingsBtnClick,
          handleSettingsBtnClick,
