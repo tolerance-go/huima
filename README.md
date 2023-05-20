@@ -2,7 +2,9 @@
 
 [中文](https://github.com/tolerance-go/huima/blob/main/README.zh-CN.md)
 
-> A small plug-in that seamlessly connects figma design resources and code, welcome to build together!ヾ(@^▽^@)ノ
+> Rapidly export designs to production-ready code
+
+The `huima` plug-in helps you export existing design resources as UI-consistent, clean and tidy front-end application code, which is generated from 0 to 1 extremely quickly
 
 ## Features
 
