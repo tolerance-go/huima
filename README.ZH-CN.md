@@ -11,6 +11,6 @@
 -  [x] 支持 Figma 组件和实例类型转换
 -  [x] 支持代码复制及资源导出
 -  [x] 支持 px 单位到 rem，vw 的转换
--  [ ] 支持转换 tailwindcss 相关类名
+-  [x] 支持转换 tailwindcss 相关类名
 
 ![](cover.jpg)

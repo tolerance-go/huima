@@ -1,4 +1,3 @@
--  支持启用 CSS 转 Tailwindcss
 -  支持启用图片压缩
 -  支持启用图片转 base64
 
@@ -14,3 +13,7 @@ next
 -  [x] feat: 支持调整视口尺寸
 -  [x] feat: 支持启用 px 单位转换
 -  [x] fix: 修复 playground 全局样式污染问题
+
+2023/5/20
+
+-  [x] feat: 支持启用 CSS 转 Tailwindcss

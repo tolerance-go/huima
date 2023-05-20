@@ -13,6 +13,6 @@
 -  [x] Support image basic style conversion
 -  [x] Support for basic style conversion of components and instances
 -  [x] Support for copying code and exporting image resources
--  [ ] Support conversion of tailwindcss related class names
+-  [x] Support conversion of tailwindcss related class names
 
 ![](cover.jpg)
