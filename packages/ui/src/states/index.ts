@@ -14,11 +14,12 @@ import { normalizeCss } from '../constants/normalize.css'
 import { convertInlineStyleToTailwindcss } from '../convertInlineStyleToTailwindcss'
 import { createHTML } from '../createHTML'
 import { convertPxValueToRelative } from '../methods'
+import { usedI18n } from './i18n'
 
-export const selectedNodeName = ref('未选择')
-export const selectedNodeId = ref('未知')
+export const selectedNodeName = ref(usedI18n.value.notSelectedNodeLabel)
+export const selectedNodeId = ref(usedI18n.value.unknownIdLabel)
 
-export const copyBtnText = ref('复制')
+export const copyBtnText = ref(usedI18n.value.copyBtnText)
 
 export const showMode = ref<'code' | 'playground' | 'settings' | 'empty'>(
    'empty',

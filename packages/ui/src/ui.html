@@ -66,7 +66,7 @@
                   @click="handleGenCode"
                   class="rounded-md bg-gray-950 px-4 py-2 text-white text-sm"
                >
-                  生成
+                  {{usedI18n.generate}}
                </button>
 
                <svg
@@ -162,13 +162,19 @@
             >
                <div class="w-full">
                   <form @change="handleFormChange">
-                     <h2 class="text-2xl font-bold">配置</h2>
-                     <div class="mt-8 max-w-md">
+                     <h2 class="text-2xl font-bold">
+                        {{usedI18n.configureLabel}}
+                     </h2>
+                     <div class="mt-8 max-w-lg">
                         <div class="grid grid-cols-1 gap-6">
-                           <h3 class="text-gray-700">基础</h3>
+                           <h3 class="text-gray-700">
+                              {{usedI18n.basicsLabel}}
+                           </h3>
                            <div class="flex gap-3">
                               <label class="block flex-auto">
-                                 <span class="text-gray-700">视口宽度</span>
+                                 <span class="text-gray-700"
+                                    >{{usedI18n.viewportWidthLabel}}</span
+                                 >
                                  <input
                                     @blur="handleViewportSizeChange"
                                     v-model="formSettings.uiViewportSize.width"
@@ -179,7 +185,7 @@
                               </label>
                               <label class="block flex-auto">
                                  <span class="text-gray-700"
-                                    >视口高度（不包括头部）</span
+                                    >{{usedI18n.viewportHeightLabel}}</span
                                  >
                                  <input
                                     @blur="handleViewportSizeChange"
@@ -191,7 +197,9 @@
                               </label>
                            </div>
 
-                           <h3 class="text-gray-700">导出</h3>
+                           <h3 class="text-gray-700">
+                              {{usedI18n.exportLabel}}
+                           </h3>
                            <div class="block">
                               <div class="mt-2">
                                  <div>
@@ -202,7 +210,7 @@
                                           class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
                                        />
                                        <span class="ml-2"
-                                          >启用 px 单位转换</span
+                                          >{{usedI18n.enablePxUnitConversion}}</span
                                        >
                                     </label>
                                  </div>
@@ -213,7 +221,9 @@
                               v-if="formSettings.enablePxConvert"
                            >
                               <label class="block">
-                                 <span class="text-gray-700">目标格式</span>
+                                 <span class="text-gray-700"
+                                    >{{usedI18n.targetFormat}}</span
+                                 >
                                  <select
                                     v-model="formSettings.pxConvertConfigs.pxConvertFormat"
                                     class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0"
@@ -227,7 +237,7 @@
                                  class="block"
                               >
                                  <span class="text-gray-700"
-                                    >设计稿视口宽度</span
+                                    >{{usedI18n.designDraftViewportWidth}}</span
                                  >
                                  <input
                                     v-model="formSettings.pxConvertConfigs.viewportWidth"
@@ -240,7 +250,9 @@
                                  v-if="formSettings.pxConvertConfigs.pxConvertFormat === 'rem'"
                                  class="block"
                               >
-                                 <span class="text-gray-700">基础字号大小</span>
+                                 <span class="text-gray-700"
+                                    >{{usedI18n.basicFontSize}}</span
+                                 >
                                  <input
                                     v-model="formSettings.pxConvertConfigs.pxConvertBaseFontSize"
                                     type="number"
@@ -259,7 +271,7 @@
                                           class="rounded border-transparent bg-gray-200 text-gray-700 focus:border-transparent focus:bg-gray-200 focus:ring-1 focus:ring-gray-500 focus:ring-offset-2"
                                        />
                                        <span class="ml-2"
-                                          >启用 CSS 转 Tailwindcss</span
+                                          >{{usedI18n.enableCssToTailwindCss}}</span
                                        >
                                     </label>
                                  </div>
@@ -325,7 +337,7 @@
                v-else-if="showMode === 'empty'"
                class="text-gray-600 h-full flex justify-center items-center italic text-lg"
             >
-               “请选择场景元素后，点击生成按钮”
+               {{usedI18n.pleaseSelect}}
             </div>
             <iframe
                v-else-if="showMode === 'playground'"
@@ -383,7 +395,7 @@
                            clip-rule="evenodd"
                         ></path>
                      </svg>
-                     导出
+                     {{ usedI18n.exportBtnText }}
                   </button>
                </div>
                <pre

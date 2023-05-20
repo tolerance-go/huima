@@ -18,6 +18,7 @@ import {
    rendererNodeHtml,
    selectedNodeTree,
 } from './states'
+import { i18n, usedI18n } from './states/i18n'
 
 import './styles.css'
 
@@ -61,6 +62,8 @@ createApp({
       whenSelectedNodeChangedAndChangeBaseCopiedNodeHtml()
 
       return {
+         i18n,
+         usedI18n,
          selectedNodeTree,
          selectedNodeName,
          selectedNodeId,
