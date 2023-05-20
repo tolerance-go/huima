@@ -7,7 +7,6 @@ export function filterObjFuncAndSymbol<T>(
    const result: Partial<NonFunctionProperties<T>> = {}
 
    for (const key in obj) {
-      console.log('key', key, key.startsWith('doc') ? key : 'no')
       if (filters?.includes(key)) {
          continue
       }

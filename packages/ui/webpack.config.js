@@ -61,6 +61,9 @@ module.exports = (env, argv) => {
             template: 'src/ui.html',
             filename: env.WEBPACK_SERVE ? 'index.html' : 'ui.html',
             inject: 'body',
+            templateParameters: {
+               IS_JSSJ: process.env.IS_JSSJ,
+            },
          }),
          new ScriptExtHtmlWebpackPlugin({
             inline: /ui.js$/, // 将匹配这个正则表达式的文件内联到 HTML 中

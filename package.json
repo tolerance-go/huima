@@ -6,15 +6,18 @@
    "author": "",
    "main": "code.js",
    "scripts": {
-      "build": "pnpm -r --parallel run build",
+      "build": "concurrently \"npm:build:*\"",
+      "build:figma": "pnpm -r --parallel run build",
       "build:jssj": "pnpm -r --parallel run build:jssj",
       "clean": "git clean -dfX",
-      "dev": "pnpm -r --parallel run dev",
+      "dev": "concurrently \"npm:dev:*\"",
+      "dev:figma": "pnpm -r --parallel run dev",
       "dev:jssj": "pnpm -r --parallel run dev:jssj",
       "format": "prettier '**/(*.{css,js,jsx,ts,tsx,md,mdx,vue,html}|package.json|tsconfig.json)' --write",
       "prepare": "husky install"
    },
    "devDependencies": {
+      "concurrently": "^8.0.1",
       "husky": "^8.0.3",
       "lint-staged": "^13.1.2",
       "prettier": "^2.8.3",

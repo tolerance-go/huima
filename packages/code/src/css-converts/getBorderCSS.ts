@@ -3,7 +3,12 @@ import { CSSStyle } from '../type'
 export function generateBorderCSS(
    node: Pick<
       FrameNode,
-      'strokes' | 'strokes' | 'strokeWeight' | 'strokeStyleId' | 'cornerRadius'
+      | 'strokes'
+      | 'strokes'
+      | 'strokeWeight'
+      | 'strokeStyleId'
+      | 'cornerRadius'
+      | 'dashPattern'
    >,
 ): CSSStyle {
    let cssProps: CSSStyle = {
@@ -18,26 +23,16 @@ export function generateBorderCSS(
                  stroke.color.g * 255,
               )}, ${Math.round(stroke.color.b * 255)}, ${stroke.opacity})`
             : ''
-      }
-      cssProps['border-width'] = node.strokeWeight
-         ? `${String(node.strokeWeight)}px`
-         : ''
-   }
 
-   if (node.strokeStyleId) {
-      switch (node.strokeStyleId) {
-         case 'SOLID':
-            cssProps['border-style'] = 'solid'
-            break
-         case 'DASHED':
+         if (node.dashPattern && node.dashPattern.length > 0) {
             cssProps['border-style'] = 'dashed'
-            break
-         case 'DOTTED':
-            cssProps['border-style'] = 'dotted'
-            break
-         default:
+         } else {
             cssProps['border-style'] = 'solid'
-            break
+         }
+
+         cssProps['border-width'] = node.strokeWeight
+            ? `${String(node.strokeWeight)}px`
+            : ''
       }
    }
 
