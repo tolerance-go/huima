@@ -1,3 +1,4 @@
+import { removeNullOrUndefined } from '@huima/utils'
 import { CSSStyle } from '../type'
 
 export function generateFlexLayoutCSS(
@@ -14,14 +15,14 @@ export function generateFlexLayoutCSS(
    >,
 ) {
    if (frameNode.layoutMode !== 'NONE') {
-      let css: CSSStyle = {
+      let css: CSSStyle = removeNullOrUndefined({
          display: 'flex',
          ['flex-direction']:
             frameNode.layoutMode.toLowerCase() === 'horizontal'
                ? 'row'
                : 'column',
          gap: frameNode.itemSpacing ? frameNode.itemSpacing + 'px' : undefined,
-      }
+      })
 
       // 对每个 padding 属性进行单独的设置
       css['padding-left'] = frameNode.paddingLeft + 'px'

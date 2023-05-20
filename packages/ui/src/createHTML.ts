@@ -4,29 +4,51 @@ import {
    NodeTree,
    StyleMeta,
 } from '@huima/types'
-import { removeUndefined } from '@huima/utils'
 import { getGroupChildrenPosition } from './getGroupChildrenPosition'
+
+type Options = {
+   getBgImgUrl?: (bgImgMeta: BackgroundImageMeta, node: NodeTree) => string
+   convertPxValue?: (value: number) => string
+   convertStyle?: (style: string) => {
+      className: string
+      inlineStyle: string
+   }
+}
 
 export function createHTML(
    node: NodeTree,
-   options?: {
-      getBgImgUrl?: (bgImgMeta: BackgroundImageMeta, node: NodeTree) => string
-      convertPxValue?: (value: number) => string
-   },
+   options?: Options,
    indent = 0,
 ): string {
-   const { convertPxValue } = options ?? {}
+   const { convertPxValue, convertStyle } = options ?? ({} as Options)
 
-   const getStyleString = (style: CSSStyle, styleMeta?: StyleMeta) => {
-      const styleString = Object.entries(
-         createStyle(removeUndefined(style), styleMeta),
-      )
-         .map(([key, value]) => `${key}: ${value};`)
+   const getStyleAttrs = (style: CSSStyle, styleMeta?: StyleMeta) => {
+      const { className, inlineStyle } = getStyle(style, styleMeta)
+
+      return [
+         className ? `class="${className}"` : null,
+         `style="${inlineStyle}"`,
+      ]
+         .filter(Boolean)
          .join(' ')
-      return styleString
    }
 
-   const createStyle = (nodeStyle: CSSStyle, styleMeta?: StyleMeta) => {
+   const getStyle = (style: CSSStyle, styleMeta?: StyleMeta) => {
+      const styleString = Object.entries(createCss(style, styleMeta))
+         .map(([key, value]) => `${key}: ${value};`)
+         .join(' ')
+
+      if (convertStyle) {
+         return convertStyle(styleString)
+      }
+
+      return {
+         className: '',
+         inlineStyle: styleString,
+      }
+   }
+
+   const createCss = (nodeStyle: CSSStyle, styleMeta?: StyleMeta) => {
       console.log('createStyle', nodeStyle)
       let style: CSSStyle = {}
       for (const key in nodeStyle) {
@@ -108,7 +130,7 @@ export function createHTML(
    if (node.element) {
       return node.element.replace(
          `<${node.tag}`,
-         `<${node.tag} style="${getStyleString(node.style, node.styleMeta)}"`,
+         `<${node.tag} ${getStyleAttrs(node.style, node.styleMeta)}`,
       )
    }
 
@@ -125,10 +147,7 @@ export function createHTML(
             'layoutMode' in node.nodeInfo.parentNodeInfo &&
             node.nodeInfo.parentNodeInfo.layoutMode !== 'NONE')
       ) {
-         return `<${node.tag} style="${getStyleString(
-            node.style,
-            node.styleMeta,
-         )}">
+         return `<${node.tag} ${getStyleAttrs(node.style, node.styleMeta)}>
 ${node.children
    .map(
       (child) =>
@@ -160,7 +179,7 @@ ${node.children
       return childrenString
    }
 
-   return `<${node.tag} style="${getStyleString(node.style, node.styleMeta)}">
+   return `<${node.tag} ${getStyleAttrs(node.style, node.styleMeta)}>
 ${node.textContent ?? ''}
 ${childrenString}
 </${node.tag}>`

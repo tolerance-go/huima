@@ -10,9 +10,10 @@ import {
    VIEWPORT_HEIGHT,
    VIEWPORT_WIDTH,
 } from '../constants'
+import { normalizeCss } from '../constants/normalize.css'
+import { convertInlineStyleToTailwindcss } from '../convertInlineStyleToTailwindcss'
 import { createHTML } from '../createHTML'
 import { convertPxValueToRelative } from '../methods'
-import { normalizeCss } from './normalize.css'
 
 export const selectedNodeName = ref('未选择')
 export const selectedNodeId = ref('未知')
@@ -31,7 +32,7 @@ export const hoverCodeArea = ref(false)
 // 跳转 settings 前的 mode 状态
 export const currentMode = ref<typeof showMode.value>(showMode.value)
 
-export type BaseSettings = {
+export type FormSettings = {
    uiHeaderHeight: number
    uiViewportSize: {
       width: number
@@ -42,14 +43,12 @@ export type BaseSettings = {
       viewportWidth: number
       pxConvertBaseFontSize: number
    }
-}
-
-export type Settings = BaseSettings & {
    enablePxConvert: boolean
+   enableTailwindcss: boolean
 }
 
 // 用函数返回新对象，避免对象类型的 value 会共享
-export const getDefaultSettings = (): BaseSettings => {
+export const getDefaultSettings = (): FormSettings => {
    return {
       uiHeaderHeight: DEFAULT_UI_HEADER_HEIGHT,
       uiViewportSize: {
@@ -61,21 +60,16 @@ export const getDefaultSettings = (): BaseSettings => {
          viewportWidth: VIEWPORT_WIDTH,
          pxConvertBaseFontSize: DEFAULT_BASE_FONT_SIZE,
       },
-   }
-}
-
-export const getSettings = (): Settings => {
-   return {
-      ...getDefaultSettings(),
       enablePxConvert: false,
+      enableTailwindcss: false,
    }
 }
 
-export const defaultSettings = reactive<BaseSettings>(getDefaultSettings())
+export const defaultSettings = reactive<FormSettings>(getDefaultSettings())
 
-export const formSettings = reactive<Settings>(getSettings())
+export const formSettings = reactive<FormSettings>(getDefaultSettings())
 
-export const settings = reactive<Settings>(getSettings())
+export const settings = reactive<FormSettings>(getDefaultSettings())
 
 // export const showMode = ref<'code' | 'playground' | 'empty'>('code')
 // export const baseRendererNodeHtml = ref(`
@@ -133,6 +127,12 @@ export const baseCopiedNodeHtml = computed(() => {
             }.${backgroundImageMeta.backgroundImageExtension}`
          },
          convertPxValue: convertPxValueToRelative,
+         convertStyle: (inlineStyle) => {
+            if (settings.enableTailwindcss) {
+               return convertInlineStyleToTailwindcss(inlineStyle)
+            }
+            return { inlineStyle, className: '' }
+         },
       })
 
       return result
