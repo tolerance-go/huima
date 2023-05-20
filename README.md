@@ -4,13 +4,13 @@
 
 [中文](https://github.com/tolerance-go/huima/blob/main/README.zh-CN.md)
 
-> Instantly export designs into production-ready code
+> Translate designs into production-ready code at breakneck speed
 
-> Recently, have you been swamped by AIGC, with a plethora of design content emerging in heaps? Are you still exporting design annotations and slicing images? `huima` can assist you in converting designs into UI-consistent, clean, and tidy interface code (supports responsive units and tailwindcss conversion) with just one click. We've launched corresponding plugins for Figma and real-time design, allowing front-end developers to bid farewell to the tedious task of comparing and restoring designs, and focus on dynamic design development. Why not give it a try? We're currently in the beta testing phase, and you're welcome to join our discussion group by scanning the QR code. The code is open source, and we welcome contributions!
+> Have you been overwhelmed by AIGC recently, with piles of design content appearing massively? Still exporting design annotations and slices? `huima` can help you convert designs into consistent, clean, and tidy interface code (supporting responsive units and tailwindcss conversion) with just one click. We've launched related plugins for Figma and Jishisheji, allowing front-end developers to bid farewell to tedious design comparison and restoration work, and to focus on dynamic design development. Give it a try right now! We're currently in the beta testing phase and invite you to join our discussion group by scanning the QR code. The code is open source, and we welcome everyone to contribute and build together!
 
 <img src="qr-code.png" width="150" height="150">
 
-The `huima` plugin helps you export existing design resources into UI-consistent, clean, and neat front-end application code, enabling you to quickly generate from 0 to 1.
+the `huima` plugin helps you export existing design assets into consistent, clean, and tidy frontend application code, enabling you to generate from 0 to 1 at lightning speed
 
 ## Plugins
 
@@ -18,14 +18,14 @@ The `huima` plugin helps you export existing design resources into UI-consistent
 
 ## Features
 
--  [x] Support for basic style conversion of text and images
--  [x] Support for basic style conversion of geometric shapes like Rectangle, Ellipse, Vector, etc.
--  [x] Support for basic style conversion of Group, Frame layouts
--  [x] Support for AutoLayout to Flex style conversion
--  [x] Support for conversion of Figma components and instance types
--  [x] Support for code copying and resource export
--  [x] Support for conversion of px units to rem, vw
--  [x] Support for conversion to tailwindcss-related class names
+-  [x] Supports conversion of basic styles for text and images
+-  [x] Supports conversion of basic styles for geometric shapes like RECTANGLE, ELLIPSE, Vector, etc.
+-  [x] Supports conversion of basic styles for Group and Frame layouts
+-  [x] Supports conversion of AutoLayout to Flex styles
+-  [x] Supports conversion of Figma components and instance types
+-  [x] Supports code copy and resource export
+-  [x] Supports conversion of px units to rem, vw
+-  [x] Supports conversion of tailwindcss-related class names
 
 ## Test Cases
 
