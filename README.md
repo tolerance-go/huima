@@ -10,6 +10,10 @@
 
 The `huima` plugin helps you export existing design resources into UI-consistent, clean, and neat front-end application code, enabling you to quickly generate from 0 to 1.
 
+## Plugins
+
+-  [figma](https://www.figma.com/community/plugin/1239442570532327240)
+
 ## Features
 
 Support for basic style conversion of text and images
