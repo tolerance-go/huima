@@ -18,14 +18,14 @@ The `huima` plugin helps you export existing design resources into UI-consistent
 
 ## Features
 
-Support for basic style conversion of text and images
-Support for basic style conversion of geometric shapes like Rectangle, Ellipse, Vector, etc.
-Support for basic style conversion of Group, Frame layouts
-Support for AutoLayout to Flex style conversion
-Support for conversion of Figma components and instance types
-Support for code copying and resource export
-Support for conversion of px units to rem, vw
-Support for conversion to tailwindcss-related class names
+-  [x] Support for basic style conversion of text and images
+-  [x] Support for basic style conversion of geometric shapes like Rectangle, Ellipse, Vector, etc.
+-  [x] Support for basic style conversion of Group, Frame layouts
+-  [x] Support for AutoLayout to Flex style conversion
+-  [x] Support for conversion of Figma components and instance types
+-  [x] Support for code copying and resource export
+-  [x] Support for conversion of px units to rem, vw
+-  [x] Support for conversion to tailwindcss-related class names
 
 ## Test Cases
 
