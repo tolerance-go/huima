@@ -1,4 +1,3 @@
-import { RemoveNullOrUndefined } from '@huima/utils'
 import { getBoxSizing } from '../css-converts/getBoxSizing'
 import { getLayoutCSS } from '../css-converts/getLayoutCSS'
 import { getSizeCSS } from '../css-converts/getSizeCSS'
@@ -23,11 +22,10 @@ export async function createNodeTree(
 
    const nodeInfo = getBaseNodeInfo(sceneNode, parentNodeInfo, visible, level)
 
-   const layoutCss = getLayoutCSS(sceneNode, nodeInfo, level)
    const baseStyle: CSSStyle = {
       ...getBoxSizing(),
       ...getSizeCSS(sceneNode),
-      ...(layoutCss as RemoveNullOrUndefined<typeof layoutCss>),
+      ...getLayoutCSS(sceneNode, nodeInfo, level),
    }
 
    const children: NodeTree[] =

@@ -1,7 +1,7 @@
 import './global'
 
-// TODO: 设置 CSSProperty 的类型
-export type CSSStyle = Record<string, string | number>
+// TODO: 设置 CSSProperty 的类型?
+export type CSSStyle = Record<string, string | number | undefined | null>
 
 export type BackgroundImageMeta = {
    backgroundImageBytes: ArrayBuffer

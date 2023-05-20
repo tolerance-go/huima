@@ -4,6 +4,7 @@ import {
    NodeTree,
    StyleMeta,
 } from '@huima/types'
+import { RemoveNullOrUndefined } from '@huima/utils'
 import { getGroupChildrenPosition } from './getGroupChildrenPosition'
 
 type Options = {
@@ -48,11 +49,18 @@ export function createHTML(
       }
    }
 
-   const createCss = (nodeStyle: CSSStyle, styleMeta?: StyleMeta) => {
+   const createCss = (
+      nodeStyle: CSSStyle,
+      styleMeta?: StyleMeta,
+   ): RemoveNullOrUndefined<CSSStyle> => {
       console.log('createStyle', nodeStyle)
       let style: CSSStyle = {}
       for (const key in nodeStyle) {
          const value = nodeStyle[key]
+
+         if (value === undefined || value === null) {
+            continue
+         }
 
          if (convertPxValue) {
             // 判断 value 是否是 px 值
@@ -120,7 +128,7 @@ export function createHTML(
          style[key] = nodeStyle[key]
       }
 
-      return style
+      return style as RemoveNullOrUndefined<CSSStyle>
    }
 
    console.log('createHTML', node)

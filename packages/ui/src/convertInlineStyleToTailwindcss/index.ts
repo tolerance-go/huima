@@ -1,4 +1,5 @@
 import { CSSStyle } from '@huima/types'
+import { RemoveNullOrUndefined } from '@huima/utils'
 
 const tailwindMapping = {
    'background-color': (value: string | number, cssStyle: CSSStyle) =>
@@ -43,14 +44,14 @@ export const convertInlineStyleToTailwindcss = (styleString: string) => {
    let remainingStyles: string = ''
 
    // 转换样式字符串为对象
-   let cssStyle: CSSStyle = styleString
+   let cssStyle = styleString
       .split(';')
       .filter((style) => style.trim() !== '')
       .reduce((acc, curr) => {
          let [key, value] = curr.split(':').map((v) => v.trim())
          acc[key] = value
          return acc
-      }, {} as CSSStyle)
+      }, {} as RemoveNullOrUndefined<CSSStyle>)
 
    Object.keys(cssStyle).forEach((key) => {
       if (key in tailwindMapping) {
