@@ -1,18 +1,22 @@
 import { Buffer } from 'buffer'
+import { getLayoutCSS } from '../css-converts/getLayoutCSS'
 import { isJsDesign } from '../pluginApi'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 
-async function exportSVGString(node: VectorNode | BooleanOperationNode) {
+async function exportSVGString(
+   node: VectorNode | BooleanOperationNode | PolygonNode | StarNode | LineNode,
+) {
    const svgUint8Array = await node.exportAsync({ format: 'SVG' })
    const svgString = Buffer.from(svgUint8Array).toString()
    return svgString
 }
 
 export const createVectorNode = async (
-   node: VectorNode | BooleanOperationNode,
+   node: VectorNode | BooleanOperationNode | PolygonNode | StarNode | LineNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
    children: NodeTree[],
+   level: number,
 ): Promise<NodeTree> => {
    console.log('createVectorNode', node)
 
@@ -26,9 +30,7 @@ export const createVectorNode = async (
 
    let tag = 'svg'
    let style = {
-      ...baseStyle,
-      width: node.width + 'px',
-      height: node.height + 'px',
+      ...getLayoutCSS(node, nodeInfo, level),
    }
 
    return {

@@ -54,9 +54,12 @@ export async function createNodeTree(
       return createRectangleNode(sceneNode, baseStyle, nodeInfo, children)
    } else if (
       sceneNode.type === 'VECTOR' ||
-      sceneNode.type === 'BOOLEAN_OPERATION'
+      sceneNode.type === 'BOOLEAN_OPERATION' ||
+      sceneNode.type === 'POLYGON' ||
+      sceneNode.type === 'STAR' ||
+      sceneNode.type === 'LINE'
    ) {
-      return createVectorNode(sceneNode, baseStyle, nodeInfo, children)
+      return createVectorNode(sceneNode, baseStyle, nodeInfo, children, level)
    } else if (sceneNode.type === 'ELLIPSE') {
       return createEllipseNode(sceneNode, baseStyle, nodeInfo, children)
    } else if (sceneNode.type === 'COMPONENT') {
@@ -64,7 +67,6 @@ export async function createNodeTree(
    } else if (sceneNode.type === 'INSTANCE') {
       return createInstanceNode(sceneNode, baseStyle, nodeInfo, children)
    }
-
    return {
       tag: '',
       nodeInfo,
