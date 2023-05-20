@@ -17,3 +17,7 @@
 -  [x] feat: 支持启用 CSS 转 Tailwindcss
 
 next
+
+2023/5/21
+
+-  [x] feat: 支持界面提示语国际化
