@@ -1,5 +1,7 @@
 # Huima
 
+[中文](https://github.com/tolerance-go/huima/blob/main/README.zh-CN.md)
+
 > Instantly export designs into production-ready code
 
 > Have you recently been bombarded by AIGC with piles of design content appearing endlessly, and still exporting design annotations and cutting maps? `huima` can help you convert designs into UI-consistent, clean and tidy interface code (supporting responsive units and tailwindcss conversion) with just one click. We have launched corresponding plugins for figma and jssj design, allowing developers to bid farewell to cumbersome design comparison and restoration. Give it a try, we're currently in the beta testing phase. You're welcome to join the discussion group by scanning the QR code. The code is open source and contributions are welcome!
