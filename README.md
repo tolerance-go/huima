@@ -1,5 +1,7 @@
 # Huima
 
+![](cover.jpg)
+
 [中文](https://github.com/tolerance-go/huima/blob/main/README.zh-CN.md)
 
 > Instantly export designs into production-ready code
@@ -28,5 +30,3 @@ Support for conversion to tailwindcss-related class names
 ## Test Cases
 
 -  https://www.figma.com/community/file/1241686726614575415
-
-![](cover.jpg)
