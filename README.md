@@ -4,7 +4,7 @@
 
 > Instantly export designs into production-ready code
 
-> Have you recently been bombarded by AIGC with piles of design content appearing endlessly, and still exporting design annotations and cutting maps? `huima` can help you convert designs into UI-consistent, clean and tidy interface code (supporting responsive units and tailwindcss conversion) with just one click. We have launched corresponding plugins for figma and jssj design, allowing developers to bid farewell to cumbersome design comparison and restoration. Give it a try, we're currently in the beta testing phase. You're welcome to join the discussion group by scanning the QR code. The code is open source and contributions are welcome!
+> Recently, have you been swamped by AIGC, with a plethora of design content emerging in heaps? Are you still exporting design annotations and slicing images? `huima` can assist you in converting designs into UI-consistent, clean, and tidy interface code (supports responsive units and tailwindcss conversion) with just one click. We've launched corresponding plugins for Figma and real-time design, allowing front-end developers to bid farewell to the tedious task of comparing and restoring designs, and focus on dynamic design development. Why not give it a try? We're currently in the beta testing phase, and you're welcome to join our discussion group by scanning the QR code. The code is open source, and we welcome contributions!
 
 <img src="qr-code.png" width="150" height="150">
 
