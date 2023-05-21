@@ -6,7 +6,7 @@
 
 > Translate designs into development-ready code at lightning speed
 
-> Have you been overwhelmed by AIGC recently, with piles of design content appearing massively? Still exporting design annotations and slices? `huima` can help you convert designs into consistent, clean, and tidy interface code (supporting responsive units and tailwindcss conversion) with just one click. We've launched related plugins for Figma and Jishisheji, allowing front-end developers to bid farewell to tedious design comparison and restoration work, and to focus on dynamic design development. Give it a try right now! We're currently in the beta testing phase and invite you to join our discussion group by scanning the QR code. The code is open source, and we welcome everyone to contribute and build together!
+> Have you been overwhelmed by AIGC recently, with piles of design content appearing massively? Still exporting design annotations and slices? `huima` can help you convert designs into consistent, clean, and tidy interface code (supporting responsive units and tailwindcss conversion) with just one click. We've launched related plugins for Figma and Jishisheji, allowing front-end developers to bid farewell to tedious static design comparison and restoration work, and to focus on dynamic design development. Give it a try right now! We're currently in the beta testing phase and invite you to join our discussion group by scanning the QR code. The code is open source, and we welcome everyone to contribute and build together!
 
 <img src="qr-code.png" width="150" height="150">
 
