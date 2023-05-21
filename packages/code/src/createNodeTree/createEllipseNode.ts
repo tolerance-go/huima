@@ -1,4 +1,5 @@
 import { getBackgroundColorCSS } from '../css-converts/getBackgroundColorCSS'
+import { getBackgroundImageCSS } from '../css-converts/getBackgroundImageCSS'
 import { generateBorderCSS } from '../css-converts/getBorderCSS'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 
@@ -8,7 +9,9 @@ export const createEllipseNode = async (
    nodeInfo: NodeInfo,
    children: NodeTree[],
 ): Promise<NodeTree> => {
-   console.log('createEllipseNode', node)
+   const { style: bgImgStyle, styleMeta } = await getBackgroundImageCSS(
+      node.fills,
+   )
 
    let tag = 'div'
    let style = {
@@ -17,6 +20,7 @@ export const createEllipseNode = async (
       height: node.height + 'px',
       ...getBackgroundColorCSS(node.fills),
       ...generateBorderCSS(node),
+      ...bgImgStyle,
       'border-radius': '100%',
    }
 
@@ -25,5 +29,6 @@ export const createEllipseNode = async (
       tag,
       style,
       children,
+      styleMeta,
    }
 }

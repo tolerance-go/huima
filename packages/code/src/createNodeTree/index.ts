@@ -1,4 +1,4 @@
-import { getBoxSizing } from '../css-converts/getBoxSizing'
+import { getBoxSizingCSS } from '../css-converts/getBoxSizingCSS'
 import { getLayoutCSS } from '../css-converts/getLayoutCSS'
 import { getSizeCSS } from '../css-converts/getSizeCSS'
 import { getBaseNodeInfo } from '../getBaseNodeInfo'
@@ -23,7 +23,7 @@ export async function createNodeTree(
    const nodeInfo = getBaseNodeInfo(sceneNode, parentNodeInfo, visible, level)
 
    const baseStyle: CSSStyle = {
-      ...getBoxSizing(),
+      ...getBoxSizingCSS(),
       ...getSizeCSS(sceneNode),
       ...getLayoutCSS(sceneNode, nodeInfo, level),
    }
@@ -44,7 +44,12 @@ export async function createNodeTree(
            )
          : []
 
-   if (sceneNode.type === 'FRAME') {
+   if (
+      'children' in sceneNode &&
+      sceneNode.children.some((item) => 'isMask' in item && item.isMask)
+   ) {
+      return createVectorNode(sceneNode, baseStyle, nodeInfo, children, level)
+   } else if (sceneNode.type === 'FRAME') {
       return createFrameNode(sceneNode, baseStyle, nodeInfo, children)
    } else if (sceneNode.type === 'GROUP') {
       return createGroupNode(sceneNode, baseStyle, nodeInfo, children)

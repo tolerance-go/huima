@@ -1,18 +1,30 @@
 import { Buffer } from 'buffer'
 import { getLayoutCSS } from '../css-converts/getLayoutCSS'
+import { getRotationCSS } from '../css-converts/getRotationCSS'
 import { isJsDesign } from '../pluginApi'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 
-async function exportSVGString(
-   node: VectorNode | BooleanOperationNode | PolygonNode | StarNode | LineNode,
-) {
+type SVGVectorNode =
+   | VectorNode
+   | BooleanOperationNode
+   | PolygonNode
+   | StarNode
+   | LineNode
+   | FrameNode
+   | GroupNode
+   | ComponentSetNode
+   | ComponentNode
+   | InstanceNode
+   | SectionNode
+
+async function exportSVGString(node: SVGVectorNode) {
    const svgUint8Array = await node.exportAsync({ format: 'SVG' })
    const svgString = Buffer.from(svgUint8Array).toString()
    return svgString
 }
 
 export const createVectorNode = async (
-   node: VectorNode | BooleanOperationNode | PolygonNode | StarNode | LineNode,
+   node: SVGVectorNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
    children: NodeTree[],
@@ -30,6 +42,7 @@ export const createVectorNode = async (
 
    let tag = 'svg'
    let style = {
+      ...('rotation' in node ? getRotationCSS(node) : undefined),
       ...getLayoutCSS(node, nodeInfo, level),
    }
 

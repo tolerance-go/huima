@@ -1,4 +1,6 @@
+import { getRotationCSS } from '../css-converts/getRotationCSS'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
+import { findSolidPaint } from '../utils/findSolidPaint'
 import { getFillSolidColor } from '../utils/getFillSolidColor'
 
 export const createTextNode = async (
@@ -7,8 +9,6 @@ export const createTextNode = async (
    nodeInfo: NodeInfo,
    children: NodeTree[],
 ): Promise<NodeTree> => {
-   console.log('createTextNode', node)
-
    let lineHeightStyle
    const lineHeight = node.lineHeight as LineHeight
    if (lineHeight.unit === 'PIXELS') {
@@ -35,9 +35,14 @@ export const createTextNode = async (
 
    let tag = 'span'
    let textContent = node.characters
+
+   const solidFill = findSolidPaint(node.fills)
+
    let style = {
       ...baseStyle,
       ...letterSpacingStyle,
+      ...getRotationCSS(node),
+
       'font-size': String(node.fontSize) + 'px',
       'font-weight': String(node.fontWeight),
       'line-height':
@@ -49,7 +54,7 @@ export const createTextNode = async (
          node.textAlignVertical === 'CENTER'
             ? 'middle'
             : node.textAlignVertical.toLowerCase(),
-      color: getFillSolidColor(node.fills),
+      color: solidFill ? getFillSolidColor(solidFill) : undefined,
       display: 'inline-block',
       'text-overflow': node.textAutoResize === 'TRUNCATE' ? 'ellipsis' : 'clip',
       'white-space': node.textAutoResize === 'TRUNCATE' ? 'nowrap' : 'normal',

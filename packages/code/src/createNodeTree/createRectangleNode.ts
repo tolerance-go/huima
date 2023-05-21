@@ -1,6 +1,7 @@
 import { getBackgroundColorCSS } from '../css-converts/getBackgroundColorCSS'
-import { generateBackgroundImageCSS } from '../css-converts/getBackgroundImageCSS'
+import { getBackgroundImageCSS } from '../css-converts/getBackgroundImageCSS'
 import { generateBorderCSS } from '../css-converts/getBorderCSS'
+import { getRotationCSS } from '../css-converts/getRotationCSS'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 
 export const createRectangleNode = async (
@@ -9,16 +10,14 @@ export const createRectangleNode = async (
    nodeInfo: NodeInfo,
    children: NodeTree[],
 ): Promise<NodeTree> => {
-   console.log('createRectangleNode', node)
-
-   const { style: bgStyle, styleMeta } = await generateBackgroundImageCSS(
-      node.fills,
-   )
+   const { style: bgStyle, styleMeta } = await getBackgroundImageCSS(node.fills)
    let tag = 'div'
    let style = {
       ...baseStyle,
       width: node.width + 'px',
       height: node.height + 'px',
+      ...getRotationCSS(node),
+
       ...generateBorderCSS(node),
       ...getBackgroundColorCSS(node.fills),
       ...bgStyle,

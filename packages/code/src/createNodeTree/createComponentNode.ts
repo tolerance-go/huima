@@ -1,5 +1,5 @@
 import { getBackgroundColorCSS } from '../css-converts/getBackgroundColorCSS'
-import { generateBackgroundImageCSS } from '../css-converts/getBackgroundImageCSS'
+import { getBackgroundImageCSS } from '../css-converts/getBackgroundImageCSS'
 import { generateBorderCSS } from '../css-converts/getBorderCSS'
 import { generateFlexLayoutCSS } from '../css-converts/getFlexLayoutCSS'
 import { generateOverflowCSS } from '../css-converts/getOverflowCSS'
@@ -11,11 +11,7 @@ export const createComponentNode = async (
    nodeInfo: NodeInfo,
    children: NodeTree[],
 ): Promise<NodeTree> => {
-   console.log('createComponentNode', node)
-
-   const { style: bgStyle, styleMeta } = await generateBackgroundImageCSS(
-      node.fills,
-   )
+   const { style: bgStyle, styleMeta } = await getBackgroundImageCSS(node.fills)
    let tag = 'div'
    let style = {
       ...baseStyle,
