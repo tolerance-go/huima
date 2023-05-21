@@ -1,4 +1,5 @@
 import {
+   Attrs,
    BackgroundImageMeta,
    CSSStyle,
    NodeTree,
@@ -22,6 +23,15 @@ export function createHTML(
    indent = 0,
 ): string {
    const { convertPxValue, convertStyle } = options ?? ({} as Options)
+
+   const getAttrsAttrs = (attrs?: Attrs) => {
+      if (!attrs) {
+         return ''
+      }
+      return Object.entries(attrs)
+         .map(([key, value]) => `${key}="${value}"`)
+         .join(' ')
+   }
 
    const getStyleAttrs = (style: CSSStyle, styleMeta?: StyleMeta) => {
       const { className, inlineStyle } = getStyle(style, styleMeta)
@@ -138,7 +148,10 @@ export function createHTML(
    if (node.element) {
       return node.element.replace(
          `<${node.tag}`,
-         `<${node.tag} ${getStyleAttrs(node.style, node.styleMeta)}`,
+         `<${node.tag} ${getStyleAttrs(
+            node.style,
+            node.styleMeta,
+         )} ${getAttrsAttrs(node.attrs)}`,
       )
    }
 
@@ -155,7 +168,10 @@ export function createHTML(
             'layoutMode' in node.nodeInfo.parentNodeInfo &&
             node.nodeInfo.parentNodeInfo.layoutMode !== 'NONE')
       ) {
-         return `<${node.tag} ${getStyleAttrs(node.style, node.styleMeta)}>
+         return `<${node.tag} ${getStyleAttrs(
+            node.style,
+            node.styleMeta,
+         )} ${getAttrsAttrs(node.attrs)}>
 ${node.children
    .map(
       (child) =>
@@ -187,7 +203,10 @@ ${node.children
       return childrenString
    }
 
-   return `<${node.tag} ${getStyleAttrs(node.style, node.styleMeta)}>
+   return `<${node.tag} ${getStyleAttrs(
+      node.style,
+      node.styleMeta,
+   )} ${getAttrsAttrs(node.attrs)}>
 ${node.textContent ?? ''}
 ${childrenString}
 </${node.tag}>`

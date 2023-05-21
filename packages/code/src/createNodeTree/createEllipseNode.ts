@@ -7,8 +7,9 @@ export const createEllipseNode = async (
    node: EllipseNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   children: NodeTree[],
+   getChildren: () => Promise<NodeTree[]>,
 ): Promise<NodeTree> => {
+   const children = await getChildren()
    const { style: bgImgStyle, styleMeta } = await getBackgroundImageCSS(
       node.fills,
    )

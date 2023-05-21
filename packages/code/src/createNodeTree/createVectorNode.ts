@@ -27,9 +27,10 @@ export const createVectorNode = async (
    node: SVGVectorNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   children: NodeTree[],
+   getChildren: () => Promise<NodeTree[]>,
    level: number,
 ): Promise<NodeTree> => {
+   const children = await getChildren()
    console.log('createVectorNode', node)
 
    // NOTE - 隐藏的元素导出会报错

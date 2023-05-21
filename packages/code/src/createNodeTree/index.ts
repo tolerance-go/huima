@@ -28,8 +28,8 @@ export async function createNodeTree(
       ...getLayoutCSS(sceneNode, nodeInfo, level),
    }
 
-   const children: NodeTree[] =
-      sceneNode.type === 'BOOLEAN_OPERATION'
+   const getChildren = async (): Promise<NodeTree[]> => {
+      return sceneNode.type === 'BOOLEAN_OPERATION'
          ? []
          : 'children' in sceneNode
          ? await Promise.all(
@@ -43,20 +43,27 @@ export async function createNodeTree(
               ),
            )
          : []
+   }
 
    if (
       'children' in sceneNode &&
       sceneNode.children.some((item) => 'isMask' in item && item.isMask)
    ) {
-      return createVectorNode(sceneNode, baseStyle, nodeInfo, children, level)
+      return createVectorNode(
+         sceneNode,
+         baseStyle,
+         nodeInfo,
+         async () => [],
+         level,
+      )
    } else if (sceneNode.type === 'FRAME') {
-      return createFrameNode(sceneNode, baseStyle, nodeInfo, children)
+      return createFrameNode(sceneNode, baseStyle, nodeInfo, getChildren)
    } else if (sceneNode.type === 'GROUP') {
-      return createGroupNode(sceneNode, baseStyle, nodeInfo, children)
+      return createGroupNode(sceneNode, baseStyle, nodeInfo, getChildren)
    } else if (sceneNode.type === 'TEXT') {
-      return createTextNode(sceneNode, baseStyle, nodeInfo, children)
+      return createTextNode(sceneNode, baseStyle, nodeInfo, getChildren)
    } else if (sceneNode.type === 'RECTANGLE') {
-      return createRectangleNode(sceneNode, baseStyle, nodeInfo, children)
+      return createRectangleNode(sceneNode, baseStyle, nodeInfo, getChildren)
    } else if (
       sceneNode.type === 'VECTOR' ||
       sceneNode.type === 'BOOLEAN_OPERATION' ||
@@ -64,18 +71,24 @@ export async function createNodeTree(
       sceneNode.type === 'STAR' ||
       sceneNode.type === 'LINE'
    ) {
-      return createVectorNode(sceneNode, baseStyle, nodeInfo, children, level)
+      return createVectorNode(
+         sceneNode,
+         baseStyle,
+         nodeInfo,
+         getChildren,
+         level,
+      )
    } else if (sceneNode.type === 'ELLIPSE') {
-      return createEllipseNode(sceneNode, baseStyle, nodeInfo, children)
+      return createEllipseNode(sceneNode, baseStyle, nodeInfo, getChildren)
    } else if (sceneNode.type === 'COMPONENT') {
-      return createComponentNode(sceneNode, baseStyle, nodeInfo, children)
+      return createComponentNode(sceneNode, baseStyle, nodeInfo, getChildren)
    } else if (sceneNode.type === 'INSTANCE') {
-      return createInstanceNode(sceneNode, baseStyle, nodeInfo, children)
+      return createInstanceNode(sceneNode, baseStyle, nodeInfo, getChildren)
    }
    return {
       tag: '',
       nodeInfo,
       style: baseStyle,
-      children,
+      children: await getChildren(),
    }
 }

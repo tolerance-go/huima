@@ -10,8 +10,9 @@ export const createFrameNode = async (
    node: FrameNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   children: NodeTree[],
+   getChildren: () => Promise<NodeTree[]>,
 ): Promise<NodeTree> => {
+   const children = await getChildren()
    const { style: bgStyle, styleMeta } = await getBackgroundImageCSS(node.fills)
 
    let tag = 'div'

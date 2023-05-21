@@ -33,9 +33,12 @@ export type NodeInfo = NonFunctionProperties<Omit<SceneNode, 'parent'>> & {
    parentNodeInfo?: NodeInfo
 }
 
+export type Attrs = Record<string, string | number | undefined | null>
+
 export interface NodeTree {
    tag: string
    style: CSSStyle
+   attrs?: Attrs
    styleMeta?: StyleMeta
    children: NodeTree[]
    textContent?: string

@@ -4,8 +4,9 @@ export const createGroupNode = async (
    node: GroupNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   children: NodeTree[],
+   getChildren: () => Promise<NodeTree[]>,
 ): Promise<NodeTree> => {
+   const children = await getChildren()
    console.log('createGroupNode', node)
 
    let tag = 'div'

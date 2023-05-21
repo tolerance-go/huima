@@ -8,8 +8,9 @@ export const createRectangleNode = async (
    node: RectangleNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   children: NodeTree[],
+   getChildren: () => Promise<NodeTree[]>,
 ): Promise<NodeTree> => {
+   const children = await getChildren()
    const { style: bgStyle, styleMeta } = await getBackgroundImageCSS(node.fills)
    let tag = 'div'
    let style = {
