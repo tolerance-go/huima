@@ -2,14 +2,14 @@ import {
    Attrs,
    BackgroundImageMeta,
    CSSStyle,
-   NodeTree,
+   DomNodeTree,
    StyleMeta,
 } from '@huima/types'
 import { RemoveNullOrUndefined } from '@huima/utils'
 import { getGroupChildrenPosition } from './getGroupChildrenPosition'
 
 type Options = {
-   getBgImgUrl?: (bgImgMeta: BackgroundImageMeta, node: NodeTree) => string
+   getBgImgUrl?: (bgImgMeta: BackgroundImageMeta, node: DomNodeTree) => string
    convertPxValue?: (value: number) => string
    convertStyle?: (style: string) => {
       className: string
@@ -18,7 +18,7 @@ type Options = {
 }
 
 export function createHTML(
-   node: NodeTree,
+   node: DomNodeTree,
    options?: Options,
    indent = 0,
 ): string {

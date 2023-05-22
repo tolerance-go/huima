@@ -1,14 +1,14 @@
 import { getBackgroundColorStyle } from '../css-converts/getBackgroundColorStyle'
 import { getBackgroundImageStyle } from '../css-converts/getBackgroundImageStyle'
 import { getBorderStyle } from '../css-converts/getBorderStyle'
-import { CSSStyle, NodeInfo, NodeTree } from '../type'
+import { CSSStyle, DomNodeTree, NodeInfo } from '../type'
 
 export const createEllipseNode = async (
    node: EllipseNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   getChildren: () => Promise<NodeTree[]>,
-): Promise<NodeTree> => {
+   getChildren: () => Promise<DomNodeTree[]>,
+): Promise<DomNodeTree> => {
    const children = await getChildren()
    const { style: bgImgStyle, styleMeta } = await getBackgroundImageStyle(
       node.fills,

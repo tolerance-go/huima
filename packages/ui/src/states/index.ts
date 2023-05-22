@@ -1,4 +1,4 @@
-import { NodeTree } from '@huima/types'
+import { DomNodeTree } from '@huima/types'
 import { DEFAULT_UI_HEADER_HEIGHT } from '@huima/utils'
 import parsers from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
@@ -24,9 +24,9 @@ export const copyBtnText = ref(usedI18n.value.copyBtnText)
 export const showMode = ref<'code' | 'playground' | 'settings' | 'empty'>(
    'empty',
 )
-export const selectedNodeTree = ref<NodeTree | null>(null)
+export const selectedNodeTree = ref<DomNodeTree | null>(null)
 
-export const nodeMaps = ref<Record<string, NodeTree>>({})
+export const nodeMaps = ref<Record<string, DomNodeTree>>({})
 
 export const hoverCodeArea = ref(false)
 

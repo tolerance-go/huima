@@ -1,9 +1,9 @@
-import { NodeTree } from '@huima/types'
+import { DomNodeTree } from '@huima/types'
 
 export function flattenNodes(
-   node: NodeTree,
-   map: Record<string, NodeTree> = {},
-): Record<string, NodeTree> {
+   node: DomNodeTree,
+   map: Record<string, DomNodeTree> = {},
+): Record<string, DomNodeTree> {
    if (map[node.nodeInfo.id]) {
       throw new Error(`Duplicate id found: ${node.nodeInfo.id}`)
    }

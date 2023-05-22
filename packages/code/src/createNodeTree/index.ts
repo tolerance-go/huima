@@ -2,7 +2,7 @@ import { getBoxSizingStyle } from '../css-converts/getBoxSizingStyle'
 import { getLayoutStyle } from '../css-converts/getLayoutStyle'
 import { getSizeStyle } from '../css-converts/getSizeStyle'
 import { getBaseNodeInfo } from '../getBaseNodeInfo'
-import { CSSStyle, NodeInfo, NodeTree } from '../type'
+import { CSSStyle, DomNodeTree, NodeInfo } from '../type'
 import { createComponentNode } from './createComponentNode'
 import { createEllipseNode } from './createEllipseNode'
 import { createFrameNode } from './createFrameNode'
@@ -17,7 +17,7 @@ export async function createNodeTree(
    parentNodeInfo: NodeInfo | undefined = undefined,
    visible: boolean = sceneNode.visible,
    level = 0,
-): Promise<NodeTree> {
+): Promise<DomNodeTree> {
    console.log('sceneNode', sceneNode, sceneNode.type)
 
    const nodeInfo = getBaseNodeInfo(sceneNode, parentNodeInfo, visible, level)
@@ -28,7 +28,7 @@ export async function createNodeTree(
       ...getLayoutStyle(sceneNode, level),
    }
 
-   const getChildren = async (): Promise<NodeTree[]> => {
+   const getChildren = async (): Promise<DomNodeTree[]> => {
       return sceneNode.type === 'BOOLEAN_OPERATION'
          ? []
          : 'children' in sceneNode

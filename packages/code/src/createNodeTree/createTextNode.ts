@@ -1,6 +1,6 @@
 import { getRotationStyle } from '../css-converts/getRotationStyle'
 import { getTextShadowStyle } from '../css-converts/getTextShadowStyle'
-import { Attrs, CSSStyle, NodeInfo, NodeTree } from '../type'
+import { Attrs, CSSStyle, DomNodeTree, NodeInfo } from '../type'
 import { findSolidPaint } from '../utils/findSolidPaint'
 import { getFillSolidColor } from '../utils/getFillSolidColor'
 
@@ -44,8 +44,8 @@ export const createTextNode = async (
    node: TextNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   getChildren: () => Promise<NodeTree[]>,
-): Promise<NodeTree> => {
+   getChildren: () => Promise<DomNodeTree[]>,
+): Promise<DomNodeTree> => {
    let children = []
 
    let segments = node.getStyledTextSegments([
@@ -138,7 +138,7 @@ export const createTextNode = async (
          'text-indent': indentationCSS,
       }
 
-      let subChildren: NodeTree[] = []
+      let subChildren: DomNodeTree[] = []
 
       if (listOptions && listOptions.type !== 'NONE') {
          tag = listOptions.type === 'UNORDERED' ? 'ul' : 'ol'
@@ -160,7 +160,7 @@ export const createTextNode = async (
                      style: {}, // 也可以设置为单独的样式
                      children: [],
                      textContent: item,
-                  } as NodeTree),
+                  } as DomNodeTree),
             )
       }
 

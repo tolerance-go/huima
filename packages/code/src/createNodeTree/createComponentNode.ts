@@ -3,14 +3,14 @@ import { getBackgroundImageStyle } from '../css-converts/getBackgroundImageStyle
 import { getBorderStyle } from '../css-converts/getBorderStyle'
 import { getFlexLayoutStyle } from '../css-converts/getFlexLayoutStyle'
 import { getOverflowStyle } from '../css-converts/getOverflowStyle'
-import { CSSStyle, NodeInfo, NodeTree } from '../type'
+import { CSSStyle, DomNodeTree, NodeInfo } from '../type'
 
 export const createComponentNode = async (
    node: ComponentNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   getChildren: () => Promise<NodeTree[]>,
-): Promise<NodeTree> => {
+   getChildren: () => Promise<DomNodeTree[]>,
+): Promise<DomNodeTree> => {
    const children = await getChildren()
    const { style: bgStyle, styleMeta } = await getBackgroundImageStyle(
       node.fills,

@@ -3,14 +3,14 @@ import { getBackgroundImageStyle } from '../css-converts/getBackgroundImageStyle
 import { getBorderStyle } from '../css-converts/getBorderStyle'
 import { getBoxShadowStyle } from '../css-converts/getBoxShadowStyle'
 import { getRotationStyle } from '../css-converts/getRotationStyle'
-import { CSSStyle, NodeInfo, NodeTree } from '../type'
+import { CSSStyle, DomNodeTree, NodeInfo } from '../type'
 
 export const createRectangleNode = async (
    node: RectangleNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   getChildren: () => Promise<NodeTree[]>,
-): Promise<NodeTree> => {
+   getChildren: () => Promise<DomNodeTree[]>,
+): Promise<DomNodeTree> => {
    const children = await getChildren()
    const { style: bgStyle, styleMeta } = await getBackgroundImageStyle(
       node.fills,

@@ -2,7 +2,7 @@ import { Buffer } from 'buffer'
 import { getLayoutStyle } from '../css-converts/getLayoutStyle'
 import { getRotationStyle } from '../css-converts/getRotationStyle'
 import { isJsDesign } from '../pluginApi'
-import { CSSStyle, NodeInfo, NodeTree } from '../type'
+import { CSSStyle, DomNodeTree, NodeInfo } from '../type'
 
 type SVGVectorNode =
    | VectorNode
@@ -27,9 +27,9 @@ export const createVectorNode = async (
    node: SVGVectorNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   getChildren: () => Promise<NodeTree[]>,
+   getChildren: () => Promise<DomNodeTree[]>,
    level: number,
-): Promise<NodeTree> => {
+): Promise<DomNodeTree> => {
    const children = await getChildren()
    console.log('createVectorNode', node)
 

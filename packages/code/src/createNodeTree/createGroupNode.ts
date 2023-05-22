@@ -1,11 +1,11 @@
-import { CSSStyle, NodeInfo, NodeTree } from '../type'
+import { CSSStyle, DomNodeTree, NodeInfo } from '../type'
 
 export const createGroupNode = async (
    node: GroupNode,
    baseStyle: CSSStyle,
    nodeInfo: NodeInfo,
-   getChildren: () => Promise<NodeTree[]>,
-): Promise<NodeTree> => {
+   getChildren: () => Promise<DomNodeTree[]>,
+): Promise<DomNodeTree> => {
    const children = await getChildren()
    console.log('createGroupNode', node)
 

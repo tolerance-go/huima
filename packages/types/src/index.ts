@@ -35,12 +35,12 @@ export type NodeInfo = NonFunctionProperties<Omit<SceneNode, 'parent'>> & {
 
 export type Attrs = Record<string, string | number | undefined | null>
 
-export interface NodeTree {
+export interface DomNodeTree {
    tag: string
    style: CSSStyle
    attrs?: Attrs
    styleMeta?: StyleMeta
-   children: NodeTree[]
+   children: DomNodeTree[]
    textContent?: string
    nodeInfo: NodeInfo
    element?: string
@@ -54,7 +54,7 @@ export type UIEvents = {
    startGen: {
       name: string
       id: string
-      nodeTree: NodeTree
+      nodeTree: DomNodeTree
    }
 }
 
