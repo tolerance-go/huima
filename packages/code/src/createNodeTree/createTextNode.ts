@@ -11,9 +11,9 @@ const getLineHeightStyle = (lineHeight?: LineHeight) => {
 
    let lineHeightStyle
    if (lineHeight.unit === 'PIXELS') {
-      lineHeightStyle = String(lineHeight.value) + 'px'
+      lineHeightStyle = lineHeight.value + 'px'
    } else if (lineHeight.unit === 'PERCENT') {
-      lineHeightStyle = String(lineHeight.value / 100)
+      lineHeightStyle = lineHeight.value / 100
    } else if (lineHeight.unit === 'AUTO') {
       lineHeightStyle = 'normal'
    }
