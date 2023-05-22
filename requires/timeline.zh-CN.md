@@ -8,6 +8,8 @@ pool
 -  支持小程序原生语法转换
 -  refactor: nodeInfo 新增 relativePosition，始终为相对父节点的坐标
 -  refactor: textContent 移动到 children 中，联合类型增加一项 string
+-  refactor: DomNodeTree 增加节点类型
+-  refactor: 新增 BaseNodeTree 及到 DomNodeTree 的转换
 
 2023/5/18
 
