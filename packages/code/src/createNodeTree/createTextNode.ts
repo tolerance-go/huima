@@ -180,7 +180,7 @@ export const createTextNode = async (
 
    const solidFill = findSolidPaint(node.fills)
 
-   let style = {
+   let style: CSSStyle = {
       ...baseStyle,
       ...getRotationStyle(node),
       'letter-spacing':
@@ -205,12 +205,20 @@ export const createTextNode = async (
             ? 'middle'
             : node.textAlignVertical.toLowerCase(),
       color: solidFill ? getFillSolidColor(solidFill) : undefined,
-      display: 'inline-block',
+      display:
+         node.textAutoResize === 'WIDTH_AND_HEIGHT' ? 'inline' : 'inline-block',
       'text-overflow': node.textAutoResize === 'TRUNCATE' ? 'ellipsis' : 'clip',
       'white-space': node.textAutoResize === 'TRUNCATE' ? 'nowrap' : 'normal',
       overflow: node.textAutoResize === 'TRUNCATE' ? 'hidden' : 'visible',
       ...getTextShadowStyle(node.effects),
    }
+
+   if (node.textAutoResize === 'HEIGHT') {
+      style.height = undefined
+   }
+
+   // 宽度少 1px 手动加上
+   style.width = node.width + 1 + 'px'
 
    return {
       nodeInfo,
