@@ -24,7 +24,7 @@ export function createHTML(
 ): string {
    const { convertPxValue, convertStyle } = options ?? ({} as Options)
 
-   const getAttrsAttrs = (attrs?: Attrs) => {
+   const getAttrsStr = (attrs?: Attrs) => {
       if (!attrs) {
          return ''
       }
@@ -33,7 +33,7 @@ export function createHTML(
          .join(' ')
    }
 
-   const getStyleAttrs = (style: CSSStyle, styleMeta?: StyleMeta) => {
+   const getStyleAttr = (style: CSSStyle, styleMeta?: StyleMeta) => {
       const { className, inlineStyle } = getStyle(style, styleMeta)
 
       return [
@@ -45,7 +45,7 @@ export function createHTML(
    }
 
    const getStyle = (style: CSSStyle, styleMeta?: StyleMeta) => {
-      const styleString = Object.entries(createCss(style, styleMeta))
+      const styleString = Object.entries(createStyle(style, styleMeta))
          .map(([key, value]) => `${key}: ${value};`)
          .join(' ')
 
@@ -59,7 +59,7 @@ export function createHTML(
       }
    }
 
-   const createCss = (
+   const createStyle = (
       nodeStyle: CSSStyle,
       styleMeta?: StyleMeta,
    ): RemoveNullOrUndefined<CSSStyle> => {
@@ -148,10 +148,10 @@ export function createHTML(
    if (node.element) {
       return node.element.replace(
          `<${node.tag}`,
-         `<${node.tag} ${getStyleAttrs(
+         `<${node.tag} ${getStyleAttr(
             node.style,
             node.styleMeta,
-         )} ${getAttrsAttrs(node.attrs)}`,
+         )} ${getAttrsStr(node.attrs)}`,
       )
    }
 
@@ -168,10 +168,10 @@ export function createHTML(
             'layoutMode' in node.nodeInfo.parentNodeInfo &&
             node.nodeInfo.parentNodeInfo.layoutMode !== 'NONE')
       ) {
-         return `<${node.tag} ${getStyleAttrs(
+         return `<${node.tag} ${getStyleAttr(
             node.style,
             node.styleMeta,
-         )} ${getAttrsAttrs(node.attrs)}>
+         )} ${getAttrsStr(node.attrs)}>
 ${node.children
    .map(
       (child) =>
@@ -203,10 +203,10 @@ ${node.children
       return childrenString
    }
 
-   return `<${node.tag} ${getStyleAttrs(
+   return `<${node.tag} ${getStyleAttr(
       node.style,
       node.styleMeta,
-   )} ${getAttrsAttrs(node.attrs)}>
+   )} ${getAttrsStr(node.attrs)}>
 ${node.textContent ?? ''}
 ${childrenString}
 </${node.tag}>`

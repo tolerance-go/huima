@@ -1,5 +1,11 @@
+pool
+
 -  支持启用图片压缩
 -  支持启用图片转 base64
+-  支持外部组件引用的多文件导出
+-  支持 react 语法转换
+-  支持 vue 语法转换
+-  支持小程序原生语法转换
 
 2023/5/18
 
@@ -26,3 +32,6 @@
 -  feat: 支持文本有序，无序列表
 
 next
+
+-  refactor: nodeInfo 新增 relativePosition，始终为相对父节点的坐标
+-  refactor: textContent 移动到 children 中，联合类型增加一项 string
