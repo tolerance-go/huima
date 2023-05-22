@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer'
-import { getLayoutCSS } from '../css-converts/getLayoutCSS'
-import { getRotationCSS } from '../css-converts/getRotationCSS'
+import { getLayoutStyle } from '../css-converts/getLayoutStyle'
+import { getRotationStyle } from '../css-converts/getRotationStyle'
 import { isJsDesign } from '../pluginApi'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 
@@ -43,8 +43,8 @@ export const createVectorNode = async (
 
    let tag = 'svg'
    let style = {
-      ...('rotation' in node ? getRotationCSS(node) : undefined),
-      ...getLayoutCSS(node, nodeInfo, level),
+      ...('rotation' in node ? getRotationStyle(node) : undefined),
+      ...getLayoutStyle(node, nodeInfo, level),
    }
 
    return {

@@ -1,6 +1,6 @@
-import { getBoxSizingCSS } from '../css-converts/getBoxSizingCSS'
-import { getLayoutCSS } from '../css-converts/getLayoutCSS'
-import { getSizeCSS } from '../css-converts/getSizeCSS'
+import { getBoxSizingStyle } from '../css-converts/getBoxSizingStyle'
+import { getLayoutStyle } from '../css-converts/getLayoutStyle'
+import { getSizeStyle } from '../css-converts/getSizeStyle'
 import { getBaseNodeInfo } from '../getBaseNodeInfo'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 import { createComponentNode } from './createComponentNode'
@@ -23,9 +23,9 @@ export async function createNodeTree(
    const nodeInfo = getBaseNodeInfo(sceneNode, parentNodeInfo, visible, level)
 
    const baseStyle: CSSStyle = {
-      ...getBoxSizingCSS(),
-      ...getSizeCSS(sceneNode),
-      ...getLayoutCSS(sceneNode, nodeInfo, level),
+      ...getBoxSizingStyle(),
+      ...getSizeStyle(sceneNode),
+      ...getLayoutStyle(sceneNode, nodeInfo, level),
    }
 
    const getChildren = async (): Promise<NodeTree[]> => {

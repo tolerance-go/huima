@@ -1,9 +1,9 @@
-import { getBackgroundColorCSS } from '../css-converts/getBackgroundColorCSS'
-import { getBackgroundImageCSS } from '../css-converts/getBackgroundImageCSS'
-import { generateBorderCSS } from '../css-converts/getBorderCSS'
-import { generateFlexLayoutCSS } from '../css-converts/getFlexLayoutCSS'
-import { generateOverflowCSS } from '../css-converts/getOverflowCSS'
-import { getRotationCSS } from '../css-converts/getRotationCSS'
+import { getBackgroundColorStyle } from '../css-converts/getBackgroundColorStyle'
+import { getBackgroundImageStyle } from '../css-converts/getBackgroundImageStyle'
+import { getBorderStyle } from '../css-converts/getBorderStyle'
+import { getFlexLayoutStyle } from '../css-converts/getFlexLayoutStyle'
+import { getOverflowStyle } from '../css-converts/getOverflowStyle'
+import { getRotationStyle } from '../css-converts/getRotationStyle'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 
 export const createFrameNode = async (
@@ -13,18 +13,20 @@ export const createFrameNode = async (
    getChildren: () => Promise<NodeTree[]>,
 ): Promise<NodeTree> => {
    const children = await getChildren()
-   const { style: bgStyle, styleMeta } = await getBackgroundImageCSS(node.fills)
+   const { style: bgStyle, styleMeta } = await getBackgroundImageStyle(
+      node.fills,
+   )
 
    let tag = 'div'
    let style = {
       ...baseStyle,
       width: node.width + 'px',
       height: node.height + 'px',
-      ...getRotationCSS(node),
-      ...getBackgroundColorCSS(node.fills),
-      ...generateOverflowCSS(node),
-      ...generateFlexLayoutCSS(node),
-      ...generateBorderCSS(node),
+      ...getRotationStyle(node),
+      ...getBackgroundColorStyle(node.fills),
+      ...getOverflowStyle(node),
+      ...getFlexLayoutStyle(node),
+      ...getBorderStyle(node),
       ...bgStyle,
    }
 

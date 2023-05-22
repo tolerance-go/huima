@@ -1,4 +1,4 @@
-import { getRotationCSS } from '../css-converts/getRotationCSS'
+import { getRotationStyle } from '../css-converts/getRotationStyle'
 import { Attrs, CSSStyle, NodeInfo, NodeTree } from '../type'
 import { findSolidPaint } from '../utils/findSolidPaint'
 import { getFillSolidColor } from '../utils/getFillSolidColor'
@@ -181,7 +181,7 @@ export const createTextNode = async (
 
    let style = {
       ...baseStyle,
-      ...getRotationCSS(node),
+      ...getRotationStyle(node),
       'letter-spacing':
          typeof node.letterSpacing === 'object' &&
          typeof node.fontSize === 'number'

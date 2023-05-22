@@ -1,6 +1,6 @@
-import { getBackgroundColorCSS } from '../css-converts/getBackgroundColorCSS'
-import { getBackgroundImageCSS } from '../css-converts/getBackgroundImageCSS'
-import { generateBorderCSS } from '../css-converts/getBorderCSS'
+import { getBackgroundColorStyle } from '../css-converts/getBackgroundColorStyle'
+import { getBackgroundImageStyle } from '../css-converts/getBackgroundImageStyle'
+import { getBorderStyle } from '../css-converts/getBorderStyle'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 
 export const createEllipseNode = async (
@@ -10,7 +10,7 @@ export const createEllipseNode = async (
    getChildren: () => Promise<NodeTree[]>,
 ): Promise<NodeTree> => {
    const children = await getChildren()
-   const { style: bgImgStyle, styleMeta } = await getBackgroundImageCSS(
+   const { style: bgImgStyle, styleMeta } = await getBackgroundImageStyle(
       node.fills,
    )
 
@@ -19,8 +19,8 @@ export const createEllipseNode = async (
       ...baseStyle,
       width: node.width + 'px',
       height: node.height + 'px',
-      ...getBackgroundColorCSS(node.fills),
-      ...generateBorderCSS(node),
+      ...getBackgroundColorStyle(node.fills),
+      ...getBorderStyle(node),
       ...bgImgStyle,
       'border-radius': '100%',
    }

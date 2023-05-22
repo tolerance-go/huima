@@ -1,6 +1,6 @@
 import { CSSStyle } from '../type'
 
-export function generateBorderCSS(
+export function getBorderStyle(
    node: Pick<
       FrameNode,
       | 'strokes'

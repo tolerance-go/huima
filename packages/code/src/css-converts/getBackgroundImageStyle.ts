@@ -3,7 +3,7 @@ import { CSSStyle, StyleMeta } from '../type'
 import { findPaints } from '../utils/findPaints'
 import { getFillGradientColor } from '../utils/getFillGradientColor'
 
-export async function getBackgroundImageCSS(
+export async function getBackgroundImageStyle(
    paints: readonly Paint[] | symbol,
 ): Promise<{ style: CSSStyle; styleMeta: StyleMeta }> {
    const { imagePaint, gradientLinearPaint } = findPaints(paints)

@@ -1,4 +1,4 @@
-export function getRotationCSS({ rotation }: Pick<FrameNode, 'rotation'>) {
+export function getRotationStyle({ rotation }: Pick<FrameNode, 'rotation'>) {
    if (rotation) {
       const rotationDegrees = -rotation
 

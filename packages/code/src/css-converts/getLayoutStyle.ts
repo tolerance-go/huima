@@ -2,7 +2,7 @@ import { NodeInfo } from '@huima/types'
 import { computeOriginalCoordinates } from '../utils/computeOriginalCoordinates'
 import { getCenterRelativeToParent } from '../utils/getCenterRelativeToParent'
 
-export const getLayoutCSS = (
+export const getLayoutStyle = (
    node: SceneNode,
    nodeInfo: NodeInfo,
    level = 0,

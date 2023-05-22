@@ -1,7 +1,7 @@
 import { removeNullOrUndefined } from '@huima/utils'
 import { CSSStyle } from '../type'
 
-export function generateFlexLayoutCSS(
+export function getFlexLayoutStyle(
    frameNode: Pick<
       FrameNode,
       | 'layoutMode'

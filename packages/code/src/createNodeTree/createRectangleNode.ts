@@ -1,7 +1,7 @@
-import { getBackgroundColorCSS } from '../css-converts/getBackgroundColorCSS'
-import { getBackgroundImageCSS } from '../css-converts/getBackgroundImageCSS'
-import { generateBorderCSS } from '../css-converts/getBorderCSS'
-import { getRotationCSS } from '../css-converts/getRotationCSS'
+import { getBackgroundColorStyle } from '../css-converts/getBackgroundColorStyle'
+import { getBackgroundImageStyle } from '../css-converts/getBackgroundImageStyle'
+import { getBorderStyle } from '../css-converts/getBorderStyle'
+import { getRotationStyle } from '../css-converts/getRotationStyle'
 import { CSSStyle, NodeInfo, NodeTree } from '../type'
 
 export const createRectangleNode = async (
@@ -11,16 +11,18 @@ export const createRectangleNode = async (
    getChildren: () => Promise<NodeTree[]>,
 ): Promise<NodeTree> => {
    const children = await getChildren()
-   const { style: bgStyle, styleMeta } = await getBackgroundImageCSS(node.fills)
+   const { style: bgStyle, styleMeta } = await getBackgroundImageStyle(
+      node.fills,
+   )
    let tag = 'div'
    let style = {
       ...baseStyle,
       width: node.width + 'px',
       height: node.height + 'px',
-      ...getRotationCSS(node),
+      ...getRotationStyle(node),
 
-      ...generateBorderCSS(node),
-      ...getBackgroundColorCSS(node.fills),
+      ...getBorderStyle(node),
+      ...getBackgroundColorStyle(node.fills),
       ...bgStyle,
    }
 

@@ -1,7 +1,7 @@
 import { findSolidPaint } from '../utils/findSolidPaint'
 import { getFillSolidColor } from '../utils/getFillSolidColor'
 
-export const getBackgroundColorCSS = (fills: readonly Paint[] | symbol) => {
+export const getBackgroundColorStyle = (fills: readonly Paint[] | symbol) => {
    const solidPaint = findSolidPaint(fills)
 
    if (solidPaint) {
