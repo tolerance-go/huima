@@ -160,8 +160,7 @@ export function createHTML(
       .join('')
 
    if (node.nodeInfo.type === 'GROUP') {
-      // Group 第一层子元素坐标位置需要进行偏移计算
-      // 如果 Group 在一个 auto layout 节点内，那么当做一个 div 进行渲染
+      // 如果 Group 是根元素渲染，或者 Group 在一个 auto layout 节点内，那么当做一个 div 进行渲染
       if (
          indent === 0 ||
          (node.nodeInfo.parentNodeInfo &&
