@@ -25,7 +25,7 @@ export async function createNodeTree(
    const baseStyle: CSSStyle = {
       ...getBoxSizingStyle(),
       ...getSizeStyle(sceneNode),
-      ...getLayoutStyle(sceneNode, nodeInfo, level),
+      ...getLayoutStyle(sceneNode, level),
    }
 
    const getChildren = async (): Promise<NodeTree[]> => {

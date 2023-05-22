@@ -44,7 +44,7 @@ export const createVectorNode = async (
    let tag = 'svg'
    let style = {
       ...('rotation' in node ? getRotationStyle(node) : undefined),
-      ...getLayoutStyle(node, nodeInfo, level),
+      ...getLayoutStyle(node, level),
    }
 
    return {

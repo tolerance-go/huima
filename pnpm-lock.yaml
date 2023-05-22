@@ -41,6 +41,9 @@ importers:
       '@huima/types':
         specifier: workspace:^
         version: link:../types
+      '@jsdesigndeveloper/plugin-typings':
+        specifier: ^1.0.11
+        version: 1.0.11
       '@types/lodash.merge':
         specifier: ^4.6.7
         version: 4.6.7
@@ -272,6 +275,10 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
+    dev: true
+
+  /@jsdesigndeveloper/plugin-typings@1.0.11:
+    resolution: {integrity: sha512-OVD26fxhRZ+ti9VT/3Fjbo0TqxfM44rd3MIjnulsVKDZRgdD1vY2IPDh5Z4wJVuzOERaM3JHoAGfl3dKngNp/A==}
     dev: true
 
   /@leichtgewicht/ip-codec@2.0.4:

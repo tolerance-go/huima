@@ -1,4 +1,13 @@
-export function getRotationStyle({ rotation }: Pick<FrameNode, 'rotation'>) {
+export function getRotationStyle({
+   rotation,
+   type,
+}: Pick<FrameNode, 'rotation'> & {
+   type: SceneNode['type']
+}) {
+   if (type === 'LINE' || type === 'VECTOR') {
+      return {}
+   }
+
    if (rotation) {
       const rotationDegrees = -rotation
 

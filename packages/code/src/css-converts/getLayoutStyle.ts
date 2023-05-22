@@ -1,12 +1,7 @@
-import { NodeInfo } from '@huima/types'
 import { computeOriginalCoordinates } from '../utils/computeOriginalCoordinates'
 import { getCenterRelativeToParent } from '../utils/getCenterRelativeToParent'
 
-export const getLayoutStyle = (
-   node: SceneNode,
-   nodeInfo: NodeInfo,
-   level = 0,
-) => {
+export const getLayoutStyle = (node: SceneNode, level = 0) => {
    if (level === 0) {
       return {
          position: 'relative',
@@ -25,7 +20,13 @@ export const getLayoutStyle = (
       }
    }
 
-   if ('rotation' in node && node.rotation) {
+   if (
+      'rotation' in node &&
+      node.rotation &&
+      node.type !== 'LINE' &&
+      // 箭头不支持旋转
+      node.type !== 'VECTOR'
+   ) {
       if (!node.absoluteBoundingBox) {
          throw new Error('node.absoluteBoundingBox is undefined')
       }
@@ -59,7 +60,7 @@ export const getLayoutStyle = (
 
    return {
       position: 'absolute',
-      left: nodeInfo.x + 'px',
-      top: nodeInfo.y + 'px',
+      left: node.x + 'px',
+      top: node.y + 'px',
    }
 }
