@@ -6,6 +6,8 @@ pool
 -  支持 react 语法转换
 -  支持 vue 语法转换
 -  支持小程序原生语法转换
+-  refactor: nodeInfo 新增 relativePosition，始终为相对父节点的坐标
+-  refactor: textContent 移动到 children 中，联合类型增加一项 string
 
 2023/5/18
 
@@ -33,5 +35,6 @@ pool
 
 next
 
--  refactor: nodeInfo 新增 relativePosition，始终为相对父节点的坐标
--  refactor: textContent 移动到 children 中，联合类型增加一项 string
+2023/5/23
+
+-  feat: 支持 effects 样式转换

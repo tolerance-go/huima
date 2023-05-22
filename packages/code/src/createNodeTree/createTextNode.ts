@@ -1,4 +1,5 @@
 import { getRotationStyle } from '../css-converts/getRotationStyle'
+import { getTextShadowStyle } from '../css-converts/getTextShadowStyle'
 import { Attrs, CSSStyle, NodeInfo, NodeTree } from '../type'
 import { findSolidPaint } from '../utils/findSolidPaint'
 import { getFillSolidColor } from '../utils/getFillSolidColor'
@@ -208,6 +209,7 @@ export const createTextNode = async (
       'text-overflow': node.textAutoResize === 'TRUNCATE' ? 'ellipsis' : 'clip',
       'white-space': node.textAutoResize === 'TRUNCATE' ? 'nowrap' : 'normal',
       overflow: node.textAutoResize === 'TRUNCATE' ? 'hidden' : 'visible',
+      ...getTextShadowStyle(node.effects),
    }
 
    return {

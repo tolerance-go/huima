@@ -1,6 +1,7 @@
 import { getBackgroundColorStyle } from '../css-converts/getBackgroundColorStyle'
 import { getBackgroundImageStyle } from '../css-converts/getBackgroundImageStyle'
 import { getBorderStyle } from '../css-converts/getBorderStyle'
+import { getBoxShadowStyle } from '../css-converts/getBoxShadowStyle'
 import { getFlexLayoutStyle } from '../css-converts/getFlexLayoutStyle'
 import { getOverflowStyle } from '../css-converts/getOverflowStyle'
 import { getRotationStyle } from '../css-converts/getRotationStyle'
@@ -22,6 +23,7 @@ export const createFrameNode = async (
       ...baseStyle,
       width: node.width + 'px',
       height: node.height + 'px',
+      ...getBoxShadowStyle(node.effects),
       ...getRotationStyle(node),
       ...getBackgroundColorStyle(node.fills),
       ...getOverflowStyle(node),
