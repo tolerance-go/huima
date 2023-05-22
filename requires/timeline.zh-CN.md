@@ -11,6 +11,11 @@ pool
 -  refactor: DomNodeTree 增加节点类型
 -  refactor: 新增 BaseNodeTree 及到 DomNodeTree 的转换
 
+next
+
+-  选中节点，直接复制代码，预览只在开发阶段，用户使用阶段不需要预览，如果出现设计实现偏差这就是 bug
+-  交互改为，选中节点，直接预览代码，可以选择“运行环境”和“框架 DSL”，从单个节点支持开始，追求的是渲染结果和设计稿的 UI 一致性
+
 2023/5/18
 
 -  fix: 解决复制代码时，图片 url 依赖内部环境的问题
@@ -35,7 +40,7 @@ pool
 -  feat: 支持文本多段样式转换
 -  feat: 支持文本有序，无序列表
 
-next
+not released
 
 2023/5/23
 
