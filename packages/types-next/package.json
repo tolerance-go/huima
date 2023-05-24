@@ -1,0 +1,14 @@
+{
+   "name": "@huima/types-next",
+   "version": "1.0.0",
+   "description": "",
+   "keywords": [],
+   "license": "ISC",
+   "author": "",
+   "main": "src/index.ts",
+   "typings": "src/index.ts",
+   "scripts": {},
+   "devDependencies": {
+      "@figma/plugin-typings": "^1.64.0"
+   }
+}

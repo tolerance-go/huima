@@ -1,0 +1,29 @@
+{
+   "name": "@huima/code-next",
+   "version": "1.0.0",
+   "description": "",
+   "keywords": [],
+   "license": "ISC",
+   "author": "",
+   "scripts": {
+      "build": "webpack",
+      "build:jssj": "IS_JSSJ=true webpack",
+      "dev": "npm run build -- --watch",
+      "dev:jssj": "IS_JSSJ=true npm run build -- --watch"
+   },
+   "dependencies": {
+      "@huima/utils": "workspace:^",
+      "buffer": "^6.0.3",
+      "lodash.merge": "^4.6.2"
+   },
+   "devDependencies": {
+      "@figma/plugin-typings": "^1.64.0",
+      "@huima/types-next": "workspace:^",
+      "@jsdesigndeveloper/plugin-typings": "^1.0.11",
+      "@types/lodash.merge": "^4.6.7",
+      "ts-loader": "^9.4.2",
+      "typescript": "5.0.4",
+      "webpack": "^5.82.1",
+      "webpack-cli": "^5.1.1"
+   }
+}
