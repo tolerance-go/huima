@@ -12,5 +12,5 @@ export const renderStaticNode = (
       }
    }
 
-   return `环境：${runtimeEnv}，DSL 类型：${dslType}，Node 类型：${node.type} 还未支持转换成静态代码`
+   return `环境：${runtimeEnv}，DSL 类型：${dslType}，node 类型：${node.type}，还未支持转换成静态代码`
 }

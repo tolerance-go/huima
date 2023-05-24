@@ -189,7 +189,11 @@ window.onmessage = (event) => {
          >
             当前节点不支持渲染
          </div>
-         <iframe v-else-if="isDev" :srcdoc="rendererSrcDoc"></iframe>
+         <iframe
+            v-else-if="isDev"
+            :srcdoc="rendererSrcDoc"
+            class="w-full h-full"
+         ></iframe>
          <div class="p-5" v-else-if="isSettingsPage">
             <div role="settings-page" class="grid grid-cols-1 gap-6">
                <div class="block">
