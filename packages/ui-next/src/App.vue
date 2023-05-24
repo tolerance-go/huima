@@ -117,7 +117,7 @@ window.onmessage = (event) => {
 <template>
    <div class="h-screen flex flex-col">
       <div
-         class="flex-none border-b px-5 py-2 flex justify-between items-center"
+         class="flex-none border-b px-4 py-2 flex justify-between items-center"
       >
          <div class="flex space-x-1 flex-auto">
             <select
