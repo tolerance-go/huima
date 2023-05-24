@@ -249,7 +249,7 @@ window.onmessage = (event) => {
          </div>
          <div
             v-else
-            class="h-full w-full relative overflow-auto"
+            class="h-full w-full relative"
             @mouseenter="hoverCodeArea = true"
             @mouseleave="hoverCodeArea = false"
          >
