@@ -56,6 +56,7 @@ export type StaticTextNode = BaseStaticNode & {
       | 'constraints'
       | 'width'
       | 'height'
+      | 'rotation'
    >
 
 export type StaticNode = StaticTextNode

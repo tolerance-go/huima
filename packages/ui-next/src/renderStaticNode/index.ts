@@ -1,9 +1,6 @@
 import { StaticNode, StaticTextNode } from '@huima/types-next'
 import { DSLType, RuntimeEnv } from '../types'
 
-/**
- * 1.
- */
 function groupByNewline(
    chars: StaticTextNode['styledCharacters'],
 ): StaticTextNode['styledCharacters'][] {
@@ -31,11 +28,55 @@ function groupByNewline(
 }
 
 // Convert RGB to Hex
-function rgbToHex(r: number, g: number, b: number): string {
+function rgbToHex(r: number, g: number, b: number, a: number = 1): string {
    r = Math.floor(r * 255)
    g = Math.floor(g * 255)
    b = Math.floor(b * 255)
-   return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+   a = Math.floor(a * 255)
+   return (
+      '#' +
+      ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1) +
+      (a < 16 ? '0' : '') +
+      a.toString(16)
+   )
+}
+
+// 只处理了 DROP_SHADOW 和 INNER_SHADOW，其他的暂时不处理，并且只处理了第一个
+function convertEffectsToCss(effects: readonly Effect[]): string {
+   let cssEffects: string = ''
+
+   const supports = effects.filter(
+      (effect) =>
+         effect.visible &&
+         (effect.type === 'DROP_SHADOW' || effect.type === 'INNER_SHADOW'),
+   )
+
+   if (supports.length) {
+      const effect = supports[0]
+      if (effect.type === 'DROP_SHADOW') {
+         let shadow = `${effect.offset.x}px ${effect.offset.y}px ${
+            effect.radius
+         }px ${rgbToHex(
+            effect.color.r,
+            effect.color.g,
+            effect.color.b,
+            effect.color.a,
+         )}`
+         cssEffects = `text-shadow: ${shadow};`
+      } else if (effect.type === 'INNER_SHADOW') {
+         let shadow = `inset ${effect.offset.x}px ${effect.offset.y}px ${
+            effect.radius
+         }px ${rgbToHex(
+            effect.color.r,
+            effect.color.g,
+            effect.color.b,
+            effect.color.a,
+         )}`
+         cssEffects = `text-shadow: ${shadow};`
+      }
+   }
+
+   return cssEffects
 }
 
 /**
@@ -43,10 +84,10 @@ function rgbToHex(r: number, g: number, b: number): string {
  * 第二层每一个元素都为 span 标签包裹，同时把对应属性转换成 css 属性作用到 style 上
  * 
  * 1. 需要支持以下参数 paragraphSpacing：作用到组级 p 标签上，使用 margin-bottom 表示,
-      textAutoResize：作用到最外层的 p 标签上，处理 fixed 和 truncate 两种情况，如果是 fixed 需要额外传入 width 和 height 设置到最外层的 p 标签上，fixed 达到的效果是 固定尺寸
+      textAutoResize：作用到最外层的 div 标签上，处理 fixed 和 truncate 两种情况，如果是 fixed 需要额外传入 width 和 height 设置到最外层的 div 标签上，fixed 达到的效果是 固定尺寸
       而 truncate 达到的效果是超出部分显示省略号,
-      textAlignHorizontal：作用到最外层的 p 标签上，达到横向对齐效果,
-      textAlignVertical：作用到最外层的 p 标签上，达到纵向对齐效果
+      textAlignHorizontal：作用到最外层的 div 标签上，达到横向对齐效果,
+      textAlignVertical：作用到最外层的 div 标签上，达到纵向对齐效果
  * 2. options 缩小范围到使用到参数的情况，不需要全部支持
  * 3. figma 中 textAutoResize 的类型 'NONE' | 'WIDTH_AND_HEIGHT' | 'HEIGHT' | 'TRUNCATE'，
  *   fixed 对应的应该是 'NONE'，truncate 对应 'TRUNCATE'
@@ -55,6 +96,9 @@ function rgbToHex(r: number, g: number, b: number): string {
   textAlignVertical: 'TOP' | 'CENTER' | 'BOTTOM'，对应的 css 属性为 text-align 和 vertical-align，需要转换成合法的 css 属性
  * 6. 如果容器是 display：inline-flex 的话，那么 vertical-align 就不起作用了，需要使用 align-items 和 justify-content 来实现
   align-items 需要加上 flex 前缀，同时结构上需要嵌套一层 div，内层的 div 完全包裹内部的文字，文字多大它就多大，自适应内部文字的大小
+  7. 将 figma 中的 effects 和 strokes 转换成 css 属性
+  8. 将 figma 中的 rotation 转换成 css 属性
+  9. 将 figma 中的 constraints 转换成 css 属性
  */
 function convertToHtml(
    groups: StaticTextNode['styledCharacters'][],
@@ -66,12 +110,12 @@ function convertToHtml(
       | 'textAlignVertical'
       | 'width'
       | 'height'
+      | 'effects'
    >,
 ): string {
    let html = ''
 
-   const containerStyle =
-      `
+   const containerStyle = `
    display: inline-flex;
    justify-content: ${((val) => {
       if (val === 'LEFT') {
@@ -102,7 +146,8 @@ function convertToHtml(
    })(options.textAlignVertical)};
    ${
       options.textAutoResize === 'NONE'
-         ? `width: ${options.width}px; height: ${options.height}px;`
+         ? `width: ${options.width}px; 
+   height: ${options.height}px;`
          : ''
    }
    ${
@@ -110,11 +155,14 @@ function convertToHtml(
          ? 'overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'
          : ''
    }
- `.trimEnd() + '\n'
+ `.trimEnd()
+
+   const effectsCss = convertEffectsToCss(options.effects)
 
    const innerContainerStyle = `
    display: inline-block;
-   `
+   ${effectsCss}
+   `.trimEnd()
 
    html += `<div style="${containerStyle}">`
    html += `<div style="${innerContainerStyle}">`
@@ -140,7 +188,7 @@ function convertToHtml(
       margin-bottom: ${
          index < groups.length - 1 ? options.paragraphSpacing + 'px' : '0'
       };
-    `
+    `.trimEnd()
 
       html += `<p style="${groupStyle}">`
 
@@ -149,10 +197,7 @@ function convertToHtml(
          const solidFills = charInfo.fills.filter(
             (fill) => fill.type === 'SOLID' && fill.visible !== false,
          ) as SolidPaint[]
-         const color = solidFills.length > 0 ? solidFills[0].color : null
-         const colorHex = color
-            ? rgbToHex(color.r, color.g, color.b)
-            : 'transparent'
+         const paint = solidFills.length > 0 ? solidFills[0] : null
 
          const lineHeight =
             charInfo.lineHeight.unit === 'AUTO'
@@ -163,14 +208,23 @@ function convertToHtml(
         font-size: ${charInfo.fontSize}px;
         font-weight: ${charInfo.fontWeight};
         font-family: ${charInfo.fontName.family};
-        color: ${colorHex};
         text-transform: ${charInfo.textCase};
         line-height: ${lineHeight};
         letter-spacing: ${charInfo.letterSpacing.value}px;
         text-decoration: ${charInfo.textDecoration};
         margin: 0;
         padding: 0;
-      `
+        ${
+           paint
+              ? `color: ${rgbToHex(
+                   paint.color.r,
+                   paint.color.g,
+                   paint.color.b,
+                   paint.opacity,
+                )};`
+              : ''
+        }
+      `.trimEnd()
          html += `<span style="${style}">${charInfo.char}</span>`
       })
 
@@ -199,7 +253,7 @@ export const renderStaticNode = (
          const content = convertToHtml(testGroups, node)
          console.log('convertToHtml content', content)
 
-         return convertToHtml(testGroups, node)
+         return content
       }
    }
 
