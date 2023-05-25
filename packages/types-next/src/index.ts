@@ -15,7 +15,48 @@ export type StaticTextNode = BaseStaticNode & {
    type: 'text'
    characters?: TextNode['characters']
    id: string
-}
+   styledCharacters: Array<
+      Pick<
+         StyledTextSegment,
+         | 'fontSize'
+         | 'fontWeight'
+         | 'fontName'
+         | 'fills'
+         | 'textCase'
+         | 'lineHeight'
+         | 'letterSpacing'
+         | 'textDecoration'
+      > & {
+         start: number
+         end: number
+         char: string
+      }
+   >
+   styledTextSegments: Array<
+      Pick<
+         StyledTextSegment,
+         | 'fontSize'
+         | 'fontWeight'
+         | 'fontName'
+         | 'fills'
+         | 'textCase'
+         | 'lineHeight'
+         | 'letterSpacing'
+         | 'textDecoration'
+      >
+   >
+} & Pick<
+      TextNode,
+      | 'paragraphSpacing'
+      | 'textAutoResize'
+      | 'textAlignHorizontal'
+      | 'textAlignVertical'
+      | 'effects'
+      | 'strokes'
+      | 'constraints'
+      | 'width'
+      | 'height'
+   >
 
 export type StaticNode = StaticTextNode
 
