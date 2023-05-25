@@ -57,6 +57,7 @@ export type StaticTextNode = BaseStaticNode & {
       | 'width'
       | 'height'
       | 'rotation'
+      | 'blendMode'
    >
 
 export type StaticNode = StaticTextNode

@@ -41,6 +41,8 @@ export const createStaticTextNode = (
       constraints,
       width,
       height,
+      rotation,
+      blendMode,
    } = node
 
    const charItems = node.characters.split(/(\n|(?!\n).)/g).filter(Boolean)
@@ -91,6 +93,8 @@ export const createStaticTextNode = (
       strokes,
       constraints,
       children: [],
+      rotation,
+      blendMode,
    }
 }
 

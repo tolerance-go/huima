@@ -79,6 +79,106 @@ function convertEffectsToCss(effects: readonly Effect[]): string {
    return cssEffects
 }
 
+function convertBlendModeToCss(blendMode: BlendMode): string {
+   let cssBlendMode: string
+
+   switch (blendMode) {
+      case 'PASS_THROUGH':
+      case 'NORMAL':
+         cssBlendMode = 'normal'
+         break
+      case 'DARKEN':
+         cssBlendMode = 'darken'
+         break
+      case 'MULTIPLY':
+         cssBlendMode = 'multiply'
+         break
+      case 'LINEAR_BURN':
+      case 'COLOR_BURN':
+         cssBlendMode = 'color-burn'
+         break
+      case 'LIGHTEN':
+         cssBlendMode = 'lighten'
+         break
+      case 'SCREEN':
+         cssBlendMode = 'screen'
+         break
+      case 'LINEAR_DODGE':
+      case 'COLOR_DODGE':
+         cssBlendMode = 'color-dodge'
+         break
+      case 'OVERLAY':
+         cssBlendMode = 'overlay'
+         break
+      case 'SOFT_LIGHT':
+         cssBlendMode = 'soft-light'
+         break
+      case 'HARD_LIGHT':
+         cssBlendMode = 'hard-light'
+         break
+      case 'DIFFERENCE':
+         cssBlendMode = 'difference'
+         break
+      case 'EXCLUSION':
+         cssBlendMode = 'exclusion'
+         break
+      case 'HUE':
+         cssBlendMode = 'hue'
+         break
+      case 'SATURATION':
+         cssBlendMode = 'saturation'
+         break
+      case 'COLOR':
+         cssBlendMode = 'color'
+         break
+      case 'LUMINOSITY':
+         cssBlendMode = 'luminosity'
+         break
+      default:
+         cssBlendMode = 'normal'
+         break
+   }
+
+   return `mix-blend-mode: ${cssBlendMode};`
+}
+
+function convertTextCaseToCss(textCase: TextCase): string {
+   let cssTextTransform: string
+
+   switch (textCase) {
+      case 'ORIGINAL':
+         cssTextTransform = 'none'
+         break
+      case 'UPPER':
+         cssTextTransform = 'uppercase'
+         break
+      case 'LOWER':
+         cssTextTransform = 'lowercase'
+         break
+      case 'TITLE':
+         cssTextTransform = 'capitalize'
+         break
+      case 'SMALL_CAPS':
+      case 'SMALL_CAPS_FORCED':
+         cssTextTransform = 'lowercase'
+         break
+      default:
+         cssTextTransform = 'none'
+         break
+   }
+
+   return `text-transform: ${cssTextTransform};`
+}
+
+function convertRotationToCss(rotation: number): string {
+   let cssRotation: string
+
+   // Figma's rotation is in degrees, and clockwise. CSS's rotate function also uses degrees, and is clockwise.
+   cssRotation = `transform: rotate(${-rotation}deg);`
+
+   return cssRotation
+}
+
 /**
  * 要求将 groupByNewline  返回结果进行 html 内容拼接，第一层数组为 p 标签，
  * 第二层每一个元素都为 span 标签包裹，同时把对应属性转换成 css 属性作用到 style 上
@@ -111,6 +211,8 @@ function convertToHtml(
       | 'width'
       | 'height'
       | 'effects'
+      | 'blendMode'
+      | 'rotation'
    >,
 ): string {
    let html = ''
@@ -155,6 +257,8 @@ function convertToHtml(
          ? 'overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'
          : ''
    }
+   ${convertBlendModeToCss(options.blendMode)}
+   ${convertRotationToCss(options.rotation)}
  `.trimEnd()
 
    const effectsCss = convertEffectsToCss(options.effects)
@@ -208,12 +312,12 @@ function convertToHtml(
         font-size: ${charInfo.fontSize}px;
         font-weight: ${charInfo.fontWeight};
         font-family: ${charInfo.fontName.family};
-        text-transform: ${charInfo.textCase};
         line-height: ${lineHeight};
         letter-spacing: ${charInfo.letterSpacing.value}px;
         text-decoration: ${charInfo.textDecoration};
         margin: 0;
         padding: 0;
+        ${convertTextCaseToCss(charInfo.textCase)}
         ${
            paint
               ? `color: ${rgbToHex(
