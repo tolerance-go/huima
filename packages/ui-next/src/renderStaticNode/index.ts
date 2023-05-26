@@ -1,6 +1,7 @@
 import {
    StaticContainerNode,
    StaticNode,
+   StaticRectangleNode,
    StaticTextNode,
 } from '@huima/types-next'
 import { DSLType, RuntimeEnv } from '../types'
@@ -168,7 +169,7 @@ function rgbaToHex(r: number, g: number, b: number, a: number = 1): string {
 }
 
 // 只处理了 DROP_SHADOW 和 INNER_SHADOW，其他的暂时不处理，并且只处理了第一个
-function convertEffectsToCss(effects: readonly Effect[]): string {
+function convertTextEffectsToCss(effects: readonly Effect[]): string {
    let cssEffects: string = ''
 
    const supports = effects.filter(
@@ -199,6 +200,48 @@ function convertEffectsToCss(effects: readonly Effect[]): string {
             effect.color.a,
          )}`
          cssEffects = `text-shadow: ${shadow};`
+      }
+   }
+
+   return cssEffects
+}
+
+/**
+ * 1. 返回一个对象，包含了所有的 css 属性
+ * @param effects
+ * @returns
+ */
+function convertFrameEffectsToCss(effects: readonly Effect[]) {
+   let cssEffects: Record<string, string> = {}
+
+   const supports = effects.filter(
+      (effect) =>
+         effect.visible &&
+         (effect.type === 'DROP_SHADOW' || effect.type === 'INNER_SHADOW'),
+   )
+
+   if (supports.length) {
+      const effect = supports[0]
+      if (effect.type === 'DROP_SHADOW') {
+         let shadow = `${effect.offset.x}px ${effect.offset.y}px ${
+            effect.radius
+         }px ${rgbaToHex(
+            effect.color.r,
+            effect.color.g,
+            effect.color.b,
+            effect.color.a,
+         )}`
+         cssEffects['box-shadow'] = shadow
+      } else if (effect.type === 'INNER_SHADOW') {
+         let shadow = `inset ${effect.offset.x}px ${effect.offset.y}px ${
+            effect.radius
+         }px ${rgbaToHex(
+            effect.color.r,
+            effect.color.g,
+            effect.color.b,
+            effect.color.a,
+         )}`
+         cssEffects['box-shadow'] = shadow
       }
    }
 
@@ -318,13 +361,10 @@ function convertTextDecorationToCss(textDecoration: TextDecoration): string {
    return cssTextDecoration
 }
 
-function convertRotationToCss(rotation: number): string {
-   let cssRotation: string
-
-   // Figma's rotation is in degrees, and clockwise. CSS's rotate function also uses degrees, and is clockwise.
-   cssRotation = `transform: rotate(${-rotation}deg);`
-
-   return cssRotation
+function convertRotationToCss(rotation: number) {
+   return {
+      transform: `rotate(${-rotation}deg)`,
+   }
 }
 
 /**
@@ -391,7 +431,12 @@ function convertTextNodeToHtml(
 ): string {
    let html = ''
 
+   const containerStyleObj = {
+      ...convertRotationToCss(options.rotation),
+   }
+
    const containerStyle = `
+   ${convertCssObjectToString(containerStyleObj)}
    display: flex;
    align-items: ${((val) => {
       if (val === 'TOP') {
@@ -408,7 +453,6 @@ function convertTextNodeToHtml(
    width: ${options.width}px;
    height: ${options.height}px;
    ${convertBlendModeToCss(options.blendMode)}
-   ${convertRotationToCss(options.rotation)}
    ${
       // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
       parentNode
@@ -424,7 +468,7 @@ function convertTextNodeToHtml(
    }
  `.trimEnd()
 
-   const effectsCss = convertEffectsToCss(options.effects)
+   const effectsCss = convertTextEffectsToCss(options.effects)
 
    const innerContainerStyle = `
    width: 100%;
@@ -529,6 +573,161 @@ function convertTextNodeToHtml(
 }
 
 /**
+ * 将Figma的fills转换为CSS的background属性
+ * 1. 额外处理渐变色的 fill
+ * 2. 如果没有符合条件的 fill，返回 none，而不是抛出异常
+ * @param fills
+ * @returns
+ */
+function convertFillsToCss(fills: Paint[]): Record<string, string> {
+   const visibleFills = fills.filter((fill) => fill.visible !== false)
+   if (visibleFills.length === 0) {
+      return {}
+   }
+   const firstFill = visibleFills[0]
+   switch (firstFill.type) {
+      case 'SOLID': {
+         const { color, opacity } = firstFill as SolidPaint
+         return {
+            'background-color': rgbaToHex(color.r, color.g, color.b, opacity),
+         }
+      }
+      case 'GRADIENT_LINEAR': {
+         const { gradientStops } = firstFill as GradientPaint
+         const gradientColors = gradientStops.map(
+            (stop) =>
+               `${rgbaToHex(
+                  stop.color.r,
+                  stop.color.g,
+                  stop.color.b,
+                  stop.color.a,
+               )} ${stop.position * 100}%`,
+         )
+         return { background: `linear-gradient(${gradientColors.join(', ')})` }
+      }
+      default: {
+         return {}
+      }
+   }
+}
+
+/**
+ * 将Figma的strokes转换为CSS的border属性
+ * 1. 如果没有符合条件的 stroke，返回空对象，而不是抛出异常
+ * 2. 处理 solid 和 dashed 两种类型
+ * 3. 返回对象形式，而不是字符串形式
+ * @param strokes
+ * @returns
+ */
+function convertStrokesToCss(
+   strokes: Paint[],
+   strokeWeight: number,
+   strokeAlign: 'CENTER' | 'INSIDE' | 'OUTSIDE',
+   dashPattern: ReadonlyArray<number>,
+): Record<string, string> {
+   const visibleStrokes = strokes.filter((stroke) => stroke.visible !== false)
+   if (visibleStrokes.length === 0) {
+      return {}
+   }
+   const firstStroke = visibleStrokes[0]
+   const { color, opacity } = firstStroke as SolidPaint
+   const colorString = rgbaToHex(color.r, color.g, color.b, opacity)
+
+   const dashArray = dashPattern ? dashPattern.join(' ') : ''
+
+   switch (strokeAlign) {
+      case 'CENTER': {
+         // TODO: add support for strokeAlign 'CENTER', which is currently ignored.
+         return {
+            border: `${strokeWeight}px ${
+               dashArray ? 'dashed' : 'solid'
+            } ${colorString}`,
+         }
+      }
+      case 'INSIDE': {
+         return {
+            border: `${strokeWeight}px ${
+               dashArray ? 'dashed' : 'solid'
+            } ${colorString}`,
+            'box-sizing': 'border-box',
+         }
+      }
+      case 'OUTSIDE': {
+         return {
+            border: `${strokeWeight}px ${
+               dashArray ? 'dashed' : 'solid'
+            } ${colorString}`,
+         }
+      }
+      default: {
+         return {}
+      }
+   }
+}
+
+/**
+ * 将CSS对象转换为适合内联样式使用的CSS字符串
+ * @param css
+ * @returns
+ */
+function convertCssObjectToString(
+   css: Record<string, string | number | null | undefined>,
+): string {
+   return Object.entries(css)
+      .filter(([, value]) => value !== null && value !== undefined)
+      .map(([property, value]) => `${property}: ${value};`)
+      .join('\n')
+}
+
+/**
+ * 根据传入的 node，将 figma node 转换成 html 代码
+ * 将矩形节点转换成 html 代码
+ * 基本结构为一个 div，传入的类型为 StaticRectangleNode
+ * 根据参数的 width 和 height 设置 div 的宽高
+ * 根据传入的 cornerRadius 设置 div 的圆角
+ * 根据传入的 fills 设置 div 的背景色，找到第一个可见 fill，如果没有可见 fill，则设置为空，注意处理渐变色
+ * 根据传入的 strokes 设置 div 的边框，找到第一个可见 stroke，如果没有可见 stroke，则设置为空，
+ * 注意处理边框的位置信息，比如 center，outside，inside
+ * 根据传入的 effects 设置 div 的阴影，找到第一个可见 effect，如果没有可见 effect，则设置为空
+ * 根据传入的 rotation 设置 div 的旋转角度
+ */
+function convertRectangleNodeToHtml(node: StaticRectangleNode): string {
+   // 获取 node 中的属性值
+   const { width, height, cornerRadius, fills, strokes, effects, rotation } =
+      node
+
+   // 转换颜色，边框和效果为 CSS 属性
+   const backgroundColorCss = convertFillsToCss(fills as Paint[])
+   const borderCss = convertStrokesToCss(
+      strokes as Paint[],
+      node.strokeWeight as number,
+      node.strokeAlign,
+      node.dashPattern,
+   )
+   const boxShadowCss = convertFrameEffectsToCss(effects)
+   const transformCss = convertRotationToCss(rotation)
+
+   // 创建 CSS 对象
+   const css: Record<string, string | number | null | undefined> = {
+      width: `${width}px`,
+      height: `${height}px`,
+      'border-radius': `${String(cornerRadius)}px`,
+      ...backgroundColorCss,
+      ...borderCss,
+      ...boxShadowCss,
+      ...transformCss,
+   }
+
+   // 转换 CSS 对象为 CSS 字符串
+   const style = convertCssObjectToString(css)
+
+   // 创建 HTML
+   const html = `<div style="${style}"></div>`
+
+   return html
+}
+
+/**
  * 此函数根据不同的运行环境，DSL 类型，node 类型，将 node 转换成静态代码，
  * 最后渲染到运行环境中，比如浏览器环境
  */
@@ -541,13 +740,20 @@ export const renderStaticNode = (
       if (dslType === 'html') {
          console.log(node)
 
-         // 将 characters 进行分割，遇到换行符分组
-         let testGroups: StaticTextNode['styledCharacters'][] = groupByNewline(
-            node.styledCharacters,
-         )
-         const content = convertTextNodeToHtml(testGroups, node)
+         if (node.type === 'text') {
+            // 将 characters 进行分割，遇到换行符分组
+            let testGroups: StaticTextNode['styledCharacters'][] =
+               groupByNewline(node.styledCharacters)
+            const content = convertTextNodeToHtml(testGroups, node)
+            return content
+         }
 
-         return content
+         if (node.type === 'rectangle') {
+            const content = convertRectangleNodeToHtml(node)
+            return content
+         }
+
+         return ''
       }
    }
 

@@ -26,6 +26,29 @@ export interface StaticSectionNode extends BaseStaticContainerNode {
    type: 'Section'
 }
 
+export interface StaticRectangleNode
+   extends BaseStaticNode,
+      Pick<
+         RectangleNode,
+         | 'effects'
+         | 'strokes'
+         | 'constraints'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'cornerRadius'
+         | 'fills'
+         | 'strokeAlign'
+         | 'strokeWeight'
+         | 'dashPattern'
+      > {
+   type: 'rectangle'
+}
+
 export interface StaticTextNode
    extends BaseStaticNode,
       Pick<
@@ -80,7 +103,7 @@ export interface StaticTextNode
    >
 }
 
-export type StaticNode = StaticTextNode
+export type StaticNode = StaticTextNode | StaticRectangleNode
 
 export type StaticContainerNode =
    | StaticFrameNode

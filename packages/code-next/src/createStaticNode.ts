@@ -1,4 +1,8 @@
-import { StaticNode, StaticTextNode } from '@huima/types-next'
+import {
+   StaticNode,
+   StaticRectangleNode,
+   StaticTextNode,
+} from '@huima/types-next'
 
 type CharInfo = {
    start: number
@@ -107,6 +111,49 @@ export const createStaticTextNode = (
    }
 }
 
+export const createStaticRectangleNode = (
+   node: RectangleNode,
+): StaticRectangleNode => {
+   const {
+      id,
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      cornerRadius,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+   } = node
+
+   return {
+      id,
+      type: 'rectangle',
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      cornerRadius,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+   }
+}
+
 export const createStaticNode = (node: SceneNode): StaticNode | null => {
    if (node.type === 'TEXT') {
       return createStaticTextNode(
@@ -114,6 +161,10 @@ export const createStaticNode = (node: SceneNode): StaticNode | null => {
          () => [],
          //  node.children.map(createStaticNode)
       )
+   }
+
+   if (node.type === 'RECTANGLE') {
+      return createStaticRectangleNode(node)
    }
 
    return null
