@@ -296,6 +296,28 @@ function convertTextCaseToCss(textCase: TextCase): string {
    return `text-transform: ${cssTextTransform};`
 }
 
+/**
+ * 此函数将 Figma 中的 TextDecoration 类型转换为对应的 CSS text-decoration 属性
+ */
+function convertTextDecorationToCss(textDecoration: TextDecoration): string {
+   let cssTextDecoration: string = 'text-decoration: '
+
+   switch (textDecoration) {
+      case 'UNDERLINE':
+         cssTextDecoration += 'underline'
+         break
+      case 'STRIKETHROUGH':
+         cssTextDecoration += 'line-through'
+         break
+      case 'NONE':
+      default:
+         // cssTextDecoration += 'none'
+         cssTextDecoration = ''
+   }
+
+   return cssTextDecoration
+}
+
 function convertRotationToCss(rotation: number): string {
    let cssRotation: string
 
@@ -303,6 +325,26 @@ function convertRotationToCss(rotation: number): string {
    cssRotation = `transform: rotate(${-rotation}deg);`
 
    return cssRotation
+}
+
+/**
+ * 此函数将 Figma 中的 LetterSpacing 类型转换为对应的 CSS letter-spacing 属性
+ */
+function convertLetterSpacingToCss(letterSpacing: LetterSpacing): string {
+   if (letterSpacing.value === 0) {
+      return ''
+   }
+
+   let cssLetterSpacing: string = 'letter-spacing: '
+
+   if (letterSpacing.unit === 'PIXELS') {
+      cssLetterSpacing += `${letterSpacing.value}px;`
+   } else if (letterSpacing.unit === 'PERCENT') {
+      cssLetterSpacing += `${letterSpacing.value / 100}em;`
+   }
+
+   cssLetterSpacing = ''
+   return cssLetterSpacing
 }
 
 /**
@@ -320,7 +362,7 @@ function convertRotationToCss(rotation: number): string {
  * 4. p 中不能继续包裹 p 元素，最外层使用 div 包裹，类型为 inline-block
  * 5. figma 中 textAlignHorizontal: 'LEFT' | 'CENTER' | 'RIGHT' | 'JUSTIFIED'
   textAlignVertical: 'TOP' | 'CENTER' | 'BOTTOM'，对应的 css 属性为 text-align 和 vertical-align，需要转换成合法的 css 属性
- * 6. 如果容器是 display：inline-flex 的话，那么 vertical-align 就不起作用了，需要使用 align-items 和 justify-content 来实现
+ * 6. 如果容器是 display：flex 的话，那么 vertical-align 就不起作用了，需要使用 align-items 和 justify-content 来实现
   align-items 需要加上 flex 前缀，同时结构上需要嵌套一层 div，内层的 div 完全包裹内部的文字，文字多大它就多大，自适应内部文字的大小
   7. 将 figma 中的 effects 和 strokes 转换成 css 属性
   8. 将 figma 中的 rotation 转换成 css 属性
@@ -349,22 +391,7 @@ function convertTextNodeToHtml(
    let html = ''
 
    const containerStyle = `
-   display: inline-flex;
-   justify-content: ${((val) => {
-      if (val === 'LEFT') {
-         return 'start'
-      }
-      if (val === 'CENTER') {
-         return 'center'
-      }
-      if (val === 'RIGHT') {
-         return 'end'
-      }
-      if (val === 'JUSTIFIED') {
-         return 'space-between'
-      }
-      return 'start'
-   })(options.textAlignHorizontal)};
+   display: flex;
    align-items: ${((val) => {
       if (val === 'TOP') {
          return 'start'
@@ -377,17 +404,8 @@ function convertTextNodeToHtml(
       }
       return 'start'
    })(options.textAlignVertical)};
-   ${
-      options.textAutoResize === 'NONE'
-         ? `width: ${options.width}px; 
-   height: ${options.height}px;`
-         : ''
-   }
-   ${
-      options.textAutoResize === 'TRUNCATE'
-         ? 'overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'
-         : ''
-   }
+   width: ${options.width}px;
+   height: ${options.height}px;
    ${convertBlendModeToCss(options.blendMode)}
    ${convertRotationToCss(options.rotation)}
    ${
@@ -408,7 +426,22 @@ function convertTextNodeToHtml(
    const effectsCss = convertEffectsToCss(options.effects)
 
    const innerContainerStyle = `
-   display: inline-block;
+   width: 100%;
+   text-align: ${((val) => {
+      if (val === 'LEFT') {
+         return 'left'
+      }
+      if (val === 'CENTER') {
+         return 'center'
+      }
+      if (val === 'RIGHT') {
+         return 'right'
+      }
+      if (val === 'JUSTIFIED') {
+         return 'justify'
+      }
+      return 'start'
+   })(options.textAlignHorizontal)};
    ${effectsCss}
    `.trimEnd()
 
@@ -436,6 +469,11 @@ function convertTextNodeToHtml(
       margin-bottom: ${
          index < groups.length - 1 ? options.paragraphSpacing + 'px' : '0'
       };
+      ${
+         options.textAutoResize === 'TRUNCATE'
+            ? 'overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'
+            : ''
+      }
     `.trimEnd()
 
       html += `<p style="${groupStyle}">`
@@ -450,18 +488,20 @@ function convertTextNodeToHtml(
          const lineHeight =
             charInfo.lineHeight.unit === 'AUTO'
                ? 'normal'
-               : `${charInfo.lineHeight.value}px`
+               : charInfo.lineHeight.unit === 'PIXELS'
+               ? `${charInfo.lineHeight.value}px`
+               : `${charInfo.lineHeight.value}%`
 
          const style = `
         font-size: ${charInfo.fontSize}px;
         font-weight: ${charInfo.fontWeight};
         font-family: ${charInfo.fontName.family};
         line-height: ${lineHeight};
-        letter-spacing: ${charInfo.letterSpacing.value}px;
-        text-decoration: ${charInfo.textDecoration};
+        ${convertTextDecorationToCss(charInfo.textDecoration)};
         margin: 0;
         padding: 0;
         ${convertTextCaseToCss(charInfo.textCase)}
+        ${convertLetterSpacingToCss(charInfo.letterSpacing)}
         ${
            paint
               ? `color: ${rgbToHex(
