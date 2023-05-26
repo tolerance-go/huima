@@ -154,7 +154,7 @@ function groupByNewline(
 }
 
 // Convert RGB to Hex
-function rgbToHex(r: number, g: number, b: number, a: number = 1): string {
+function rgbaToHex(r: number, g: number, b: number, a: number = 1): string {
    r = Math.floor(r * 255)
    g = Math.floor(g * 255)
    b = Math.floor(b * 255)
@@ -182,7 +182,7 @@ function convertEffectsToCss(effects: readonly Effect[]): string {
       if (effect.type === 'DROP_SHADOW') {
          let shadow = `${effect.offset.x}px ${effect.offset.y}px ${
             effect.radius
-         }px ${rgbToHex(
+         }px ${rgbaToHex(
             effect.color.r,
             effect.color.g,
             effect.color.b,
@@ -192,7 +192,7 @@ function convertEffectsToCss(effects: readonly Effect[]): string {
       } else if (effect.type === 'INNER_SHADOW') {
          let shadow = `inset ${effect.offset.x}px ${effect.offset.y}px ${
             effect.radius
-         }px ${rgbToHex(
+         }px ${rgbaToHex(
             effect.color.r,
             effect.color.g,
             effect.color.b,
@@ -341,9 +341,10 @@ function convertLetterSpacingToCss(letterSpacing: LetterSpacing): string {
       cssLetterSpacing += `${letterSpacing.value}px;`
    } else if (letterSpacing.unit === 'PERCENT') {
       cssLetterSpacing += `${letterSpacing.value / 100}em;`
+   } else {
+      cssLetterSpacing = ''
    }
 
-   cssLetterSpacing = ''
    return cssLetterSpacing
 }
 
@@ -478,7 +479,7 @@ function convertTextNodeToHtml(
 
       html += `<p style="${groupStyle}">`
 
-      group.forEach((charInfo) => {
+      group.forEach((charInfo, charIndex) => {
          // Only process SolidPaint
          const solidFills = charInfo.fills.filter(
             (fill) => fill.type === 'SOLID' && fill.visible !== false,
@@ -497,14 +498,16 @@ function convertTextNodeToHtml(
         font-weight: ${charInfo.fontWeight};
         font-family: ${charInfo.fontName.family};
         line-height: ${lineHeight};
-        ${convertTextDecorationToCss(charInfo.textDecoration)};
-        margin: 0;
-        padding: 0;
+        ${convertTextDecorationToCss(charInfo.textDecoration)}
         ${convertTextCaseToCss(charInfo.textCase)}
-        ${convertLetterSpacingToCss(charInfo.letterSpacing)}
+        ${
+           charIndex < group.length - 1
+              ? convertLetterSpacingToCss(charInfo.letterSpacing)
+              : ''
+        }
         ${
            paint
-              ? `color: ${rgbToHex(
+              ? `color: ${rgbaToHex(
                    paint.color.r,
                    paint.color.g,
                    paint.color.b,
