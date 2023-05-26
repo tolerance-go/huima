@@ -43,6 +43,9 @@ export const createStaticTextNode = (
       height,
       rotation,
       blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
    } = node
 
    const charItems = node.characters.split(/(\n|(?!\n).)/g).filter(Boolean)
@@ -78,6 +81,10 @@ export const createStaticTextNode = (
    })
 
    return {
+      parentAbsoluteBoundingBox:
+         node.parent && 'absoluteBoundingBox' in node.parent
+            ? node.parent.absoluteBoundingBox ?? undefined
+            : undefined,
       width,
       height,
       id: node.id,
@@ -92,9 +99,11 @@ export const createStaticTextNode = (
       effects,
       strokes,
       constraints,
-      children: [],
       rotation,
       blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
    }
 }
 

@@ -5,12 +5,7 @@
    "keywords": [],
    "license": "ISC",
    "author": "",
-   "scripts": {
-      "build": "webpack",
-      "build:jssj": "IS_JSSJ=true webpack",
-      "dev": "npm run build -- --watch",
-      "dev:jssj": "IS_JSSJ=true npm run build -- --watch"
-   },
+   "scripts": {},
    "dependencies": {
       "@huima/utils": "workspace:^",
       "buffer": "^6.0.3",

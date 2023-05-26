@@ -1,5 +1,131 @@
-import { StaticNode, StaticTextNode } from '@huima/types-next'
+import {
+   StaticContainerNode,
+   StaticNode,
+   StaticTextNode,
+} from '@huima/types-next'
 import { DSLType, RuntimeEnv } from '../types'
+
+/**
+ * 此函数接受一个 Record<string, string | number | null | undefined> 的对象
+ * 返回一个 ；分隔的字符串，每行结尾换行，用于生成 css
+ */
+function generateCss(
+   properties: Record<string, string | number | null | undefined>,
+): string {
+   let css = ''
+   for (const property in properties) {
+      if (
+         properties.hasOwnProperty(property) &&
+         properties[property] !== null &&
+         properties[property] !== undefined
+      ) {
+         css += `${property}: ${properties[property]};\n`
+      }
+   }
+   return css
+}
+
+/**
+ * 这个函数根据传入的 parentAbsoluteBoundingBox 和 absoluteBoundingBox，以及
+ * constraints 类型计算出 css 的定位属性，规则如下
+ * 当 constraints.horizontal 为 MIN 的情况，使用 absoluteBoundingBox 的 x 作为 left
+ * 当 constraints.horizontal 为 MAX 的情况，使用 absoluteBoundingBox 的 x + width 作为 right
+ * 当 constraints.horizontal 为 CENTER 的情况，left: calc(50% - width/2 + 相对于父节点中心点水平方向的偏移);
+ * 当 constraints.horizontal 为 SCALE 的情况，left 和 right 同时设置固定值
+ * 当 constraints.horizontal 为 STRETCH 的情况，left 和 right 同时设置为百分比
+ * 水平方向规则同理
+ * 始终为绝对定位
+ */
+function computeCssAbsPosition(
+   parentAbsoluteBoundingBox: Rect,
+   absoluteBoundingBox: Rect,
+   constraints: Constraints,
+) {
+   let cssPosition: Record<string, string> = {
+      position: 'absolute',
+   }
+
+   const relativeX = absoluteBoundingBox.x - parentAbsoluteBoundingBox.x
+   const relativeY = absoluteBoundingBox.y - parentAbsoluteBoundingBox.y
+
+   switch (constraints.horizontal) {
+      case 'MIN':
+         cssPosition.left = `${relativeX}px`
+         break
+      case 'MAX':
+         cssPosition.right = `${
+            parentAbsoluteBoundingBox.width -
+            relativeX -
+            absoluteBoundingBox.width
+         }px`
+         break
+      case 'CENTER':
+         cssPosition.left = `calc(50% - ${absoluteBoundingBox.width}/2 - ${
+            relativeX - parentAbsoluteBoundingBox.width / 2
+         }px)`
+         break
+      case 'SCALE':
+         cssPosition.left = `${relativeX}px`
+         cssPosition.right = `${
+            parentAbsoluteBoundingBox.width -
+            relativeX -
+            absoluteBoundingBox.width
+         }px`
+         break
+      case 'STRETCH':
+         cssPosition.left = `${
+            (relativeX / parentAbsoluteBoundingBox.width) * 100
+         }%`
+         cssPosition.right = `${
+            ((parentAbsoluteBoundingBox.width -
+               relativeX -
+               absoluteBoundingBox.width) /
+               parentAbsoluteBoundingBox.width) *
+            100
+         }%`
+         break
+   }
+
+   switch (constraints.vertical) {
+      case 'MIN':
+         cssPosition.top = `${relativeY}px`
+         break
+      case 'MAX':
+         cssPosition.bottom = `${
+            parentAbsoluteBoundingBox.width -
+            relativeY -
+            absoluteBoundingBox.width
+         }px`
+         break
+      case 'CENTER':
+         cssPosition.top = `calc(50% - ${absoluteBoundingBox.width}/2 - ${
+            relativeY - parentAbsoluteBoundingBox.width / 2
+         }px)`
+         break
+      case 'SCALE':
+         cssPosition.top = `${relativeY}px`
+         cssPosition.bottom = `${
+            parentAbsoluteBoundingBox.width -
+            relativeY -
+            absoluteBoundingBox.width
+         }px`
+         break
+      case 'STRETCH':
+         cssPosition.top = `${
+            (relativeY / parentAbsoluteBoundingBox.width) * 100
+         }%`
+         cssPosition.bottom = `${
+            ((parentAbsoluteBoundingBox.width -
+               relativeY -
+               absoluteBoundingBox.width) /
+               parentAbsoluteBoundingBox.width) *
+            100
+         }%`
+         break
+   }
+
+   return cssPosition
+}
 
 function groupByNewline(
    chars: StaticTextNode['styledCharacters'],
@@ -199,8 +325,9 @@ function convertRotationToCss(rotation: number): string {
   7. 将 figma 中的 effects 和 strokes 转换成 css 属性
   8. 将 figma 中的 rotation 转换成 css 属性
   9. 将 figma 中的 constraints 转换成 css 属性
+  10. 只有 parentNode 不为空的时候，才需要处理定位
  */
-function convertToHtml(
+function convertTextNodeToHtml(
    groups: StaticTextNode['styledCharacters'][],
    options: Pick<
       StaticTextNode,
@@ -213,7 +340,11 @@ function convertToHtml(
       | 'effects'
       | 'blendMode'
       | 'rotation'
+      | 'constraints'
+      | 'parentAbsoluteBoundingBox'
+      | 'absoluteBoundingBox'
    >,
+   parentNode?: StaticContainerNode,
 ): string {
    let html = ''
 
@@ -259,6 +390,19 @@ function convertToHtml(
    }
    ${convertBlendModeToCss(options.blendMode)}
    ${convertRotationToCss(options.rotation)}
+   ${
+      // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
+      parentNode
+         ? generateCss(
+              computeCssAbsPosition(
+                 // TODO: 找到相对定位的父容器，而不是自己的父容器
+                 options.parentAbsoluteBoundingBox!,
+                 options.absoluteBoundingBox!,
+                 options.constraints,
+              ),
+           )
+         : ''
+   }
  `.trimEnd()
 
    const effectsCss = convertEffectsToCss(options.effects)
@@ -341,6 +485,10 @@ function convertToHtml(
    return html
 }
 
+/**
+ * 此函数根据不同的运行环境，DSL 类型，node 类型，将 node 转换成静态代码，
+ * 最后渲染到运行环境中，比如浏览器环境
+ */
 export const renderStaticNode = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
@@ -354,8 +502,7 @@ export const renderStaticNode = (
          let testGroups: StaticTextNode['styledCharacters'][] = groupByNewline(
             node.styledCharacters,
          )
-         const content = convertToHtml(testGroups, node)
-         console.log('convertToHtml content', content)
+         const content = convertTextNodeToHtml(testGroups, node)
 
          return content
       }

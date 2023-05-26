@@ -8,13 +8,46 @@ export type Point = {
 export type BaseStaticNode = {
    type: string
    id: string
+}
+
+export interface BaseStaticContainerNode extends BaseStaticNode {
    children: StaticNode[]
 }
 
-export type StaticTextNode = BaseStaticNode & {
+export interface StaticFrameNode extends BaseStaticContainerNode {
+   type: 'Frame'
+}
+
+export interface StaticGroupNode extends BaseStaticContainerNode {
+   type: 'Group'
+}
+
+export interface StaticSectionNode extends BaseStaticContainerNode {
+   type: 'Section'
+}
+
+export interface StaticTextNode
+   extends BaseStaticNode,
+      Pick<
+         TextNode,
+         | 'paragraphSpacing'
+         | 'textAutoResize'
+         | 'textAlignHorizontal'
+         | 'textAlignVertical'
+         | 'effects'
+         | 'strokes'
+         | 'constraints'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+      > {
    type: 'text'
    characters?: TextNode['characters']
-   id: string
+   parentAbsoluteBoundingBox?: Rect
    styledCharacters: Array<
       Pick<
          StyledTextSegment,
@@ -45,22 +78,14 @@ export type StaticTextNode = BaseStaticNode & {
          | 'textDecoration'
       >
    >
-} & Pick<
-      TextNode,
-      | 'paragraphSpacing'
-      | 'textAutoResize'
-      | 'textAlignHorizontal'
-      | 'textAlignVertical'
-      | 'effects'
-      | 'strokes'
-      | 'constraints'
-      | 'width'
-      | 'height'
-      | 'rotation'
-      | 'blendMode'
-   >
+}
 
 export type StaticNode = StaticTextNode
+
+export type StaticContainerNode =
+   | StaticFrameNode
+   | StaticGroupNode
+   | StaticSectionNode
 
 export type UIEvents = {
    selectedNode: {
