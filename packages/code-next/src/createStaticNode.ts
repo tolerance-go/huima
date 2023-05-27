@@ -1,5 +1,6 @@
 import {
    ImageFillMeta,
+   StaticBooleanOperationNode,
    StaticContainerNode,
    StaticEllipseNode,
    StaticFrameNode,
@@ -8,7 +9,6 @@ import {
    StaticNode,
    StaticPolygonNode,
    StaticRectangleNode,
-   StaticSectionNode,
    StaticTextNode,
    StaticVectorNode,
 } from '@huima/types-next'
@@ -162,6 +162,56 @@ export const createStaticLineNode = async (
       effects,
       strokes,
       constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      svgBytes: await node.exportAsync({
+         format: 'SVG',
+      }),
+      layoutPositioning,
+   }
+}
+
+export const createStaticBooleanOperationNode = async (
+   node: BooleanOperationNode,
+   parentNode?: StaticContainerNode,
+): Promise<StaticBooleanOperationNode> => {
+   const {
+      id,
+      effects,
+      strokes,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      x,
+      y,
+      layoutPositioning,
+   } = node
+
+   return {
+      parent: parentNode,
+      x,
+      y,
+      id,
+      type: 'booleanOperation',
+      effects,
+      strokes,
       width,
       height,
       rotation,
@@ -636,50 +686,50 @@ export const createStaticGroupNode = async (
    return staticNode
 }
 
-export const createStaticSectionNode = async (
-   node: SectionNode,
-   parentNode?: StaticContainerNode,
-): Promise<StaticSectionNode> => {
-   const {
-      id,
-      width,
-      height,
-      absoluteBoundingBox,
-      absoluteTransform,
-      children,
-      fills,
-      x,
-      y,
-   } = node
+// export const createStaticSectionNode = async (
+//    node: SectionNode,
+//    parentNode?: StaticContainerNode,
+// ): Promise<StaticSectionNode> => {
+//    const {
+//       id,
+//       width,
+//       height,
+//       absoluteBoundingBox,
+//       absoluteTransform,
+//       children,
+//       fills,
+//       x,
+//       y,
+//    } = node
 
-   const staticNode: StaticSectionNode = {
-      parent: parentNode,
-      x,
-      y,
-      children: [],
-      id,
-      fills,
-      type: 'section',
-      width,
-      height,
-      absoluteTransform,
-      absoluteBoundingBox,
-      parentAbsoluteBoundingBox:
-         node.parent && 'absoluteBoundingBox' in node.parent
-            ? node.parent.absoluteBoundingBox ?? undefined
-            : undefined,
-   }
+//    const staticNode: StaticSectionNode = {
+//       parent: parentNode,
+//       x,
+//       y,
+//       children: [],
+//       id,
+//       fills,
+//       type: 'section',
+//       width,
+//       height,
+//       absoluteTransform,
+//       absoluteBoundingBox,
+//       parentAbsoluteBoundingBox:
+//          node.parent && 'absoluteBoundingBox' in node.parent
+//             ? node.parent.absoluteBoundingBox ?? undefined
+//             : undefined,
+//    }
 
-   staticNode.children = (
-      await Promise.all(
-         children
-            // TODO: 这里要结构，否 postmessage 的时候 JSON.stringify 会超出最大调用
-            .map((item) => createStaticNode(item, { ...staticNode })),
-      )
-   ).filter(Boolean) as StaticNode[]
+//    staticNode.children = (
+//       await Promise.all(
+//          children
+//             // TODO: 这里要结构，否 postmessage 的时候 JSON.stringify 会超出最大调用
+//             .map((item) => createStaticNode(item, { ...staticNode })),
+//       )
+//    ).filter(Boolean) as StaticNode[]
 
-   return staticNode
-}
+//    return staticNode
+// }
 
 export const createStaticNode = async (
    node: SceneNode,
@@ -725,6 +775,10 @@ export const createStaticNode = async (
 
    if (node.type === 'POLYGON') {
       return createStaticPolygonNode(node, parent)
+   }
+
+   if (node.type === 'BOOLEAN_OPERATION') {
+      return createStaticBooleanOperationNode(node, parent)
    }
 
    return null

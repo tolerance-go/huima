@@ -173,6 +173,32 @@ export interface StaticVectorNode
    svgBytes: Uint8Array
 }
 
+export interface StaticBooleanOperationNode
+   extends BaseStaticNode,
+      Pick<
+         BooleanOperationNode,
+         | 'effects'
+         | 'strokes'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'fills'
+         | 'strokeAlign'
+         | 'strokeWeight'
+         | 'dashPattern'
+         | 'x'
+         | 'y'
+         | 'layoutPositioning'
+      > {
+   type: 'booleanOperation'
+   parent?: StaticContainerNode
+   svgBytes: Uint8Array
+}
+
 export interface StaticStarNode
    extends BaseStaticNode,
       Pick<
@@ -321,6 +347,7 @@ export type StaticAtomNode =
    | StaticVectorNode
    | StaticStarNode
    | StaticPolygonNode
+   | StaticBooleanOperationNode
 
 export type StaticNode = StaticAtomNode | StaticContainerNode
 
