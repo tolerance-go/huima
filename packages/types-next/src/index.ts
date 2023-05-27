@@ -14,16 +14,68 @@ export interface BaseStaticContainerNode extends BaseStaticNode {
    children: StaticNode[]
 }
 
-export interface StaticFrameNode extends BaseStaticContainerNode {
-   type: 'Frame'
+export interface StaticFrameNode
+   extends BaseStaticContainerNode,
+      Pick<
+         FrameNode,
+         | 'effects'
+         | 'strokes'
+         | 'constraints'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'cornerRadius'
+         | 'fills'
+         | 'strokeAlign'
+         | 'strokeWeight'
+         | 'dashPattern'
+         | 'x'
+         | 'y'
+      > {
+   type: 'frame'
+   parentAbsoluteBoundingBox?: Rect
+   parent?: StaticContainerNode
 }
 
-export interface StaticGroupNode extends BaseStaticContainerNode {
-   type: 'Group'
+export interface StaticGroupNode
+   extends BaseStaticContainerNode,
+      Pick<
+         GroupNode,
+         | 'effects'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'x'
+         | 'y'
+      > {
+   type: 'group'
+   parentAbsoluteBoundingBox?: Rect
+   parent?: StaticContainerNode
 }
 
-export interface StaticSectionNode extends BaseStaticContainerNode {
-   type: 'Section'
+export interface StaticSectionNode
+   extends BaseStaticContainerNode,
+      Pick<
+         SectionNode,
+         | 'width'
+         | 'height'
+         | 'absoluteTransform'
+         | 'absoluteBoundingBox'
+         | 'fills'
+         | 'x'
+         | 'y'
+      > {
+   type: 'section'
+   parentAbsoluteBoundingBox?: Rect
+   parent?: StaticContainerNode
 }
 
 export interface StaticRectangleNode
@@ -45,8 +97,12 @@ export interface StaticRectangleNode
          | 'strokeAlign'
          | 'strokeWeight'
          | 'dashPattern'
+         | 'x'
+         | 'y'
       > {
    type: 'rectangle'
+   parentAbsoluteBoundingBox?: Rect
+   parent?: StaticContainerNode
 }
 
 export interface StaticTextNode
@@ -67,6 +123,8 @@ export interface StaticTextNode
          | 'absoluteBoundingBox'
          | 'absoluteRenderBounds'
          | 'absoluteTransform'
+         | 'x'
+         | 'y'
       > {
    type: 'text'
    characters?: TextNode['characters']
@@ -101,9 +159,12 @@ export interface StaticTextNode
          | 'textDecoration'
       >
    >
+   parent?: StaticContainerNode
 }
 
-export type StaticNode = StaticTextNode | StaticRectangleNode
+export type StaticAtomNode = StaticTextNode | StaticRectangleNode
+
+export type StaticNode = StaticAtomNode | StaticContainerNode
 
 export type StaticContainerNode =
    | StaticFrameNode
@@ -113,7 +174,7 @@ export type StaticContainerNode =
 export type UIEvents = {
    selectedNode: {
       // 为 null 则表示选中的节点转换失败
-      staticNode: StaticNode | null
+      staticNode: StaticAtomNode | null
    }
 }
 

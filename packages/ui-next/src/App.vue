@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { StaticNode, UIAction } from '@huima/types-next'
+import { StaticAtomNode, UIAction } from '@huima/types-next'
 import ClipboardJS from 'clipboard'
 import parsers from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
@@ -9,7 +9,7 @@ import { normalizeCss } from './constants/normalize.css'
 import { renderStaticNode } from './renderStaticNode'
 import { DSLType, RuntimeEnv } from './types'
 
-const selectedNode = ref<StaticNode | null>(null)
+const selectedNode = ref<StaticAtomNode | null>(null)
 
 const hoverCodeArea = ref(false)
 

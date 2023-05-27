@@ -8,9 +8,11 @@
    "scripts": {
       "build": "webpack",
       "build:jssj": "IS_JSSJ=true webpack",
+      "coverage": "vitest run --coverage",
       "dev": "npm run build -- --watch",
       "dev:jssj": "IS_JSSJ=true npm run build -- --watch",
-      "serve": "webpack serve --mode development"
+      "serve": "webpack serve --mode development",
+      "test": "vitest"
    },
    "dependencies": {
       "@huima/types-next": "workspace:^",
@@ -41,6 +43,7 @@
       "tailwindcss": "^3.3.2",
       "ts-loader": "^9.4.2",
       "typescript": "5.0.4",
+      "vitest": "^0.31.1",
       "vue-loader": "^17.1.1",
       "webpack": "^5.82.1",
       "webpack-bundle-analyzer": "^4.8.0",
