@@ -600,6 +600,7 @@ export const createStaticGroupNode = async (
       children,
       x,
       y,
+      layoutPositioning,
    } = node
 
    const staticNode: StaticGroupNode = {
@@ -617,6 +618,7 @@ export const createStaticGroupNode = async (
       absoluteBoundingBox,
       absoluteRenderBounds,
       absoluteTransform,
+      layoutPositioning,
       parentAbsoluteBoundingBox:
          node.parent && 'absoluteBoundingBox' in node.parent
             ? node.parent.absoluteBoundingBox ?? undefined

@@ -1,7 +1,6 @@
 import {
    ImageFillMeta,
    Point,
-   StaticContainerNode,
    StaticEllipseNode,
    StaticFrameNode,
    StaticGroupNode,
@@ -41,42 +40,20 @@ function computeCssAbsPosition({
    absoluteBoundingBox,
    constraints,
    rotation,
-   parentNode,
 }: {
    rotatedUpperLeft: Point
    parentAbsoluteBoundingBox: Rect
    absoluteBoundingBox: Rect
    constraints: Constraints
    rotation: number
-   parentNode?: StaticContainerNode
 }) {
    let cssPosition: Record<string, string> = {
       position: 'absolute',
    }
 
-   let targetRotatedUpperLeft = rotatedUpperLeft
-
-   // 如果父节点是 group 类型，那么要做一个处理，因为 group 内的节点的 x，y 是相对于 group 的祖先节点的第一个非 Group 的
-   // 而我们是把 group 当作 div 进行渲染的，所以要把 x，y 转换成相对于 group 的节点的
-   // 中间可以包裹多层 group，我们需要循环处理，直到找到第一个非 group 的父节点，所以 x，y 的相减是累加的
-   // 但是由于 group 之间是不存在间隙的，所以不需要考虑 group 层层嵌套的情况
-   if (parentNode?.type === 'group') {
-      let groupParent = parentNode
-      while (groupParent.parent && groupParent.parent.type === 'group') {
-         groupParent = groupParent.parent
-      }
-
-      if (groupParent) {
-         targetRotatedUpperLeft = relativePoint(rotatedUpperLeft, {
-            x: groupParent.x,
-            y: groupParent.y,
-         })
-      }
-   }
-
    // node 的 x，y 是相对于父节点的 absBoundingRect 的
    const beforeRotateBox = rotatePoint(
-      targetRotatedUpperLeft,
+      rotatedUpperLeft,
       relativePoint(
          getCenterPoint(absoluteBoundingBox),
          parentAbsoluteBoundingBox,
@@ -179,12 +156,10 @@ function computeVectorCssAbsPosition({
    parentAbsoluteRenderBox: parentAbsoluteRenderBox,
    absoluteRenderBox: absoluteRenderBox,
    constraints,
-   parentNode,
 }: {
    parentAbsoluteRenderBox: Rect
    absoluteRenderBox: Rect
    constraints: Constraints
-   parentNode?: StaticContainerNode
 }) {
    let cssPosition: Record<string, string> = {
       position: 'absolute',
@@ -192,34 +167,14 @@ function computeVectorCssAbsPosition({
 
    const upperLeft = relativePoint(absoluteRenderBox, parentAbsoluteRenderBox)
 
-   let targetUpperLeft = upperLeft
-
-   // 如果父节点是 group 类型，那么要做一个处理，因为 group 内的节点的 x，y 是相对于 group 的祖先节点的第一个非 Group 的
-   // 而我们是把 group 当作 div 进行渲染的，所以要把 x，y 转换成相对于 group 的节点的
-   // 中间可以包裹多层 group，我们需要循环处理，直到找到第一个非 group 的父节点，所以 x，y 的相减是累加的
-   // 但是由于 group 之间是不存在间隙的，所以不需要考虑 group 层层嵌套的情况
-   if (parentNode?.type === 'group') {
-      let groupParent = parentNode
-      while (groupParent.parent && groupParent.parent.type === 'group') {
-         groupParent = groupParent.parent
-      }
-
-      if (groupParent) {
-         targetUpperLeft = relativePoint(upperLeft, {
-            x: groupParent.x,
-            y: groupParent.y,
-         })
-      }
-   }
-
    switch (constraints.horizontal) {
       case 'MIN':
-         cssPosition.left = `${targetUpperLeft.x}px`
+         cssPosition.left = `${upperLeft.x}px`
          break
       case 'MAX':
          cssPosition.right = `${
             parentAbsoluteRenderBox.width -
-            targetUpperLeft.x -
+            upperLeft.x -
             absoluteRenderBox.width
          }px`
          break
@@ -227,24 +182,24 @@ function computeVectorCssAbsPosition({
          cssPosition.left = `calc(50% - ${absoluteRenderBox.width}px/2 - ${
             parentAbsoluteRenderBox.width / 2 -
             absoluteRenderBox.width / 2 -
-            targetUpperLeft.x
+            upperLeft.x
          }px)`
          break
       case 'SCALE':
-         cssPosition.left = `${targetUpperLeft.x}px`
+         cssPosition.left = `${upperLeft.x}px`
          cssPosition.right = `${
             parentAbsoluteRenderBox.width -
-            targetUpperLeft.x -
+            upperLeft.x -
             absoluteRenderBox.width
          }px`
          break
       case 'STRETCH':
          cssPosition.left = `${
-            (targetUpperLeft.x / parentAbsoluteRenderBox.width) * 100
+            (upperLeft.x / parentAbsoluteRenderBox.width) * 100
          }%`
          cssPosition.right = `${
             ((parentAbsoluteRenderBox.width -
-               targetUpperLeft.x -
+               upperLeft.x -
                absoluteRenderBox.width) /
                parentAbsoluteRenderBox.width) *
             100
@@ -254,12 +209,12 @@ function computeVectorCssAbsPosition({
 
    switch (constraints.vertical) {
       case 'MIN':
-         cssPosition.top = `${targetUpperLeft.y}px`
+         cssPosition.top = `${upperLeft.y}px`
          break
       case 'MAX':
          cssPosition.bottom = `${
             parentAbsoluteRenderBox.height -
-            targetUpperLeft.y -
+            upperLeft.y -
             absoluteRenderBox.height
          }px`
          break
@@ -267,24 +222,24 @@ function computeVectorCssAbsPosition({
          cssPosition.top = `calc(50% - ${absoluteRenderBox.height}px/2 - ${
             parentAbsoluteRenderBox.height / 2 -
             absoluteRenderBox.height / 2 -
-            targetUpperLeft.y
+            upperLeft.y
          }px)`
          break
       case 'SCALE':
-         cssPosition.top = `${targetUpperLeft.y}px`
+         cssPosition.top = `${upperLeft.y}px`
          cssPosition.bottom = `${
             parentAbsoluteRenderBox.height -
-            targetUpperLeft.y -
+            upperLeft.y -
             absoluteRenderBox.height
          }px`
          break
       case 'STRETCH':
          cssPosition.top = `${
-            (targetUpperLeft.y / parentAbsoluteRenderBox.height) * 100
+            (upperLeft.y / parentAbsoluteRenderBox.height) * 100
          }%`
          cssPosition.bottom = `${
             ((parentAbsoluteRenderBox.height -
-               targetUpperLeft.y -
+               upperLeft.y -
                absoluteRenderBox.height) /
                parentAbsoluteRenderBox.height) *
             100
@@ -581,7 +536,7 @@ function convertTextNodeToHtml(
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticTextNode,
-   parentNode?: StaticContainerNode,
+   parentNode?: StaticFrameNode | StaticGroupNode,
 ): string {
    // 将 characters 进行分割，遇到换行符分组
    let testGroups: StaticTextNode['styledCharacters'][] = groupByNewline(
@@ -627,7 +582,6 @@ function convertTextNodeToHtml(
                  absoluteBoundingBox: node.absoluteBoundingBox!,
                  constraints: node.constraints,
                  rotation: node.rotation,
-                 parentNode: node.parent,
               }),
            )
          : ''
@@ -892,7 +846,7 @@ function convertRectangleNodeToHtml(
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticRectangleNode,
-   parentNode?: StaticContainerNode,
+   parentNode?: StaticFrameNode | StaticGroupNode,
 ): string {
    // 获取 node 中的属性值
    const { width, height, cornerRadius, fills, strokes, effects, rotation } =
@@ -912,6 +866,25 @@ function convertRectangleNodeToHtml(
    const boxShadowCss = convertFrameEffectsToCss(effects)
    const transformCss = convertRotationToCss(rotation)
 
+   // 如果一路查找祖先 parent 的过程中，都是 group，并且最后一个 group 的父级是空或者是 frame 且是 autoLayout 布局
+   // 这个条件下，Group 容器渲染为一个 div 元素的
+   const getParentsGroupIsRoot = () => {
+      let parent = parentNode
+      while (parent) {
+         if (parent.type !== 'group') return { isParentsGroupIsRoot: false }
+         if (
+            !parent.parent ||
+            (parent.parent.type === 'frame' &&
+               parent.parent.layoutMode !== 'NONE')
+         )
+            return { isParentsGroupIsRoot: true, rootGroup: parent }
+         parent = parent.parent
+      }
+      return { isParentsGroupIsRoot: false }
+   }
+
+   const { isParentsGroupIsRoot, rootGroup } = getParentsGroupIsRoot()
+
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {
       width: `${width}px`,
@@ -921,21 +894,32 @@ function convertRectangleNodeToHtml(
       ...borderCss,
       ...boxShadowCss,
       ...transformCss,
-      // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
       ...(parentNode &&
-      (parentNode.layoutMode === 'NONE' ||
-         (parentNode.layoutMode !== 'NONE' &&
-            node.layoutPositioning === 'ABSOLUTE'))
+      (isParentsGroupIsRoot ||
+         (parentNode.type === 'frame' && parentNode.layoutMode === 'NONE') ||
+         node.layoutPositioning === 'ABSOLUTE')
          ? computeCssAbsPosition({
-              rotatedUpperLeft: {
-                 x: node.x,
-                 y: node.y,
-              },
-              parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
+              rotatedUpperLeft: isParentsGroupIsRoot
+                 ? relativePoint(
+                      {
+                         x: node.x,
+                         y: node.y,
+                      },
+                      {
+                         x: rootGroup!.x,
+                         y: rootGroup!.y,
+                      },
+                   )
+                 : {
+                      x: node.x,
+                      y: node.y,
+                   },
+              parentAbsoluteBoundingBox: isParentsGroupIsRoot
+                 ? rootGroup!.absoluteBoundingBox!
+                 : parentNode.absoluteBoundingBox!,
               absoluteBoundingBox: node.absoluteBoundingBox!,
               constraints: node.constraints,
               rotation: node.rotation,
-              parentNode: node.parent,
            })
          : {}),
    }
@@ -965,7 +949,7 @@ function convertEllipseNodeToHtml(
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticEllipseNode,
-   parentNode?: StaticContainerNode,
+   parentNode?: StaticFrameNode | StaticGroupNode,
 ): string {
    // 获取 node 中的属性值
    const { width, height, cornerRadius, fills, strokes, effects, rotation } =
@@ -1005,7 +989,6 @@ function convertEllipseNodeToHtml(
               absoluteBoundingBox: node.absoluteBoundingBox!,
               constraints: node.constraints,
               rotation: node.rotation,
-              parentNode: node.parent,
            })
          : {}),
    }
@@ -1021,13 +1004,14 @@ function convertEllipseNodeToHtml(
 
 /**
  * 函数根据传入的 node，将 figma node 转换成 html 代码
+ * 如果父节点是 group，并且父节点是根节点，需要设置绝对定位
  * @param node
  */
 const convertFrameNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticFrameNode,
-   parentNode?: StaticContainerNode,
+   parentNode?: StaticFrameNode | StaticGroupNode,
 ): string => {
    const {
       width,
@@ -1054,6 +1038,8 @@ const convertFrameNodeToHtml = (
    const boxShadowCss = convertFrameEffectsToCss(effects)
    const transformCss = convertRotationToCss(rotation)
 
+   console.log('parentNode', parentNode)
+
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {
       width: `${width}px`,
@@ -1065,20 +1051,17 @@ const convertFrameNodeToHtml = (
       ...boxShadowCss,
       ...transformCss,
       ...(parentNode &&
-      (parentNode.layoutMode === 'NONE' ||
-         (parentNode.layoutMode !== 'NONE' &&
-            node.layoutPositioning === 'ABSOLUTE'))
+      ((parentNode.type === 'group' && !parentNode.parent) ||
+         (parentNode.type === 'frame' && parentNode.layoutMode === 'NONE') ||
+         node.layoutPositioning === 'ABSOLUTE')
          ? computeCssAbsPosition({
               rotatedUpperLeft: {
                  x: node.x,
                  y: node.y,
               },
-
               parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
               absoluteBoundingBox: node.absoluteBoundingBox!,
               constraints: node.constraints,
-              parentNode: node.parent,
-
               rotation: node.rotation,
            })
          : {}),
@@ -1112,7 +1095,7 @@ const convertLineNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticLineNode,
-   parentNode?: StaticContainerNode,
+   parentNode?: StaticFrameNode | StaticGroupNode,
 ) => {
    const { width, height, fills, strokes, effects, rotation } = node
 
@@ -1126,7 +1109,6 @@ const convertLineNodeToHtml = (
               parentAbsoluteRenderBox: parentNode.absoluteRenderBounds!,
               absoluteRenderBox: node.absoluteRenderBounds!,
               constraints: node.constraints,
-              parentNode: node.parent,
            })
          : {}),
    }
@@ -1149,7 +1131,7 @@ const convertVectorNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticVectorNode,
-   parentNode?: StaticContainerNode,
+   parentNode?: StaticFrameNode | StaticGroupNode,
 ) => {
    const { width, height, fills, strokes, effects, rotation } = node
 
@@ -1163,7 +1145,6 @@ const convertVectorNodeToHtml = (
               parentAbsoluteRenderBox: parentNode.absoluteRenderBounds!,
               absoluteRenderBox: node.absoluteRenderBounds!,
               constraints: node.constraints,
-              parentNode: node.parent,
            })
          : {}),
    }
@@ -1186,7 +1167,7 @@ const convertStarNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticStarNode,
-   parentNode?: StaticContainerNode,
+   parentNode?: StaticFrameNode | StaticGroupNode,
 ) => {
    const { width, height, fills, strokes, effects, rotation } = node
 
@@ -1200,7 +1181,6 @@ const convertStarNodeToHtml = (
               parentAbsoluteRenderBox: parentNode.absoluteRenderBounds!,
               absoluteRenderBox: node.absoluteRenderBounds!,
               constraints: node.constraints,
-              parentNode: node.parent,
            })
          : {}),
    }
@@ -1223,7 +1203,7 @@ const convertPolygonNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticPolygonNode,
-   parentNode?: StaticContainerNode,
+   parentNode?: StaticFrameNode | StaticGroupNode,
 ) => {
    const { width, height, fills, strokes, effects, rotation } = node
 
@@ -1237,7 +1217,6 @@ const convertPolygonNodeToHtml = (
               parentAbsoluteRenderBox: parentNode.absoluteRenderBounds!,
               absoluteRenderBox: node.absoluteRenderBounds!,
               constraints: node.constraints,
-              parentNode: node.parent,
            })
          : {}),
    }
@@ -1268,39 +1247,46 @@ function convertEffectsToFilter(
    }
 }
 
+/**
+ * 作为根节点渲染的时候，或者父节点是 autoLayout，使用 div 元素
+ * 如果作为子节点渲染的时候，直接跳过
+ * group 需要渲染 gap，但是就用子节点的绝对定位实现即可
+ *
+ * @param runtimeEnv
+ * @param dslType
+ * @param node
+ * @param parentNode
+ * @returns
+ */
 const convertGroupNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticGroupNode,
-   parentNode?: StaticContainerNode,
+   parentNode?: StaticFrameNode | StaticGroupNode,
 ): string => {
    const { width, height, effects, rotation, children } = node
-
-   // const boxShadowCss = convertFrameEffectsToCss(effects)
-   const transformCss = convertRotationToCss(rotation)
 
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {
       width: `${width}px`,
       height: `${height}px`,
       ...convertEffectsToFilter(effects),
-      // ...boxShadowCss,
-      ...transformCss,
-      ...(parentNode
+      ...convertRotationToCss(rotation),
+      ...(parentNode &&
+      parentNode.type === 'frame' &&
+      parentNode.layoutMode !== 'NONE' &&
+      node.layoutPositioning === 'ABSOLUTE'
          ? computeCssAbsPosition({
               rotatedUpperLeft: {
                  x: node.x,
                  y: node.y,
               },
-
               parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
               absoluteBoundingBox: node.absoluteBoundingBox!,
               constraints: {
                  horizontal: 'MIN',
                  vertical: 'MIN',
               },
-              parentNode: node.parent,
-
               rotation: node.rotation,
            })
          : {}),
@@ -1309,12 +1295,22 @@ const convertGroupNodeToHtml = (
    // 转换 CSS 对象为 CSS 字符串
    const style = convertCssObjectToString(css)
 
-   // 创建 HTML
-   const html = `<div role="group" style="${style}">${children
+   const childrenHtml = children
       .map((item) => {
          return renderStaticNode(runtimeEnv, dslType, item, node)
       })
-      .join('\n')}</div>`
+      .join('\n')
+
+   // 存在父节点，且不是 frame + autoLayout，直接跳过返回子节点
+   if (
+      parentNode &&
+      !(parentNode.type === 'frame' && parentNode.layoutMode !== 'NONE')
+   ) {
+      return childrenHtml
+   }
+
+   // 如果为根节点
+   const html = `<div role="group" style="${style}">${childrenHtml}</div>`
 
    return html
 }
@@ -1327,7 +1323,7 @@ export const renderStaticNode = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticNode,
-   parentNode?: StaticContainerNode,
+   parentNode?: StaticFrameNode | StaticGroupNode,
 ): string => {
    if (runtimeEnv === 'web') {
       if (dslType === 'html') {
