@@ -1,4 +1,4 @@
-pool
+<!-- pool
 
 -  支持启用图片压缩
 -  支持启用图片转 base64
@@ -44,4 +44,6 @@ not released
 
 2023/5/23
 
--  feat: 支持 effects 样式转换
+-  feat: 支持 effects 样式转换 -->
+
+-  支持 布局的 autoFlex 和绝对定位

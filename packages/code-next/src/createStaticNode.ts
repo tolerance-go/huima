@@ -1,5 +1,7 @@
 import {
+   ImageFillMeta,
    StaticContainerNode,
+   StaticEllipseNode,
    StaticFrameNode,
    StaticGroupNode,
    StaticNode,
@@ -7,6 +9,7 @@ import {
    StaticSectionNode,
    StaticTextNode,
 } from '@huima/types-next'
+import { pluginApi } from './pluginApi'
 
 type CharInfo = {
    start: number
@@ -120,10 +123,114 @@ export const createStaticTextNode = (
    }
 }
 
-export const createStaticRectangleNode = (
+export const createStaticEllipseNode = async (
+   node: EllipseNode,
+   parentNode?: StaticContainerNode,
+): Promise<StaticEllipseNode> => {
+   const {
+      id,
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      cornerRadius,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      parent,
+      x,
+      y,
+   } = node
+
+   return {
+      parent: parentNode,
+      x,
+      y,
+      id,
+      type: 'ellipse',
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      cornerRadius,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      imageFillMeta: await getImageFillMeta(fills as ReadonlyArray<Paint>),
+   }
+}
+
+/**
+ * 这个函数接受 fills 数组，目前只处理第一个元素
+ * 如果是图片，则返回 ImageFillMeta 类型对象
+ */
+async function getImageFillMeta(
+   fills: ReadonlyArray<Paint>,
+): Promise<ImageFillMeta | undefined> {
+   const fill = fills[0]
+   if (fill?.type === 'IMAGE') {
+      const { imageHash } = fill as ImagePaint
+
+      if (imageHash) {
+         const image = pluginApi.getImageByHash(imageHash)
+
+         if (image) {
+            const bytes = await image.getBytesAsync()
+
+            const imageBytes = bytes
+
+            let extension = ''
+            const header = bytes.slice(0, 3)
+
+            // Convert Uint8Array to hexadecimal
+            let hex = ''
+            for (let i = 0; i < header.length; i++) {
+               hex += header[i].toString(16)
+            }
+
+            switch (hex) {
+               case '89504e':
+                  extension = 'png'
+                  break
+               case '474946':
+                  extension = 'gif'
+                  break
+               case 'ffd8ff':
+                  extension = 'jpg'
+                  break
+               default:
+                  extension = 'png' // default to png if unable to determine
+            }
+            const imageExtension = extension
+
+            return {
+               imageBytes,
+               imageByteLength: bytes.byteLength,
+               imageExtension,
+            }
+         }
+      }
+   }
+}
+
+export const createStaticRectangleNode = async (
    node: RectangleNode,
    parentNode?: StaticContainerNode,
-): StaticRectangleNode => {
+): Promise<StaticRectangleNode> => {
    const {
       id,
       effects,
@@ -171,13 +278,14 @@ export const createStaticRectangleNode = (
       strokeAlign,
       strokeWeight,
       dashPattern,
+      imageFillMeta: await getImageFillMeta(fills as ReadonlyArray<Paint>),
    }
 }
 
-export const createStaticFrameNode = (
+export const createStaticFrameNode = async (
    node: FrameNode,
    parentNode?: StaticContainerNode,
-): StaticFrameNode => {
+): Promise<StaticFrameNode> => {
    const {
       id,
       effects,
@@ -226,20 +334,24 @@ export const createStaticFrameNode = (
       strokeAlign,
       strokeWeight,
       dashPattern,
+      imageFillMeta: await getImageFillMeta(fills as ReadonlyArray<Paint>),
    }
 
-   staticNode.children = children
-      // TODO: 这里要结构，否 postmessage 的时候 JSON.stringify 会超出最大调用
-      .map((item) => createStaticNode(item, { ...staticNode }))
-      .filter(Boolean) as StaticNode[]
+   staticNode.children = (
+      await Promise.all(
+         children
+            // TODO: 这里要结构，否 postmessage 的时候 JSON.stringify 会超出最大调用
+            .map((item) => createStaticNode(item, { ...staticNode })),
+      )
+   ).filter(Boolean) as StaticNode[]
 
    return staticNode
 }
 
-export const createStaticGroupNode = (
+export const createStaticGroupNode = async (
    node: GroupNode,
    parentNode?: StaticContainerNode,
-): StaticGroupNode => {
+): Promise<StaticGroupNode> => {
    const {
       id,
       effects,
@@ -276,19 +388,21 @@ export const createStaticGroupNode = (
             : undefined,
    }
 
-   staticNode.children = children
-      // TODO: 这里要结构，否 postmessage 的时候 JSON.stringify 会超出最大调用
-
-      .map((item) => createStaticNode(item, { ...staticNode }))
-      .filter(Boolean) as StaticNode[]
+   staticNode.children = (
+      await Promise.all(
+         children
+            // TODO: 这里要结构，否 postmessage 的时候 JSON.stringify 会超出最大调用
+            .map((item) => createStaticNode(item, { ...staticNode })),
+      )
+   ).filter(Boolean) as StaticNode[]
 
    return staticNode
 }
 
-export const createStaticSectionNode = (
+export const createStaticSectionNode = async (
    node: SectionNode,
    parentNode?: StaticContainerNode,
-): StaticSectionNode => {
+): Promise<StaticSectionNode> => {
    const {
       id,
       width,
@@ -319,24 +433,33 @@ export const createStaticSectionNode = (
             : undefined,
    }
 
-   staticNode.children = children
-      // TODO: 这里要结构，否 postmessage 的时候 JSON.stringify 会超出最大调用
-      .map((item) => createStaticNode(item, { ...staticNode }))
-      .filter(Boolean) as StaticNode[]
+   staticNode.children = (
+      await Promise.all(
+         children
+            // TODO: 这里要结构，否 postmessage 的时候 JSON.stringify 会超出最大调用
+            .map((item) => createStaticNode(item, { ...staticNode })),
+      )
+   ).filter(Boolean) as StaticNode[]
 
    return staticNode
 }
 
-export const createStaticNode = (
+export const createStaticNode = async (
    node: SceneNode,
    parent?: StaticContainerNode,
-): StaticNode | null => {
+): Promise<StaticNode | null> => {
+   if (node.visible === false) return null
+
    if (node.type === 'TEXT') {
       return createStaticTextNode(node, parent)
    }
 
    if (node.type === 'RECTANGLE') {
       return createStaticRectangleNode(node, parent)
+   }
+
+   if (node.type === 'ELLIPSE') {
+      return createStaticEllipseNode(node, parent)
    }
 
    if (node.type === 'FRAME') {

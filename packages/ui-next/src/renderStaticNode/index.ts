@@ -1,6 +1,8 @@
 import {
+   ImageFillMeta,
    Point,
    StaticContainerNode,
+   StaticEllipseNode,
    StaticFrameNode,
    StaticGroupNode,
    StaticNode,
@@ -602,10 +604,14 @@ function convertTextNodeToHtml(
  * 将Figma的fills转换为CSS的background属性
  * 1. 额外处理渐变色的 fill
  * 2. 如果没有符合条件的 fill，返回 none，而不是抛出异常
+ * 3. 处理图片的 fill，需要处理 figma 中的各种填充模式
  * @param fills
  * @returns
  */
-function convertFillsToCss(fills: Paint[]): Record<string, string> {
+function convertFillsToCss(
+   fills: Paint[],
+   imageFillMeta?: ImageFillMeta,
+): Record<string, string> {
    const visibleFills = fills.filter((fill) => fill.visible !== false)
    if (visibleFills.length === 0) {
       return {}
@@ -630,6 +636,25 @@ function convertFillsToCss(fills: Paint[]): Record<string, string> {
                )} ${stop.position * 100}%`,
          )
          return { background: `linear-gradient(${gradientColors.join(', ')})` }
+      }
+      case 'IMAGE': {
+         const imageFill = firstFill as ImagePaint
+         const backgroundSize =
+            imageFill.scaleMode === 'FILL' ? 'cover' : 'contain'
+
+         const url = URL.createObjectURL(
+            new Blob([imageFillMeta!.imageBytes], {
+               type: `image/${imageFillMeta!.imageExtension}`,
+            }),
+         )
+         const backgroundImage = `url(${url})`
+
+         return {
+            'background-image': backgroundImage,
+            'background-size': backgroundSize,
+            'background-repeat': 'no-repeat',
+            'background-position': 'center',
+         }
       }
       default: {
          return {}
@@ -734,7 +759,10 @@ function convertRectangleNodeToHtml(
       node
 
    // 转换颜色，边框和效果为 CSS 属性
-   const backgroundColorCss = convertFillsToCss(fills as Paint[])
+   const backgroundColorCss = convertFillsToCss(
+      fills as Paint[],
+      node.imageFillMeta,
+   )
    const borderCss = convertStrokesToCss(
       strokes as Paint[],
       node.strokeWeight as number,
@@ -749,6 +777,76 @@ function convertRectangleNodeToHtml(
       width: `${width}px`,
       height: `${height}px`,
       ...convertBorderRadiusToCss(String(cornerRadius)),
+      ...backgroundColorCss,
+      ...borderCss,
+      ...boxShadowCss,
+      ...transformCss,
+      // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
+      ...(parentNode
+         ? computeCssAbsPosition({
+              rotatedUpperLeft: {
+                 x: node.x,
+                 y: node.y,
+              },
+              parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
+              absoluteBoundingBox: node.absoluteBoundingBox!,
+              constraints: node.constraints,
+              rotation: node.rotation,
+              parentNode: node.parent,
+           })
+         : {}),
+   }
+
+   // 转换 CSS 对象为 CSS 字符串
+   const style = convertCssObjectToString(css)
+
+   // 创建 HTML
+   const html = `<div style="${style}"></div>`
+
+   return html
+}
+
+/**
+ * 根据传入的 node，将 figma node 转换成 html 代码
+ * 将矩形节点转换成 html 代码
+ * 基本结构为一个 div，传入的类型为 StaticRectangleNode
+ * 根据参数的 width 和 height 设置 div 的宽高
+ * 根据传入的 cornerRadius 设置 div 的圆角
+ * 根据传入的 fills 设置 div 的背景色，找到第一个可见 fill，如果没有可见 fill，则设置为空，注意处理渐变色
+ * 根据传入的 strokes 设置 div 的边框，找到第一个可见 stroke，如果没有可见 stroke，则设置为空，
+ * 注意处理边框的位置信息，比如 center，outside，inside
+ * 根据传入的 effects 设置 div 的阴影，找到第一个可见 effect，如果没有可见 effect，则设置为空
+ * 根据传入的 rotation 设置 div 的旋转角度
+ */
+function convertEllipseNodeToHtml(
+   runtimeEnv: RuntimeEnv,
+   dslType: DSLType,
+   node: StaticEllipseNode,
+   parentNode?: StaticContainerNode,
+): string {
+   // 获取 node 中的属性值
+   const { width, height, cornerRadius, fills, strokes, effects, rotation } =
+      node
+
+   // 转换颜色，边框和效果为 CSS 属性
+   const backgroundColorCss = convertFillsToCss(
+      fills as Paint[],
+      node.imageFillMeta,
+   )
+   const borderCss = convertStrokesToCss(
+      strokes as Paint[],
+      node.strokeWeight as number,
+      node.strokeAlign,
+      node.dashPattern,
+   )
+   const boxShadowCss = convertFrameEffectsToCss(effects)
+   const transformCss = convertRotationToCss(rotation)
+
+   // 创建 CSS 对象
+   const css: Record<string, string | number | null | undefined> = {
+      width: `${width}px`,
+      height: `${height}px`,
+      'border-radius': '100%',
       ...backgroundColorCss,
       ...borderCss,
       ...boxShadowCss,
@@ -800,7 +898,10 @@ const convertFrameNodeToHtml = (
    } = node
 
    // 转换颜色，边框和效果为 CSS 属性
-   const backgroundColorCss = convertFillsToCss(fills as Paint[])
+   const backgroundColorCss = convertFillsToCss(
+      fills as Paint[],
+      node.imageFillMeta,
+   )
    const borderCss = convertStrokesToCss(
       strokes as Paint[],
       node.strokeWeight as number,
@@ -947,6 +1048,16 @@ export const renderStaticNode = (
 
          if (node.type === 'rectangle') {
             const content = convertRectangleNodeToHtml(
+               runtimeEnv,
+               dslType,
+               node,
+               parentNode,
+            )
+            return content
+         }
+
+         if (node.type === 'ellipse') {
+            const content = convertEllipseNodeToHtml(
                runtimeEnv,
                dslType,
                node,

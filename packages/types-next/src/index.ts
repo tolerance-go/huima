@@ -39,6 +39,7 @@ export interface StaticFrameNode
    type: 'frame'
    parentAbsoluteBoundingBox?: Rect
    parent?: StaticContainerNode
+   imageFillMeta?: ImageFillMeta
 }
 
 export interface StaticGroupNode
@@ -103,6 +104,34 @@ export interface StaticRectangleNode
    type: 'rectangle'
    parentAbsoluteBoundingBox?: Rect
    parent?: StaticContainerNode
+   imageFillMeta?: ImageFillMeta
+}
+
+export interface StaticEllipseNode
+   extends BaseStaticNode,
+      Pick<
+         EllipseNode,
+         | 'effects'
+         | 'strokes'
+         | 'constraints'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'cornerRadius'
+         | 'fills'
+         | 'strokeAlign'
+         | 'strokeWeight'
+         | 'dashPattern'
+         | 'x'
+         | 'y'
+      > {
+   type: 'ellipse'
+   parent?: StaticContainerNode
+   imageFillMeta?: ImageFillMeta
 }
 
 export interface StaticTextNode
@@ -162,7 +191,10 @@ export interface StaticTextNode
    parent?: StaticContainerNode
 }
 
-export type StaticAtomNode = StaticTextNode | StaticRectangleNode
+export type StaticAtomNode =
+   | StaticTextNode
+   | StaticRectangleNode
+   | StaticEllipseNode
 
 export type StaticNode = StaticAtomNode | StaticContainerNode
 
@@ -171,10 +203,16 @@ export type StaticContainerNode =
    | StaticGroupNode
    | StaticSectionNode
 
+export type ImageFillMeta = {
+   imageBytes: Uint8Array
+   imageByteLength: number
+   imageExtension: string
+}
+
 export type UIEvents = {
    selectedNode: {
       // 为 null 则表示选中的节点转换失败
-      staticNode: StaticAtomNode | null
+      staticNode: StaticNode | null
    }
 }
 

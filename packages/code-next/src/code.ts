@@ -30,14 +30,14 @@ pluginApi.ui.onmessage = async (message) => {
    }
 }
 
-pluginApi.on('selectionchange', () => {
+pluginApi.on('selectionchange', async () => {
    if (pluginApi.currentPage.selection.length) {
       const [node] = pluginApi.currentPage.selection
 
       console.log('selectionchange', node)
 
       postActionToUI('selectedNode', {
-         staticNode: createStaticNode(node),
+         staticNode: await createStaticNode(node),
       })
    }
 })
