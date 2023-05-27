@@ -6,6 +6,7 @@ import {
    StaticGroupNode,
    StaticLineNode,
    StaticNode,
+   StaticPolygonNode,
    StaticRectangleNode,
    StaticSectionNode,
    StaticTextNode,
@@ -169,11 +170,9 @@ export const createStaticLineNode = async (
       strokeAlign,
       strokeWeight,
       dashPattern,
-      svgMeta: {
-         bytes: await node.exportAsync({
-            format: 'SVG',
-         }),
-      },
+      svgBytes: await node.exportAsync({
+         format: 'SVG',
+      }),
    }
 }
 
@@ -221,11 +220,109 @@ export const createStaticVectorNode = async (
       strokeAlign,
       strokeWeight,
       dashPattern,
-      svgMeta: {
-         bytes: await node.exportAsync({
-            format: 'SVG',
-         }),
-      },
+      svgBytes: await node.exportAsync({
+         format: 'SVG',
+      }),
+   }
+}
+
+export const createStaticStarNode = async (
+   node: StarNode,
+   parentNode?: StaticContainerNode,
+): Promise<StaticVectorNode> => {
+   const {
+      id,
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      x,
+      y,
+   } = node
+
+   return {
+      parent: parentNode,
+      x,
+      y,
+      id,
+      type: 'vector',
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      svgBytes: await node.exportAsync({
+         format: 'SVG',
+      }),
+   }
+}
+
+export const createStaticPolygonNode = async (
+   node: PolygonNode,
+   parentNode?: StaticContainerNode,
+): Promise<StaticPolygonNode> => {
+   const {
+      id,
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      x,
+      y,
+   } = node
+
+   return {
+      parent: parentNode,
+      x,
+      y,
+      id,
+      type: 'polygon',
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      svgBytes: await node.exportAsync({
+         format: 'SVG',
+      }),
    }
 }
 
@@ -586,6 +683,14 @@ export const createStaticNode = async (
 
    if (node.type === 'VECTOR') {
       return createStaticVectorNode(node, parent)
+   }
+
+   if (node.type === 'STAR') {
+      return createStaticStarNode(node, parent)
+   }
+
+   if (node.type === 'POLYGON') {
+      return createStaticPolygonNode(node, parent)
    }
 
    return null

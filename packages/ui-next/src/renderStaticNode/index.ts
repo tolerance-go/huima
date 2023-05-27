@@ -7,13 +7,19 @@ import {
    StaticGroupNode,
    StaticLineNode,
    StaticNode,
+   StaticPolygonNode,
    StaticRectangleNode,
+   StaticStarNode,
    StaticTextNode,
    StaticVectorNode,
 } from '@huima/types-next'
 import { Buffer } from 'buffer'
 import { DSLType, RuntimeEnv } from '../types'
-import { convertPoint, getCenterPoint, rotatePoint } from '../utils/rotatePoint'
+import {
+   getCenterPoint,
+   relativePoint,
+   rotatePoint,
+} from '../utils/rotatePoint'
 
 /**
  * 这个函数根据传入的 parentAbsoluteBoundingBox 和 absoluteBoundingBox，以及
@@ -60,7 +66,7 @@ function computeCssAbsPosition({
       }
 
       if (groupParent) {
-         targetRotatedUpperLeft = convertPoint(rotatedUpperLeft, {
+         targetRotatedUpperLeft = relativePoint(rotatedUpperLeft, {
             x: groupParent.x,
             y: groupParent.y,
          })
@@ -70,7 +76,7 @@ function computeCssAbsPosition({
    // node 的 x，y 是相对于父节点的 absBoundingRect 的
    const beforeRotateBox = rotatePoint(
       targetRotatedUpperLeft,
-      convertPoint(
+      relativePoint(
          getCenterPoint(absoluteBoundingBox),
          parentAbsoluteBoundingBox,
       ),
@@ -152,6 +158,134 @@ function computeCssAbsPosition({
                beforeRotateBox.y -
                absoluteBoundingBox.height) /
                parentAbsoluteBoundingBox.height) *
+            100
+         }%`
+         break
+   }
+
+   return cssPosition
+}
+
+/**
+ *
+ * 1. 生成的 svg 是已经旋转过后的了，所以不需要考虑旋转的问题
+ * 2. 根据传入的 absoluteBoundingBox 和 parentAbsoluteBoundingBox 计算出相对于父节点的 x，y，然后根据 constraints 计算出 left，right，top，bottom
+ *
+ * @param param0
+ * @returns
+ */
+function computeVectorCssAbsPosition({
+   parentAbsoluteRenderBox: parentAbsoluteRenderBox,
+   absoluteRenderBox: absoluteRenderBox,
+   constraints,
+   parentNode,
+}: {
+   parentAbsoluteRenderBox: Rect
+   absoluteRenderBox: Rect
+   constraints: Constraints
+   parentNode?: StaticContainerNode
+}) {
+   let cssPosition: Record<string, string> = {
+      position: 'absolute',
+   }
+
+   const upperLeft = relativePoint(absoluteRenderBox, parentAbsoluteRenderBox)
+
+   let targetUpperLeft = upperLeft
+
+   // 如果父节点是 group 类型，那么要做一个处理，因为 group 内的节点的 x，y 是相对于 group 的祖先节点的第一个非 Group 的
+   // 而我们是把 group 当作 div 进行渲染的，所以要把 x，y 转换成相对于 group 的节点的
+   // 中间可以包裹多层 group，我们需要循环处理，直到找到第一个非 group 的父节点，所以 x，y 的相减是累加的
+   // 但是由于 group 之间是不存在间隙的，所以不需要考虑 group 层层嵌套的情况
+   if (parentNode?.type === 'group') {
+      let groupParent = parentNode
+      while (groupParent.parent && groupParent.parent.type === 'group') {
+         groupParent = groupParent.parent
+      }
+
+      if (groupParent) {
+         targetUpperLeft = relativePoint(upperLeft, {
+            x: groupParent.x,
+            y: groupParent.y,
+         })
+      }
+   }
+
+   switch (constraints.horizontal) {
+      case 'MIN':
+         cssPosition.left = `${targetUpperLeft.x}px`
+         break
+      case 'MAX':
+         cssPosition.right = `${
+            parentAbsoluteRenderBox.width -
+            targetUpperLeft.x -
+            absoluteRenderBox.width
+         }px`
+         break
+      case 'CENTER':
+         cssPosition.left = `calc(50% - ${absoluteRenderBox.width}px/2 - ${
+            parentAbsoluteRenderBox.width / 2 -
+            absoluteRenderBox.width / 2 -
+            targetUpperLeft.x
+         }px)`
+         break
+      case 'SCALE':
+         cssPosition.left = `${targetUpperLeft.x}px`
+         cssPosition.right = `${
+            parentAbsoluteRenderBox.width -
+            targetUpperLeft.x -
+            absoluteRenderBox.width
+         }px`
+         break
+      case 'STRETCH':
+         cssPosition.left = `${
+            (targetUpperLeft.x / parentAbsoluteRenderBox.width) * 100
+         }%`
+         cssPosition.right = `${
+            ((parentAbsoluteRenderBox.width -
+               targetUpperLeft.x -
+               absoluteRenderBox.width) /
+               parentAbsoluteRenderBox.width) *
+            100
+         }%`
+         break
+   }
+
+   switch (constraints.vertical) {
+      case 'MIN':
+         cssPosition.top = `${targetUpperLeft.y}px`
+         break
+      case 'MAX':
+         cssPosition.bottom = `${
+            parentAbsoluteRenderBox.height -
+            targetUpperLeft.y -
+            absoluteRenderBox.height
+         }px`
+         break
+      case 'CENTER':
+         cssPosition.top = `calc(50% - ${absoluteRenderBox.height}px/2 - ${
+            parentAbsoluteRenderBox.height / 2 -
+            absoluteRenderBox.height / 2 -
+            targetUpperLeft.y
+         }px)`
+         break
+      case 'SCALE':
+         cssPosition.top = `${targetUpperLeft.y}px`
+         cssPosition.bottom = `${
+            parentAbsoluteRenderBox.height -
+            targetUpperLeft.y -
+            absoluteRenderBox.height
+         }px`
+         break
+      case 'STRETCH':
+         cssPosition.top = `${
+            (targetUpperLeft.y / parentAbsoluteRenderBox.height) * 100
+         }%`
+         cssPosition.bottom = `${
+            ((parentAbsoluteRenderBox.height -
+               targetUpperLeft.y -
+               absoluteRenderBox.height) /
+               parentAbsoluteRenderBox.height) *
             100
          }%`
          break
@@ -959,6 +1093,8 @@ const convertFrameNodeToHtml = (
 /**
  * 根据传入的 node，将 figma node 转换成 html 代码
  * 将 line 转换成 svg 代码
+ * 他不处理旋转，生成的 svg 代码已经是旋转过后的了，后期也可以直接当图用
+ * 所以 x 和 y，我们这里使用 absoluteBoundingBox 的数据
  * @param runtimeEnv
  * @param dslType
  * @param node
@@ -972,21 +1108,16 @@ const convertLineNodeToHtml = (
 ) => {
    const { width, height, fills, strokes, effects, rotation } = node
 
-   const html = Buffer.from(node.svgMeta.bytes).toString()
+   const html = Buffer.from(node.svgBytes).toString()
 
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {
       // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
       ...(parentNode
-         ? computeCssAbsPosition({
-              rotatedUpperLeft: {
-                 x: node.x,
-                 y: node.y,
-              },
-              parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
-              absoluteBoundingBox: node.absoluteBoundingBox!,
+         ? computeVectorCssAbsPosition({
+              parentAbsoluteRenderBox: parentNode.absoluteRenderBounds!,
+              absoluteRenderBox: node.absoluteRenderBounds!,
               constraints: node.constraints,
-              rotation: node.rotation,
               parentNode: node.parent,
            })
          : {}),
@@ -1014,21 +1145,16 @@ const convertVectorNodeToHtml = (
 ) => {
    const { width, height, fills, strokes, effects, rotation } = node
 
-   const html = Buffer.from(node.svgMeta.bytes).toString()
+   const html = Buffer.from(node.svgBytes).toString()
 
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {
       // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
       ...(parentNode
-         ? computeCssAbsPosition({
-              rotatedUpperLeft: {
-                 x: node.x,
-                 y: node.y,
-              },
-              parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
-              absoluteBoundingBox: node.absoluteBoundingBox!,
+         ? computeVectorCssAbsPosition({
+              parentAbsoluteRenderBox: parentNode.absoluteRenderBounds!,
+              absoluteRenderBox: node.absoluteRenderBounds!,
               constraints: node.constraints,
-              rotation: node.rotation,
               parentNode: node.parent,
            })
          : {}),
@@ -1038,6 +1164,80 @@ const convertVectorNodeToHtml = (
    const style = convertCssObjectToString(css)
 
    return html.replace('<svg', `<svg role='vector' style="${style}"`)
+}
+
+/**
+ * 根据传入的 node，将 figma node 转换成 html 代码
+ * 将 vector 转换成 svg 代码
+ * @param runtimeEnv
+ * @param dslType
+ * @param node
+ * @param parentNode
+ */
+const convertStarNodeToHtml = (
+   runtimeEnv: RuntimeEnv,
+   dslType: DSLType,
+   node: StaticStarNode,
+   parentNode?: StaticContainerNode,
+) => {
+   const { width, height, fills, strokes, effects, rotation } = node
+
+   const html = Buffer.from(node.svgBytes).toString()
+
+   // 创建 CSS 对象
+   const css: Record<string, string | number | null | undefined> = {
+      // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
+      ...(parentNode
+         ? computeVectorCssAbsPosition({
+              parentAbsoluteRenderBox: parentNode.absoluteRenderBounds!,
+              absoluteRenderBox: node.absoluteRenderBounds!,
+              constraints: node.constraints,
+              parentNode: node.parent,
+           })
+         : {}),
+   }
+
+   // 转换 CSS 对象为 CSS 字符串
+   const style = convertCssObjectToString(css)
+
+   return html.replace('<svg', `<svg role='star' style="${style}"`)
+}
+
+/**
+ * 根据传入的 node，将 figma node 转换成 html 代码
+ * 将 vector 转换成 svg 代码
+ * @param runtimeEnv
+ * @param dslType
+ * @param node
+ * @param parentNode
+ */
+const convertPolygonNodeToHtml = (
+   runtimeEnv: RuntimeEnv,
+   dslType: DSLType,
+   node: StaticPolygonNode,
+   parentNode?: StaticContainerNode,
+) => {
+   const { width, height, fills, strokes, effects, rotation } = node
+
+   const html = Buffer.from(node.svgBytes).toString()
+
+   // 创建 CSS 对象
+   const css: Record<string, string | number | null | undefined> = {
+      // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
+      ...(parentNode
+         ? computeVectorCssAbsPosition({
+              parentAbsoluteRenderBox: parentNode.absoluteRenderBounds!,
+              absoluteRenderBox: node.absoluteRenderBounds!,
+              constraints: node.constraints,
+              parentNode: node.parent,
+           })
+         : {}),
+   }
+
+   // 转换 CSS 对象为 CSS 字符串
+   const style = convertCssObjectToString(css)
+
+   return html.replace('<svg', `<svg role='polygon' style="${style}"`)
 }
 
 function convertEffectsToFilter(
@@ -1187,6 +1387,26 @@ export const renderStaticNode = (
 
          if (node.type === 'vector') {
             const content = convertVectorNodeToHtml(
+               runtimeEnv,
+               dslType,
+               node,
+               parentNode,
+            )
+            return content
+         }
+
+         if (node.type === 'polygon') {
+            const content = convertPolygonNodeToHtml(
+               runtimeEnv,
+               dslType,
+               node,
+               parentNode,
+            )
+            return content
+         }
+
+         if (node.type === 'star') {
+            const content = convertStarNodeToHtml(
                runtimeEnv,
                dslType,
                node,

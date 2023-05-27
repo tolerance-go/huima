@@ -130,7 +130,7 @@ export interface StaticLineNode
       > {
    type: 'line'
    parent?: StaticContainerNode
-   svgMeta: SvgMeta
+   svgBytes: Uint8Array
 }
 
 export interface StaticVectorNode
@@ -156,7 +156,59 @@ export interface StaticVectorNode
       > {
    type: 'vector'
    parent?: StaticContainerNode
-   svgMeta: SvgMeta
+   svgBytes: Uint8Array
+}
+
+export interface StaticStarNode
+   extends BaseStaticNode,
+      Pick<
+         VectorNode,
+         | 'effects'
+         | 'strokes'
+         | 'constraints'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'fills'
+         | 'strokeAlign'
+         | 'strokeWeight'
+         | 'dashPattern'
+         | 'x'
+         | 'y'
+      > {
+   type: 'star'
+   parent?: StaticContainerNode
+   svgBytes: Uint8Array
+}
+
+export interface StaticPolygonNode
+   extends BaseStaticNode,
+      Pick<
+         VectorNode,
+         | 'effects'
+         | 'strokes'
+         | 'constraints'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'fills'
+         | 'strokeAlign'
+         | 'strokeWeight'
+         | 'dashPattern'
+         | 'x'
+         | 'y'
+      > {
+   type: 'polygon'
+   parent?: StaticContainerNode
+   svgBytes: Uint8Array
 }
 
 export interface StaticEllipseNode
@@ -249,22 +301,18 @@ export type StaticAtomNode =
    | StaticEllipseNode
    | StaticLineNode
    | StaticVectorNode
+   | StaticStarNode
+   | StaticPolygonNode
 
 export type StaticNode = StaticAtomNode | StaticContainerNode
 
-export type StaticContainerNode =
-   | StaticFrameNode
-   | StaticGroupNode
-   | StaticSectionNode
+export type StaticContainerNode = StaticFrameNode | StaticGroupNode
+// | StaticSectionNode
 
 export type ImageFillMeta = {
    imageBytes: Uint8Array
    imageByteLength: number
    imageExtension: string
-}
-
-export type SvgMeta = {
-   bytes: Uint8Array
 }
 
 export type UIEvents = {
