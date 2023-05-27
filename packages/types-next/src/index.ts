@@ -107,6 +107,58 @@ export interface StaticRectangleNode
    imageFillMeta?: ImageFillMeta
 }
 
+export interface StaticLineNode
+   extends BaseStaticNode,
+      Pick<
+         LineNode,
+         | 'effects'
+         | 'strokes'
+         | 'constraints'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'fills'
+         | 'strokeAlign'
+         | 'strokeWeight'
+         | 'dashPattern'
+         | 'x'
+         | 'y'
+      > {
+   type: 'line'
+   parent?: StaticContainerNode
+   svgMeta: SvgMeta
+}
+
+export interface StaticVectorNode
+   extends BaseStaticNode,
+      Pick<
+         VectorNode,
+         | 'effects'
+         | 'strokes'
+         | 'constraints'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'fills'
+         | 'strokeAlign'
+         | 'strokeWeight'
+         | 'dashPattern'
+         | 'x'
+         | 'y'
+      > {
+   type: 'vector'
+   parent?: StaticContainerNode
+   svgMeta: SvgMeta
+}
+
 export interface StaticEllipseNode
    extends BaseStaticNode,
       Pick<
@@ -195,6 +247,8 @@ export type StaticAtomNode =
    | StaticTextNode
    | StaticRectangleNode
    | StaticEllipseNode
+   | StaticLineNode
+   | StaticVectorNode
 
 export type StaticNode = StaticAtomNode | StaticContainerNode
 
@@ -207,6 +261,10 @@ export type ImageFillMeta = {
    imageBytes: Uint8Array
    imageByteLength: number
    imageExtension: string
+}
+
+export type SvgMeta = {
+   bytes: Uint8Array
 }
 
 export type UIEvents = {

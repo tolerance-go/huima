@@ -17,6 +17,7 @@
    "dependencies": {
       "@huima/types-next": "workspace:^",
       "@huima/utils": "workspace:^",
+      "buffer": "^6.0.3",
       "clipboard": "^2.0.11",
       "file-saver": "^2.0.5",
       "jszip": "^3.10.1",

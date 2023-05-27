@@ -5,10 +5,13 @@ import {
    StaticEllipseNode,
    StaticFrameNode,
    StaticGroupNode,
+   StaticLineNode,
    StaticNode,
    StaticRectangleNode,
    StaticTextNode,
+   StaticVectorNode,
 } from '@huima/types-next'
+import { Buffer } from 'buffer'
 import { DSLType, RuntimeEnv } from '../types'
 import { convertPoint, getCenterPoint, rotatePoint } from '../utils/rotatePoint'
 
@@ -638,6 +641,8 @@ function convertFillsToCss(
          return { background: `linear-gradient(${gradientColors.join(', ')})` }
       }
       case 'IMAGE': {
+         if (!imageFillMeta) return {}
+
          const imageFill = firstFill as ImagePaint
          const backgroundSize =
             imageFill.scaleMode === 'FILL' ? 'cover' : 'contain'
@@ -951,6 +956,90 @@ const convertFrameNodeToHtml = (
    return html
 }
 
+/**
+ * 根据传入的 node，将 figma node 转换成 html 代码
+ * 将 line 转换成 svg 代码
+ * @param runtimeEnv
+ * @param dslType
+ * @param node
+ * @param parentNode
+ */
+const convertLineNodeToHtml = (
+   runtimeEnv: RuntimeEnv,
+   dslType: DSLType,
+   node: StaticLineNode,
+   parentNode?: StaticContainerNode,
+) => {
+   const { width, height, fills, strokes, effects, rotation } = node
+
+   const html = Buffer.from(node.svgMeta.bytes).toString()
+
+   // 创建 CSS 对象
+   const css: Record<string, string | number | null | undefined> = {
+      // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
+      ...(parentNode
+         ? computeCssAbsPosition({
+              rotatedUpperLeft: {
+                 x: node.x,
+                 y: node.y,
+              },
+              parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
+              absoluteBoundingBox: node.absoluteBoundingBox!,
+              constraints: node.constraints,
+              rotation: node.rotation,
+              parentNode: node.parent,
+           })
+         : {}),
+   }
+
+   // 转换 CSS 对象为 CSS 字符串
+   const style = convertCssObjectToString(css)
+
+   return html.replace('<svg', `<svg role='line' style="${style}"`)
+}
+
+/**
+ * 根据传入的 node，将 figma node 转换成 html 代码
+ * 将 vector 转换成 svg 代码
+ * @param runtimeEnv
+ * @param dslType
+ * @param node
+ * @param parentNode
+ */
+const convertVectorNodeToHtml = (
+   runtimeEnv: RuntimeEnv,
+   dslType: DSLType,
+   node: StaticVectorNode,
+   parentNode?: StaticContainerNode,
+) => {
+   const { width, height, fills, strokes, effects, rotation } = node
+
+   const html = Buffer.from(node.svgMeta.bytes).toString()
+
+   // 创建 CSS 对象
+   const css: Record<string, string | number | null | undefined> = {
+      // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
+      ...(parentNode
+         ? computeCssAbsPosition({
+              rotatedUpperLeft: {
+                 x: node.x,
+                 y: node.y,
+              },
+              parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
+              absoluteBoundingBox: node.absoluteBoundingBox!,
+              constraints: node.constraints,
+              rotation: node.rotation,
+              parentNode: node.parent,
+           })
+         : {}),
+   }
+
+   // 转换 CSS 对象为 CSS 字符串
+   const style = convertCssObjectToString(css)
+
+   return html.replace('<svg', `<svg role='vector' style="${style}"`)
+}
+
 function convertEffectsToFilter(
    effects: readonly Effect[],
 ): Record<string, string | null> {
@@ -1078,6 +1167,26 @@ export const renderStaticNode = (
 
          if (node.type === 'group') {
             const content = convertGroupNodeToHtml(
+               runtimeEnv,
+               dslType,
+               node,
+               parentNode,
+            )
+            return content
+         }
+
+         if (node.type === 'line') {
+            const content = convertLineNodeToHtml(
+               runtimeEnv,
+               dslType,
+               node,
+               parentNode,
+            )
+            return content
+         }
+
+         if (node.type === 'vector') {
+            const content = convertVectorNodeToHtml(
                runtimeEnv,
                dslType,
                node,

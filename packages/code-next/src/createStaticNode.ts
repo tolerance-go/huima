@@ -4,10 +4,12 @@ import {
    StaticEllipseNode,
    StaticFrameNode,
    StaticGroupNode,
+   StaticLineNode,
    StaticNode,
    StaticRectangleNode,
    StaticSectionNode,
    StaticTextNode,
+   StaticVectorNode,
 } from '@huima/types-next'
 import { pluginApi } from './pluginApi'
 
@@ -120,6 +122,110 @@ export const createStaticTextNode = (
       absoluteBoundingBox,
       absoluteRenderBounds,
       absoluteTransform,
+   }
+}
+
+export const createStaticLineNode = async (
+   node: LineNode,
+   parentNode?: StaticContainerNode,
+): Promise<StaticLineNode> => {
+   const {
+      id,
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      x,
+      y,
+   } = node
+
+   return {
+      parent: parentNode,
+      x,
+      y,
+      id,
+      type: 'line',
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      svgMeta: {
+         bytes: await node.exportAsync({
+            format: 'SVG',
+         }),
+      },
+   }
+}
+
+export const createStaticVectorNode = async (
+   node: VectorNode,
+   parentNode?: StaticContainerNode,
+): Promise<StaticVectorNode> => {
+   const {
+      id,
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      x,
+      y,
+   } = node
+
+   return {
+      parent: parentNode,
+      x,
+      y,
+      id,
+      type: 'vector',
+      effects,
+      strokes,
+      constraints,
+      width,
+      height,
+      rotation,
+      blendMode,
+      absoluteBoundingBox,
+      absoluteRenderBounds,
+      absoluteTransform,
+      fills,
+      strokeAlign,
+      strokeWeight,
+      dashPattern,
+      svgMeta: {
+         bytes: await node.exportAsync({
+            format: 'SVG',
+         }),
+      },
    }
 }
 
@@ -472,6 +578,14 @@ export const createStaticNode = async (
 
    if (node.type === 'SECTION') {
       return createStaticSectionNode(node, parent)
+   }
+
+   if (node.type === 'LINE') {
+      return createStaticLineNode(node, parent)
+   }
+
+   if (node.type === 'VECTOR') {
+      return createStaticVectorNode(node, parent)
    }
 
    return null

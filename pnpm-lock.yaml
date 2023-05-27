@@ -22,9 +22,6 @@ importers:
       prettier-plugin-packagejson:
         specifier: ^2.4.0
         version: 2.4.0(prettier@2.8.3)
-      vitest:
-        specifier: ^0.31.1
-        version: 0.31.1
 
   packages/code:
     dependencies:
@@ -217,6 +214,9 @@ importers:
       '@huima/utils':
         specifier: workspace:^
         version: link:../utils
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
       clipboard:
         specifier: ^2.0.11
         version: 2.0.11
