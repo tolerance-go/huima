@@ -35,6 +35,16 @@ export interface StaticFrameNode
          | 'dashPattern'
          | 'x'
          | 'y'
+         // flex 相关属性
+         | 'layoutMode'
+         | 'itemSpacing'
+         | 'paddingLeft'
+         | 'paddingTop'
+         | 'paddingRight'
+         | 'paddingBottom'
+         | 'counterAxisAlignItems'
+         | 'primaryAxisAlignItems'
+         | 'layoutPositioning'
       > {
    type: 'frame'
    parentAbsoluteBoundingBox?: Rect
@@ -56,6 +66,7 @@ export interface StaticGroupNode
          | 'absoluteTransform'
          | 'x'
          | 'y'
+         | 'layoutPositioning'
       > {
    type: 'group'
    parentAbsoluteBoundingBox?: Rect
@@ -100,6 +111,7 @@ export interface StaticRectangleNode
          | 'dashPattern'
          | 'x'
          | 'y'
+         | 'layoutPositioning'
       > {
    type: 'rectangle'
    parentAbsoluteBoundingBox?: Rect
@@ -127,6 +139,7 @@ export interface StaticLineNode
          | 'dashPattern'
          | 'x'
          | 'y'
+         | 'layoutPositioning'
       > {
    type: 'line'
    parent?: StaticContainerNode
@@ -153,6 +166,7 @@ export interface StaticVectorNode
          | 'dashPattern'
          | 'x'
          | 'y'
+         | 'layoutPositioning'
       > {
    type: 'vector'
    parent?: StaticContainerNode
@@ -179,6 +193,7 @@ export interface StaticStarNode
          | 'dashPattern'
          | 'x'
          | 'y'
+         | 'layoutPositioning'
       > {
    type: 'star'
    parent?: StaticContainerNode
@@ -205,6 +220,7 @@ export interface StaticPolygonNode
          | 'dashPattern'
          | 'x'
          | 'y'
+         | 'layoutPositioning'
       > {
    type: 'polygon'
    parent?: StaticContainerNode
@@ -232,6 +248,7 @@ export interface StaticEllipseNode
          | 'dashPattern'
          | 'x'
          | 'y'
+         | 'layoutPositioning'
       > {
    type: 'ellipse'
    parent?: StaticContainerNode
@@ -258,6 +275,7 @@ export interface StaticTextNode
          | 'absoluteTransform'
          | 'x'
          | 'y'
+         | 'layoutPositioning'
       > {
    type: 'text'
    characters?: TextNode['characters']

@@ -20,6 +20,7 @@ import {
    relativePoint,
    rotatePoint,
 } from '../utils/rotatePoint'
+import { getFrameFlexLayoutStyle } from './getFrameFlexLayoutStyle'
 
 /**
  * 这个函数根据传入的 parentAbsoluteBoundingBox 和 absoluteBoundingBox，以及
@@ -921,7 +922,10 @@ function convertRectangleNodeToHtml(
       ...boxShadowCss,
       ...transformCss,
       // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
-      ...(parentNode
+      ...(parentNode &&
+      (parentNode.layoutMode === 'NONE' ||
+         (parentNode.layoutMode !== 'NONE' &&
+            node.layoutPositioning === 'ABSOLUTE'))
          ? computeCssAbsPosition({
               rotatedUpperLeft: {
                  x: node.x,
@@ -1054,12 +1058,16 @@ const convertFrameNodeToHtml = (
    const css: Record<string, string | number | null | undefined> = {
       width: `${width}px`,
       height: `${height}px`,
+      ...getFrameFlexLayoutStyle(node),
       ...convertBorderRadiusToCss(String(cornerRadius)),
       ...backgroundColorCss,
       ...borderCss,
       ...boxShadowCss,
       ...transformCss,
-      ...(parentNode
+      ...(parentNode &&
+      (parentNode.layoutMode === 'NONE' ||
+         (parentNode.layoutMode !== 'NONE' &&
+            node.layoutPositioning === 'ABSOLUTE'))
          ? computeCssAbsPosition({
               rotatedUpperLeft: {
                  x: node.x,

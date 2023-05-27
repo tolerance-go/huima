@@ -1,4 +1,4 @@
-export function getFlexLayoutStyle(
+export function getFrameFlexLayoutStyle(
    frameNode: Pick<
       FrameNode,
       | 'layoutMode'

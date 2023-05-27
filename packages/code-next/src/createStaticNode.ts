@@ -62,6 +62,7 @@ export const createStaticTextNode = (
       absoluteTransform,
       x,
       y,
+      layoutPositioning,
    } = node
 
    const charItems = node.characters.split(/(\n|(?!\n).)/g).filter(Boolean)
@@ -123,6 +124,7 @@ export const createStaticTextNode = (
       absoluteBoundingBox,
       absoluteRenderBounds,
       absoluteTransform,
+      layoutPositioning,
    }
 }
 
@@ -148,6 +150,7 @@ export const createStaticLineNode = async (
       dashPattern,
       x,
       y,
+      layoutPositioning,
    } = node
 
    return {
@@ -173,6 +176,7 @@ export const createStaticLineNode = async (
       svgBytes: await node.exportAsync({
          format: 'SVG',
       }),
+      layoutPositioning,
    }
 }
 
@@ -198,6 +202,7 @@ export const createStaticVectorNode = async (
       dashPattern,
       x,
       y,
+      layoutPositioning,
    } = node
 
    return {
@@ -223,6 +228,7 @@ export const createStaticVectorNode = async (
       svgBytes: await node.exportAsync({
          format: 'SVG',
       }),
+      layoutPositioning,
    }
 }
 
@@ -248,6 +254,7 @@ export const createStaticStarNode = async (
       dashPattern,
       x,
       y,
+      layoutPositioning,
    } = node
 
    return {
@@ -270,6 +277,7 @@ export const createStaticStarNode = async (
       strokeAlign,
       strokeWeight,
       dashPattern,
+      layoutPositioning,
       svgBytes: await node.exportAsync({
          format: 'SVG',
       }),
@@ -298,6 +306,7 @@ export const createStaticPolygonNode = async (
       dashPattern,
       x,
       y,
+      layoutPositioning,
    } = node
 
    return {
@@ -312,6 +321,7 @@ export const createStaticPolygonNode = async (
       width,
       height,
       rotation,
+      layoutPositioning,
       blendMode,
       absoluteBoundingBox,
       absoluteRenderBounds,
@@ -350,6 +360,7 @@ export const createStaticEllipseNode = async (
       parent,
       x,
       y,
+      layoutPositioning,
    } = node
 
    return {
@@ -372,6 +383,7 @@ export const createStaticEllipseNode = async (
       fills,
       strokeAlign,
       strokeWeight,
+      layoutPositioning,
       dashPattern,
       imageFillMeta: await getImageFillMeta(fills as ReadonlyArray<Paint>),
    }
@@ -454,6 +466,7 @@ export const createStaticRectangleNode = async (
       parent,
       x,
       y,
+      layoutPositioning,
    } = node
 
    return {
@@ -482,6 +495,7 @@ export const createStaticRectangleNode = async (
       strokeWeight,
       dashPattern,
       imageFillMeta: await getImageFillMeta(fills as ReadonlyArray<Paint>),
+      layoutPositioning,
    }
 }
 
@@ -509,6 +523,15 @@ export const createStaticFrameNode = async (
       children,
       x,
       y,
+      layoutMode,
+      itemSpacing,
+      paddingLeft,
+      paddingTop,
+      paddingRight,
+      paddingBottom,
+      counterAxisAlignItems,
+      primaryAxisAlignItems,
+      layoutPositioning,
    } = node
 
    const staticNode: StaticFrameNode = {
@@ -538,6 +561,15 @@ export const createStaticFrameNode = async (
       strokeWeight,
       dashPattern,
       imageFillMeta: await getImageFillMeta(fills as ReadonlyArray<Paint>),
+      layoutMode,
+      itemSpacing,
+      paddingLeft,
+      paddingTop,
+      paddingRight,
+      paddingBottom,
+      counterAxisAlignItems,
+      primaryAxisAlignItems,
+      layoutPositioning,
    }
 
    staticNode.children = (
@@ -673,9 +705,9 @@ export const createStaticNode = async (
       return createStaticGroupNode(node, parent)
    }
 
-   if (node.type === 'SECTION') {
-      return createStaticSectionNode(node, parent)
-   }
+   // if (node.type === 'SECTION') {
+   //    return createStaticSectionNode(node, parent)
+   // }
 
    if (node.type === 'LINE') {
       return createStaticLineNode(node, parent)
