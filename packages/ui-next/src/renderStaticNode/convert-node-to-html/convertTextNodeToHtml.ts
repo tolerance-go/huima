@@ -4,7 +4,7 @@ import {
    StaticTextNode,
 } from '@huima/types-next'
 import { DSLType, RuntimeEnv } from '../../types'
-import { computeCssAbsPosition } from '../computeCssAbsPosition'
+import { convertAtomNodePositionToCss } from '../convertAtomNodePositionToCss'
 import { convertBlendModeToCss } from '../convertBlendModeToCss'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertLetterSpacingToCss } from '../convertLetterSpacingToCss'
@@ -74,23 +74,7 @@ export function convertTextNodeToHtml(
     width: ${node.width}px;
     height: ${node.height}px;
     ${convertBlendModeToCss(node.blendMode)}
-    ${
-       // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
-       parentNode
-          ? convertCssObjectToString(
-               computeCssAbsPosition({
-                  rotatedUpperLeft: {
-                     x: node.x,
-                     y: node.y,
-                  },
-                  parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
-                  absoluteBoundingBox: node.absoluteBoundingBox!,
-                  constraints: node.constraints,
-                  rotation: node.rotation,
-               }),
-            )
-          : ''
-    }
+    ${convertCssObjectToString(convertAtomNodePositionToCss(node, parentNode))}
   `.trimEnd()
 
    const effectsCss = convertTextEffectsToCss(node.effects)

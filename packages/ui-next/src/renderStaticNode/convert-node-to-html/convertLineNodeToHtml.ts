@@ -3,6 +3,7 @@ import {
    StaticGroupNode,
    StaticLineNode,
 } from '@huima/types-next'
+import { Buffer } from 'buffer'
 import { DSLType, RuntimeEnv } from '../../types'
 import { computeVectorCssAbsPosition } from '../computeVectorCssAbsPosition'
 import { convertCssObjectToString } from '../convertCssObjectToString'
@@ -32,7 +33,7 @@ export const convertLineNodeToHtml = (
       // TODO: 判断父容器是不是自动布局，同时判断自己是不是绝对定位
       ...(parentNode
          ? computeVectorCssAbsPosition({
-              parentAbsoluteRenderBox: parentNode.absoluteRenderBounds!,
+              parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
               absoluteRenderBox: node.absoluteRenderBounds!,
               constraints: node.constraints,
            })

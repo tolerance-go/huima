@@ -4,6 +4,7 @@ import {
    StaticFrameNode,
    StaticGroupNode,
    StaticRectangleNode,
+   StaticTextNode,
 } from '@huima/types-next'
 import { relativePoint } from '../utils/rotatePoint'
 import { computeCssAbsPosition } from './computeCssAbsPosition'
@@ -34,7 +35,11 @@ const getFirstFrameNodeAndUpperGroupNode = (
 
 // 这个函数判断 atom 节点的定位样式
 export const convertAtomNodePositionToCss = (
-   node: StaticRectangleNode | StaticEllipseNode | StaticFrameNode,
+   node:
+      | StaticRectangleNode
+      | StaticEllipseNode
+      | StaticFrameNode
+      | StaticTextNode,
    parentNode?: StaticContainerNode,
 ) => {
    const { firstNotGroupNode, upperGroupNode } =

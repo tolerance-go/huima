@@ -8,10 +8,13 @@
 
 ## 设计约定
 
--  父组件的类型只能为 group，frame，但是类似 BooleanOperationNode 会当作整个 svg 或者图片导出，所以例外
-
 ## 渲染约定
 
 为了输出更加简洁的代码，出码时做了如下约定
 
 -  出码时 group 类型容器默认跳过，而只渲染子节点，但是根节点是 group 时，以及处于 autoLayout 下时除外
+
+## 开发约定
+
+-  父组件的类型只能为 group，frame，但是类似 BooleanOperationNode 会当作整个 svg 或者图片导出，所以例外
+-  容器节点 absoluteRenderBox 和 absoluteBoundingBox 永远一样大
