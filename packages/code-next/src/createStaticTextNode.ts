@@ -1,4 +1,5 @@
 import { StaticContainerNode, StaticTextNode } from '@huima/types-next'
+import { getCharPositions } from './getCharPositions'
 
 export const createStaticTextNode = (
    node: TextNode,
