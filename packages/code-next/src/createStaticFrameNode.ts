@@ -5,6 +5,7 @@ import {
 } from '@huima/types-next'
 import { createStaticNode } from './createStaticNode'
 import { getCornerRadius } from './getCornerRadius'
+import { getImageFillMeta } from './getImageFillMeta'
 
 export const createStaticFrameNode = async (
    node: FrameNode,
