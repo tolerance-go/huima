@@ -1,9 +1,5 @@
 import { Point } from '@huima/types-next'
-import {
-   getCenterPoint,
-   relativePoint,
-   rotatePoint,
-} from '../utils/rotatePoint'
+import { relativePoint } from '../utils/rotatePoint'
 
 /**
  * 这个函数根据传入的 parentAbsoluteBoundingBox 和 absoluteBoundingBox，以及
@@ -36,23 +32,27 @@ export function computeCssAbsPosition({
    }
 
    // node 的 x，y 是相对于父节点的 absBoundingRect 的
-   const beforeRotateBox = rotatePoint(
-      rotatedUpperLeft,
-      relativePoint(
-         getCenterPoint(absoluteBoundingBox),
-         parentAbsoluteBoundingBox,
-      ),
-      rotation,
+   // const upperLeft = rotatePoint(
+   //    rotatedUpperLeft,
+   //    relativePoint(
+   //       getCenterPoint(absoluteBoundingBox),
+   //       parentAbsoluteBoundingBox,
+   //    ),
+   //    rotation,
+   // )
+   const upperLeft = relativePoint(
+      absoluteBoundingBox,
+      parentAbsoluteBoundingBox,
    )
 
    switch (constraints.horizontal) {
       case 'MIN':
-         cssPosition.left = `${beforeRotateBox.x}px`
+         cssPosition.left = `${upperLeft.x}px`
          break
       case 'MAX':
          cssPosition.right = `${
             parentAbsoluteBoundingBox.width -
-            beforeRotateBox.x -
+            upperLeft.x -
             absoluteBoundingBox.width
          }px`
          break
@@ -60,24 +60,24 @@ export function computeCssAbsPosition({
          cssPosition.left = `calc(50% - ${absoluteBoundingBox.width}px/2 - ${
             parentAbsoluteBoundingBox.width / 2 -
             absoluteBoundingBox.width / 2 -
-            beforeRotateBox.x
+            upperLeft.x
          }px)`
          break
       case 'SCALE':
-         cssPosition.left = `${beforeRotateBox.x}px`
+         cssPosition.left = `${upperLeft.x}px`
          cssPosition.right = `${
             parentAbsoluteBoundingBox.width -
-            beforeRotateBox.x -
+            upperLeft.x -
             absoluteBoundingBox.width
          }px`
          break
       case 'STRETCH':
          cssPosition.left = `${
-            (beforeRotateBox.x / parentAbsoluteBoundingBox.width) * 100
+            (upperLeft.x / parentAbsoluteBoundingBox.width) * 100
          }%`
          cssPosition.right = `${
             ((parentAbsoluteBoundingBox.width -
-               beforeRotateBox.x -
+               upperLeft.x -
                absoluteBoundingBox.width) /
                parentAbsoluteBoundingBox.width) *
             100
@@ -87,12 +87,12 @@ export function computeCssAbsPosition({
 
    switch (constraints.vertical) {
       case 'MIN':
-         cssPosition.top = `${beforeRotateBox.y}px`
+         cssPosition.top = `${upperLeft.y}px`
          break
       case 'MAX':
          cssPosition.bottom = `${
             parentAbsoluteBoundingBox.height -
-            beforeRotateBox.y -
+            upperLeft.y -
             absoluteBoundingBox.height
          }px`
          break
@@ -100,24 +100,24 @@ export function computeCssAbsPosition({
          cssPosition.top = `calc(50% - ${absoluteBoundingBox.height}px/2 - ${
             parentAbsoluteBoundingBox.height / 2 -
             absoluteBoundingBox.height / 2 -
-            beforeRotateBox.y
+            upperLeft.y
          }px)`
          break
       case 'SCALE':
-         cssPosition.top = `${beforeRotateBox.y}px`
+         cssPosition.top = `${upperLeft.y}px`
          cssPosition.bottom = `${
             parentAbsoluteBoundingBox.height -
-            beforeRotateBox.y -
+            upperLeft.y -
             absoluteBoundingBox.height
          }px`
          break
       case 'STRETCH':
          cssPosition.top = `${
-            (beforeRotateBox.y / parentAbsoluteBoundingBox.height) * 100
+            (upperLeft.y / parentAbsoluteBoundingBox.height) * 100
          }%`
          cssPosition.bottom = `${
             ((parentAbsoluteBoundingBox.height -
-               beforeRotateBox.y -
+               upperLeft.y -
                absoluteBoundingBox.height) /
                parentAbsoluteBoundingBox.height) *
             100
