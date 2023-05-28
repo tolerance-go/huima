@@ -56,6 +56,7 @@ export const createStaticTextNode = (
       width,
       height,
       rotation,
+      isMask,
       blendMode,
       absoluteBoundingBox,
       absoluteRenderBounds,
@@ -117,6 +118,7 @@ export const createStaticTextNode = (
       textAlignHorizontal,
       textAlignVertical,
       effects,
+      isMask,
       strokes,
       constraints,
       rotation,
@@ -139,6 +141,7 @@ export const createStaticLineNode = async (
       constraints,
       width,
       height,
+      isMask,
       rotation,
       blendMode,
       absoluteBoundingBox,
@@ -171,6 +174,7 @@ export const createStaticLineNode = async (
       absoluteTransform,
       fills,
       strokeAlign,
+      isMask,
       strokeWeight,
       dashPattern,
       svgBytes: await node.exportAsync({
@@ -197,6 +201,7 @@ export const createStaticBooleanOperationNode = async (
       absoluteTransform,
       fills,
       strokeAlign,
+      isMask,
       strokeWeight,
       dashPattern,
       x,
@@ -218,6 +223,7 @@ export const createStaticBooleanOperationNode = async (
       blendMode,
       absoluteBoundingBox,
       absoluteRenderBounds,
+      isMask,
       absoluteTransform,
       fills,
       strokeAlign,
@@ -245,6 +251,7 @@ export const createStaticVectorNode = async (
       blendMode,
       absoluteBoundingBox,
       absoluteRenderBounds,
+      isMask,
       absoluteTransform,
       fills,
       strokeAlign,
@@ -273,6 +280,7 @@ export const createStaticVectorNode = async (
       absoluteTransform,
       fills,
       strokeAlign,
+      isMask,
       strokeWeight,
       dashPattern,
       svgBytes: await node.exportAsync({
@@ -305,6 +313,7 @@ export const createStaticStarNode = async (
       x,
       y,
       layoutPositioning,
+      isMask,
    } = node
 
    return {
@@ -315,6 +324,7 @@ export const createStaticStarNode = async (
       type: 'vector',
       effects,
       strokes,
+      isMask,
       constraints,
       width,
       height,
@@ -339,6 +349,7 @@ export const createStaticPolygonNode = async (
    parentNode?: StaticContainerNode,
 ): Promise<StaticPolygonNode> => {
    const {
+      isMask,
       id,
       effects,
       strokes,
@@ -360,6 +371,7 @@ export const createStaticPolygonNode = async (
    } = node
 
    return {
+      isMask,
       parent: parentNode,
       x,
       y,
@@ -411,9 +423,11 @@ export const createStaticEllipseNode = async (
       x,
       y,
       layoutPositioning,
+      isMask,
    } = node
 
    return {
+      isMask,
       parent: parentNode,
       x,
       y,
@@ -517,9 +531,11 @@ export const createStaticRectangleNode = async (
       x,
       y,
       layoutPositioning,
+      isMask,
    } = node
 
    return {
+      isMask,
       parent: parentNode,
       x,
       y,
@@ -582,9 +598,11 @@ export const createStaticFrameNode = async (
       counterAxisAlignItems,
       primaryAxisAlignItems,
       layoutPositioning,
+      isMask,
    } = node
 
    const staticNode: StaticFrameNode = {
+      isMask,
       parent: parentNode,
       x,
       y,
@@ -651,15 +669,20 @@ export const createStaticGroupNode = async (
       x,
       y,
       layoutPositioning,
+      isMask,
    } = node
 
+   const hasMask = node.children.some((item) => 'isMask' in item && item.isMask)
+
    const staticNode: StaticGroupNode = {
+      isMask,
       parent: parentNode,
       x,
       y,
       children: [],
       id,
       type: 'group',
+      hasMask,
       effects,
       width,
       height,
@@ -673,15 +696,22 @@ export const createStaticGroupNode = async (
          node.parent && 'absoluteBoundingBox' in node.parent
             ? node.parent.absoluteBoundingBox ?? undefined
             : undefined,
+      svgBytes: hasMask
+         ? await node.exportAsync({
+              format: 'SVG',
+           })
+         : undefined,
    }
 
-   staticNode.children = (
-      await Promise.all(
-         children
-            // TODO: 这里要结构，否 postmessage 的时候 JSON.stringify 会超出最大调用
-            .map((item) => createStaticNode(item, { ...staticNode })),
-      )
-   ).filter(Boolean) as StaticNode[]
+   staticNode.children = hasMask
+      ? []
+      : ((
+           await Promise.all(
+              children
+                 // TODO: 这里要结构，否 postmessage 的时候 JSON.stringify 会超出最大调用
+                 .map((item) => createStaticNode(item, { ...staticNode })),
+           )
+        ).filter(Boolean) as StaticNode[])
 
    return staticNode
 }

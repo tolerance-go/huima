@@ -1,8 +1,4 @@
-import {
-   StaticFrameNode,
-   StaticGroupNode,
-   StaticVectorNode,
-} from '@huima/types-next'
+import { StaticFrameNode, StaticGroupNode } from '@huima/types-next'
 import { Buffer } from 'buffer'
 import { DSLType, RuntimeEnv } from '../../types'
 import { convertCssObjectToString } from '../convertCssObjectToString'
@@ -16,15 +12,19 @@ import { convertNodePositionToCss } from '../convertNodePositionToCss'
  * @param node
  * @param parentNode
  */
-export const convertVectorNodeToHtml = (
+export const convertMaskNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
-   node: StaticVectorNode,
+   node: StaticGroupNode,
    parentNode?: StaticFrameNode | StaticGroupNode,
 ) => {
-   const { width, height, effects, rotation } = node
+   const { width, height, effects, rotation, svgBytes } = node
 
-   const html = Buffer.from(node.svgBytes).toString()
+   if (!svgBytes) {
+      throw new Error('render mask but svgBytes is undefined.')
+   }
+
+   const html = Buffer.from(svgBytes).toString()
 
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {
@@ -34,5 +34,5 @@ export const convertVectorNodeToHtml = (
    // 转换 CSS 对象为 CSS 字符串
    const style = convertCssObjectToString(css)
 
-   return html.replace('<svg', `<svg role='vector' style="${style}"`)
+   return html.replace('<svg', `<svg role='mask' style="${style}"`)
 }

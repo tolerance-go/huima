@@ -5,6 +5,7 @@ import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertEffectsToFilter } from '../convertEffectsToFilter'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
+import { convertMaskNodeToHtml } from './convertMaskNodeToHtml'
 
 /**
  * group 嵌套 group 的话，我们需要过滤掉中间的 group，直接使用最外层的 group
@@ -13,6 +14,8 @@ import { convertRotationToCss } from '../convertRotationToCss'
  * 如果父节点空（本身是根节点），渲染 div
  * 如果父级是 group，则跳过，直接渲染子节点
  * group 需要渲染 gap，但是就用子节点的绝对定位实现即可
+ *
+ * 如果子节点中包含一个 isMask 为 true 的，那么需要将它处理成 vector
  *
  * @param runtimeEnv
  * @param dslType
@@ -26,7 +29,11 @@ export const convertGroupNodeToHtml = (
    node: StaticGroupNode,
    parentNode?: StaticFrameNode | StaticGroupNode,
 ): string => {
-   const { width, height, effects, rotation, children } = node
+   const { width, height, effects, rotation, children, svgBytes } = node
+
+   if (node.hasMask) {
+      return convertMaskNodeToHtml(runtimeEnv, dslType, node, parentNode)
+   }
 
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {

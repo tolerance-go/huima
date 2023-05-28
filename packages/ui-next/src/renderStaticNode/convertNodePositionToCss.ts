@@ -56,7 +56,9 @@ export const convertNodePositionToCss = (
               node.type === 'booleanOperation' ||
               node.type === 'line' ||
               node.type === 'polygon' ||
-              node.type === 'star'
+              node.type === 'star' ||
+              (node.type === 'group' &&
+                 node.children.some((item) => item.isMask))
                  ? node.absoluteRenderBounds!
                  : node.absoluteBoundingBox!,
            constraints:

@@ -45,6 +45,7 @@ export interface StaticFrameNode
          | 'counterAxisAlignItems'
          | 'primaryAxisAlignItems'
          | 'layoutPositioning'
+         | 'isMask'
       > {
    type: 'frame'
    parentAbsoluteBoundingBox?: Rect
@@ -67,10 +68,14 @@ export interface StaticGroupNode
          | 'x'
          | 'y'
          | 'layoutPositioning'
+         | 'isMask'
       > {
    type: 'group'
    parentAbsoluteBoundingBox?: Rect
    parent?: StaticContainerNode
+   // 当子节点存在 mask 的时候才存在
+   svgBytes?: Uint8Array
+   hasMask: boolean
 }
 
 export interface StaticSectionNode
@@ -112,6 +117,7 @@ export interface StaticRectangleNode
          | 'x'
          | 'y'
          | 'layoutPositioning'
+         | 'isMask'
       > {
    type: 'rectangle'
    parentAbsoluteBoundingBox?: Rect
@@ -140,6 +146,7 @@ export interface StaticLineNode
          | 'x'
          | 'y'
          | 'layoutPositioning'
+         | 'isMask'
       > {
    type: 'line'
    parent?: StaticContainerNode
@@ -167,6 +174,7 @@ export interface StaticVectorNode
          | 'x'
          | 'y'
          | 'layoutPositioning'
+         | 'isMask'
       > {
    type: 'vector'
    parent?: StaticContainerNode
@@ -193,6 +201,7 @@ export interface StaticBooleanOperationNode
          | 'x'
          | 'y'
          | 'layoutPositioning'
+         | 'isMask'
       > {
    type: 'booleanOperation'
    parent?: StaticContainerNode
@@ -220,6 +229,7 @@ export interface StaticStarNode
          | 'x'
          | 'y'
          | 'layoutPositioning'
+         | 'isMask'
       > {
    type: 'star'
    parent?: StaticContainerNode
@@ -247,6 +257,7 @@ export interface StaticPolygonNode
          | 'x'
          | 'y'
          | 'layoutPositioning'
+         | 'isMask'
       > {
    type: 'polygon'
    parent?: StaticContainerNode
@@ -275,6 +286,7 @@ export interface StaticEllipseNode
          | 'x'
          | 'y'
          | 'layoutPositioning'
+         | 'isMask'
       > {
    type: 'ellipse'
    parent?: StaticContainerNode
@@ -302,6 +314,7 @@ export interface StaticTextNode
          | 'x'
          | 'y'
          | 'layoutPositioning'
+         | 'isMask'
       > {
    type: 'text'
    characters?: TextNode['characters']
