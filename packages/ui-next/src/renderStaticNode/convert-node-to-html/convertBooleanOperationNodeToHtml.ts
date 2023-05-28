@@ -3,6 +3,7 @@ import {
    StaticFrameNode,
    StaticGroupNode,
 } from '@huima/types-next'
+import { Buffer } from 'buffer'
 import { DSLType, RuntimeEnv } from '../../types'
 import { computeVectorCssAbsPosition } from '../computeVectorCssAbsPosition'
 import { convertCssObjectToString } from '../convertCssObjectToString'

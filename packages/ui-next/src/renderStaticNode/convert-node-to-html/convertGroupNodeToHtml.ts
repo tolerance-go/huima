@@ -7,8 +7,11 @@ import { convertEffectsToFilter } from '../convertEffectsToFilter'
 import { convertRotationToCss } from '../convertRotationToCss'
 
 /**
- * 作为根节点渲染的时候，或者父节点是 autoLayout，使用 div 元素
- * 如果作为子节点渲染的时候，直接跳过
+ * group 嵌套 group 的话，我们需要过滤掉中间的 group，直接使用最外层的 group
+ * 这样可以避免多余的 div 元素，减少渲染成本，不能完全过滤，因为 group 的子元素
+ * 有绝对定位的方式，比如 right，bottom，这些需要保留，因此我们需要判断
+ * 如果父节点空（本身是根节点），渲染 div
+ * 如果父级是 group，则跳过，直接渲染子节点
  * group 需要渲染 gap，但是就用子节点的绝对定位实现即可
  *
  * @param runtimeEnv
@@ -32,9 +35,8 @@ export const convertGroupNodeToHtml = (
       ...convertEffectsToFilter(effects),
       ...convertRotationToCss(rotation),
       ...(parentNode &&
-      parentNode.type === 'frame' &&
-      parentNode.layoutMode !== 'NONE' &&
-      node.layoutPositioning === 'ABSOLUTE'
+      ((parentNode.type === 'frame' && parentNode.layoutMode === 'NONE') ||
+         node.layoutPositioning === 'ABSOLUTE')
          ? computeCssAbsPosition({
               rotatedUpperLeft: {
                  x: node.x,
@@ -60,15 +62,11 @@ export const convertGroupNodeToHtml = (
       })
       .join('\n')
 
-   // 存在父节点，且不是 frame + autoLayout，直接跳过返回子节点
-   if (
-      parentNode &&
-      !(parentNode.type === 'frame' && parentNode.layoutMode !== 'NONE')
-   ) {
+   // 如果父级是 group 节点，直接渲染子节点，不需要渲染 div
+   if (parentNode && parentNode.type === 'group') {
       return childrenHtml
    }
 
-   // 如果为根节点
    const html = `<div role="group" style="${style}">${childrenHtml}</div>`
 
    return html
