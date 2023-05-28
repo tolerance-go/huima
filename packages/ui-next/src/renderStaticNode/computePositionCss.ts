@@ -1,4 +1,3 @@
-import { Point } from '@huima/types-next'
 import { relativePoint } from '../utils/rotatePoint'
 
 /**
@@ -14,36 +13,20 @@ import { relativePoint } from '../utils/rotatePoint'
  * 1. 传入父节点的旋转角度和当前节点的旋转角度，在计算 relativeX 和 relativeY 时，需要考虑旋转角度
  * 先计算出各自旋转前的坐标，用它们计算出相对于父节点的坐标，因为 css 的旋转是以旋转前的坐标旋转的
  */
-export function computeCssAbsPosition({
-   rotatedUpperLeft,
-   parentAbsoluteBoundingBox,
-   absoluteBoundingBox,
+export function computePositionCss({
+   parentBox,
+   nodeBox,
    constraints,
-   rotation,
 }: {
-   rotatedUpperLeft: Point
-   parentAbsoluteBoundingBox: Rect
-   absoluteBoundingBox: Rect
+   parentBox: Rect
+   nodeBox: Rect
    constraints: Constraints
-   rotation: number
 }) {
    let cssPosition: Record<string, string> = {
       position: 'absolute',
    }
 
-   // node 的 x，y 是相对于父节点的 absBoundingRect 的
-   // const upperLeft = rotatePoint(
-   //    rotatedUpperLeft,
-   //    relativePoint(
-   //       getCenterPoint(absoluteBoundingBox),
-   //       parentAbsoluteBoundingBox,
-   //    ),
-   //    rotation,
-   // )
-   const upperLeft = relativePoint(
-      absoluteBoundingBox,
-      parentAbsoluteBoundingBox,
-   )
+   const upperLeft = relativePoint(nodeBox, parentBox)
 
    switch (constraints.horizontal) {
       case 'MIN':
@@ -51,35 +34,25 @@ export function computeCssAbsPosition({
          break
       case 'MAX':
          cssPosition.right = `${
-            parentAbsoluteBoundingBox.width -
-            upperLeft.x -
-            absoluteBoundingBox.width
+            parentBox.width - upperLeft.x - nodeBox.width
          }px`
          break
       case 'CENTER':
-         cssPosition.left = `calc(50% - ${absoluteBoundingBox.width}px/2 - ${
-            parentAbsoluteBoundingBox.width / 2 -
-            absoluteBoundingBox.width / 2 -
-            upperLeft.x
+         cssPosition.left = `calc(50% - ${nodeBox.width}px/2 - ${
+            parentBox.width / 2 - nodeBox.width / 2 - upperLeft.x
          }px)`
          break
       case 'SCALE':
          cssPosition.left = `${upperLeft.x}px`
          cssPosition.right = `${
-            parentAbsoluteBoundingBox.width -
-            upperLeft.x -
-            absoluteBoundingBox.width
+            parentBox.width - upperLeft.x - nodeBox.width
          }px`
          break
       case 'STRETCH':
-         cssPosition.left = `${
-            (upperLeft.x / parentAbsoluteBoundingBox.width) * 100
-         }%`
+         cssPosition.left = `${(upperLeft.x / parentBox.width) * 100}%`
          cssPosition.right = `${
-            ((parentAbsoluteBoundingBox.width -
-               upperLeft.x -
-               absoluteBoundingBox.width) /
-               parentAbsoluteBoundingBox.width) *
+            ((parentBox.width - upperLeft.x - nodeBox.width) /
+               parentBox.width) *
             100
          }%`
          break
@@ -91,35 +64,25 @@ export function computeCssAbsPosition({
          break
       case 'MAX':
          cssPosition.bottom = `${
-            parentAbsoluteBoundingBox.height -
-            upperLeft.y -
-            absoluteBoundingBox.height
+            parentBox.height - upperLeft.y - nodeBox.height
          }px`
          break
       case 'CENTER':
-         cssPosition.top = `calc(50% - ${absoluteBoundingBox.height}px/2 - ${
-            parentAbsoluteBoundingBox.height / 2 -
-            absoluteBoundingBox.height / 2 -
-            upperLeft.y
+         cssPosition.top = `calc(50% - ${nodeBox.height}px/2 - ${
+            parentBox.height / 2 - nodeBox.height / 2 - upperLeft.y
          }px)`
          break
       case 'SCALE':
          cssPosition.top = `${upperLeft.y}px`
          cssPosition.bottom = `${
-            parentAbsoluteBoundingBox.height -
-            upperLeft.y -
-            absoluteBoundingBox.height
+            parentBox.height - upperLeft.y - nodeBox.height
          }px`
          break
       case 'STRETCH':
-         cssPosition.top = `${
-            (upperLeft.y / parentAbsoluteBoundingBox.height) * 100
-         }%`
+         cssPosition.top = `${(upperLeft.y / parentBox.height) * 100}%`
          cssPosition.bottom = `${
-            ((parentAbsoluteBoundingBox.height -
-               upperLeft.y -
-               absoluteBoundingBox.height) /
-               parentAbsoluteBoundingBox.height) *
+            ((parentBox.height - upperLeft.y - nodeBox.height) /
+               parentBox.height) *
             100
          }%`
          break

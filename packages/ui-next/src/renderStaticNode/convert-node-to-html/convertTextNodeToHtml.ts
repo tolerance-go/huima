@@ -4,15 +4,15 @@ import {
    StaticTextNode,
 } from '@huima/types-next'
 import { DSLType, RuntimeEnv } from '../../types'
-import { convertAtomNodePositionToCss } from '../convertAtomNodePositionToCss'
 import { convertBlendModeToCss } from '../convertBlendModeToCss'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertLetterSpacingToCss } from '../convertLetterSpacingToCss'
+import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
 import { convertTextCaseToCss } from '../convertTextCaseToCss'
 import { convertTextDecorationToCss } from '../convertTextDecorationToCss'
 import { convertTextEffectsToCss } from '../convertTextEffectsToCss'
-import { groupByNewline } from '../groupByNewline'
+import { groupCharsByNewline } from '../groupCharsByNewline'
 import { rgbaToHex } from '../rgbaToHex'
 
 /**
@@ -44,7 +44,7 @@ export function convertTextNodeToHtml(
    parentNode?: StaticFrameNode | StaticGroupNode,
 ): string {
    // 将 characters 进行分割，遇到换行符分组
-   let testGroups: StaticTextNode['styledCharacters'][] = groupByNewline(
+   let testGroups: StaticTextNode['styledCharacters'][] = groupCharsByNewline(
       node.styledCharacters,
    )
 
@@ -74,7 +74,7 @@ export function convertTextNodeToHtml(
     width: ${node.width}px;
     height: ${node.height}px;
     ${convertBlendModeToCss(node.blendMode)}
-    ${convertCssObjectToString(convertAtomNodePositionToCss(node, parentNode))}
+    ${convertCssObjectToString(convertNodePositionToCss(node, parentNode))}
   `.trimEnd()
 
    const effectsCss = convertTextEffectsToCss(node.effects)

@@ -4,13 +4,14 @@ import {
    StaticRectangleNode,
 } from '@huima/types-next'
 import { DSLType, RuntimeEnv } from '../../types'
-import { convertAtomNodePositionToCss } from '../convertAtomNodePositionToCss'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertFillsToCss } from '../convertFillsToCss'
 import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'
+import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
 import { convertStrokesToCss } from '../convertStrokesToCss'
+// import { getAbsoluteAnchorPoint } from '../getAbsoluteAnchorPoint'
 
 /**
  * 根据传入的 node，将 figma node 转换成 html 代码
@@ -56,9 +57,12 @@ export function convertRectangleNodeToHtml(
       ...backgroundColorCss,
       ...borderCss,
       ...boxShadowCss,
-      ...transformCss,
-      ...convertAtomNodePositionToCss(node, parentNode),
+      // ...transformCss,
+      ...convertNodePositionToCss(node, parentNode),
    }
+
+   // console.log('11getAbsoluteAnchorPoint', getAbsoluteAnchorPoint(node))
+   // console.log('11absoluteBoundingBox', node.absoluteBoundingBox)
 
    // 转换 CSS 对象为 CSS 字符串
    const style = convertCssObjectToString(css)

@@ -1,6 +1,6 @@
 import { StaticTextNode } from '@huima/types-next'
 
-export function groupByNewline(
+export function groupCharsByNewline(
    chars: StaticTextNode['styledCharacters'],
 ): StaticTextNode['styledCharacters'][] {
    const groups: StaticTextNode['styledCharacters'][] = []

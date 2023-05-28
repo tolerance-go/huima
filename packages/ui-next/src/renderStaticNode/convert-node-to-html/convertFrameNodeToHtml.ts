@@ -1,11 +1,11 @@
 import { StaticFrameNode, StaticGroupNode } from '@huima/types-next'
 import { renderStaticNode } from '..'
 import { DSLType, RuntimeEnv } from '../../types'
-import { convertAtomNodePositionToCss } from '../convertAtomNodePositionToCss'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertFillsToCss } from '../convertFillsToCss'
 import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'
+import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
 import { convertStrokesToCss } from '../convertStrokesToCss'
 import { getFrameFlexLayoutStyle } from '../getFrameFlexLayoutStyle'
@@ -58,7 +58,7 @@ export const convertFrameNodeToHtml = (
       ...borderCss,
       ...boxShadowCss,
       ...transformCss,
-      ...convertAtomNodePositionToCss(node, parentNode),
+      ...convertNodePositionToCss(node, parentNode),
    }
 
    // 转换 CSS 对象为 CSS 字符串

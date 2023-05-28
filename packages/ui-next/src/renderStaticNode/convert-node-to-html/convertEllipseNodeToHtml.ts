@@ -4,10 +4,10 @@ import {
    StaticGroupNode,
 } from '@huima/types-next'
 import { DSLType, RuntimeEnv } from '../../types'
-import { convertAtomNodePositionToCss } from '../convertAtomNodePositionToCss'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertFillsToCss } from '../convertFillsToCss'
 import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'
+import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
 import { convertStrokesToCss } from '../convertStrokesToCss'
 
@@ -56,7 +56,7 @@ export function convertEllipseNodeToHtml(
       ...borderCss,
       ...boxShadowCss,
       ...transformCss,
-      ...convertAtomNodePositionToCss(node, parentNode),
+      ...convertNodePositionToCss(node, parentNode),
    }
 
    // 转换 CSS 对象为 CSS 字符串

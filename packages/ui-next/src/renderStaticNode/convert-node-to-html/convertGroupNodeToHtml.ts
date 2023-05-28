@@ -1,9 +1,9 @@
 import { StaticFrameNode, StaticGroupNode } from '@huima/types-next'
 import { renderStaticNode } from '..'
 import { DSLType, RuntimeEnv } from '../../types'
-import { computeCssAbsPosition } from '../computeCssAbsPosition'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertEffectsToFilter } from '../convertEffectsToFilter'
+import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
 
 /**
@@ -34,23 +34,7 @@ export const convertGroupNodeToHtml = (
       height: `${height}px`,
       ...convertEffectsToFilter(effects),
       ...convertRotationToCss(rotation),
-      ...(parentNode &&
-      ((parentNode.type === 'frame' && parentNode.layoutMode === 'NONE') ||
-         node.layoutPositioning === 'ABSOLUTE')
-         ? computeCssAbsPosition({
-              rotatedUpperLeft: {
-                 x: node.x,
-                 y: node.y,
-              },
-              parentAbsoluteBoundingBox: parentNode.absoluteBoundingBox!,
-              absoluteBoundingBox: node.absoluteBoundingBox!,
-              constraints: {
-                 horizontal: 'MIN',
-                 vertical: 'MIN',
-              },
-              rotation: node.rotation,
-           })
-         : {}),
+      ...convertNodePositionToCss(node, parentNode),
    }
 
    // 转换 CSS 对象为 CSS 字符串
