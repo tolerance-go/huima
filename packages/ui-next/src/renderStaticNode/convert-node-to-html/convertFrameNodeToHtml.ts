@@ -53,7 +53,7 @@ export const convertFrameNodeToHtml = (
       width: `${width}px`,
       height: `${height}px`,
       ...getFrameFlexLayoutStyle(node),
-      ...convertBorderRadiusToCss(String(cornerRadius)),
+      ...convertBorderRadiusToCss(cornerRadius),
       ...backgroundColorCss,
       ...borderCss,
       ...boxShadowCss,

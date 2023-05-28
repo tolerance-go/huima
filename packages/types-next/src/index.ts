@@ -28,7 +28,6 @@ export interface StaticFrameNode
          | 'absoluteBoundingBox'
          | 'absoluteRenderBounds'
          | 'absoluteTransform'
-         | 'cornerRadius'
          | 'fills'
          | 'strokeAlign'
          | 'strokeWeight'
@@ -48,7 +47,7 @@ export interface StaticFrameNode
          | 'isMask'
       > {
    type: 'frame'
-
+   cornerRadius: CornerRadiusType
    parent?: StaticContainerNode
    imageFillMeta?: ImageFillMeta
 }
@@ -95,6 +94,15 @@ export interface StaticSectionNode
    parent?: StaticContainerNode
 }
 
+export type CornerRadiusType =
+   | {
+        topLeftRadius: number
+        topRightRadius: number
+        bottomLeftRadius: number
+        bottomRightRadius: number
+     }
+   | number
+
 export interface StaticRectangleNode
    extends BaseStaticNode,
       Pick<
@@ -109,7 +117,6 @@ export interface StaticRectangleNode
          | 'absoluteBoundingBox'
          | 'absoluteRenderBounds'
          | 'absoluteTransform'
-         | 'cornerRadius'
          | 'fills'
          | 'strokeAlign'
          | 'strokeWeight'
@@ -120,7 +127,7 @@ export interface StaticRectangleNode
          | 'isMask'
       > {
    type: 'rectangle'
-
+   cornerRadius: CornerRadiusType
    parent?: StaticContainerNode
    imageFillMeta?: ImageFillMeta
 }

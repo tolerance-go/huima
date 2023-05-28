@@ -53,7 +53,7 @@ export function convertRectangleNodeToHtml(
    const css: Record<string, string | number | null | undefined> = {
       width: `${width}px`,
       height: `${height}px`,
-      ...convertBorderRadiusToCss(String(cornerRadius)),
+      ...convertBorderRadiusToCss(cornerRadius),
       ...backgroundColorCss,
       ...borderCss,
       ...boxShadowCss,
