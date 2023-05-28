@@ -143,9 +143,7 @@ export function convertTextNodeToHtml(
                'line-height': lineHeight,
                ...convertTextDecorationToCss(charInfo.textDecoration),
                ...convertTextCaseToCss(charInfo.textCase),
-               ...(charIndex < segment.length - 1
-                  ? convertLetterSpacingToCss(charInfo.letterSpacing)
-                  : {}),
+               ...convertLetterSpacingToCss(charInfo.letterSpacing),
                color: paint
                   ? rgbaToHex(
                        paint.color.r,
@@ -156,9 +154,27 @@ export function convertTextNodeToHtml(
                   : undefined,
             }
 
-            html += `<span style="${convertCssObjectToString(style)}">${
-               charInfo.characters
-            }</span>`
+            // 如果 charInfo.letterSpacing 大于 0，当 group 中的最后一个 segment 的最后一个字符时，单独用 span
+            // 包裹，样式一致，但是 letterSpacing 样式丢弃，因为 figma 中 letterSpacing 不会作用在最后，和 css 不一样
+            if (
+               charInfo.letterSpacing &&
+               charIndex === segment.length - 1 &&
+               charInfo.characters.length
+            ) {
+               const { ['letter-spacing']: letterSpacing, ...rest } = style
+               html += `<span style="${convertCssObjectToString(
+                  style,
+               )}">${charInfo.characters.slice(
+                  0,
+                  -1,
+               )}</span><span style="${convertCssObjectToString(rest)}">${
+                  charInfo.characters[charInfo.characters.length - 1]
+               }</span>`
+            } else {
+               html += `<span style="${convertCssObjectToString(style)}">${
+                  charInfo.characters
+               }</span>`
+            }
          })
       } else {
          // 获得 line-height，否则高度是 0 和 figma 显示不一致

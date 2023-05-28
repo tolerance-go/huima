@@ -2,7 +2,9 @@
  * 此函数将 Figma 中的 LetterSpacing 类型转换为对应的 CSS letter-spacing 属性
  */
 export function convertLetterSpacingToCss(letterSpacing: LetterSpacing) {
-   let cssObj: Record<string, string> = {}
+   let cssObj: {
+      ['letter-spacing']?: string
+   } = {}
    if (letterSpacing.value === 0) {
       return cssObj
    }
