@@ -48,7 +48,7 @@ export interface StaticFrameNode
          | 'isMask'
       > {
    type: 'frame'
-   parentAbsoluteBoundingBox?: Rect
+
    parent?: StaticContainerNode
    imageFillMeta?: ImageFillMeta
 }
@@ -71,7 +71,7 @@ export interface StaticGroupNode
          | 'isMask'
       > {
    type: 'group'
-   parentAbsoluteBoundingBox?: Rect
+
    parent?: StaticContainerNode
    // 当子节点存在 mask 的时候才存在
    svgBytes?: Uint8Array
@@ -91,7 +91,7 @@ export interface StaticSectionNode
          | 'y'
       > {
    type: 'section'
-   parentAbsoluteBoundingBox?: Rect
+
    parent?: StaticContainerNode
 }
 
@@ -120,7 +120,7 @@ export interface StaticRectangleNode
          | 'isMask'
       > {
    type: 'rectangle'
-   parentAbsoluteBoundingBox?: Rect
+
    parent?: StaticContainerNode
    imageFillMeta?: ImageFillMeta
 }
@@ -318,7 +318,7 @@ export interface StaticTextNode
       > {
    type: 'text'
    characters?: TextNode['characters']
-   parentAbsoluteBoundingBox?: Rect
+
    styledCharacters: Array<
       Pick<
          StyledTextSegment,
@@ -335,19 +335,6 @@ export interface StaticTextNode
          end: number
          char: string
       }
-   >
-   styledTextSegments: Array<
-      Pick<
-         StyledTextSegment,
-         | 'fontSize'
-         | 'fontWeight'
-         | 'fontName'
-         | 'fills'
-         | 'textCase'
-         | 'lineHeight'
-         | 'letterSpacing'
-         | 'textDecoration'
-      >
    >
    parent?: StaticContainerNode
 }

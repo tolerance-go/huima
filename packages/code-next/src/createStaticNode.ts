@@ -34,17 +34,6 @@ export const createStaticTextNode = (
    node: TextNode,
    parentNode?: StaticContainerNode,
 ): StaticTextNode => {
-   const styledTextSegments = node.getStyledTextSegments([
-      'fontSize',
-      'fontWeight',
-      'fontName',
-      'fills',
-      'textCase',
-      'lineHeight',
-      'letterSpacing',
-      'textDecoration',
-   ])
-
    const {
       paragraphSpacing,
       textAutoResize,
@@ -69,8 +58,6 @@ export const createStaticTextNode = (
    const charItems = node.characters.split(/(\n|(?!\n).)/g).filter(Boolean)
 
    const charInfos = getCharPositions(charItems)
-
-   console.log('charInfos', charInfos)
 
    const styledCharacters = charInfos.map((charInfo) => {
       const { start, end, char } = charInfo
@@ -102,16 +89,11 @@ export const createStaticTextNode = (
       parent: parentNode,
       x,
       y,
-      parentAbsoluteBoundingBox:
-         node.parent && 'absoluteBoundingBox' in node.parent
-            ? node.parent.absoluteBoundingBox ?? undefined
-            : undefined,
       width,
       height,
       id: node.id,
       type: 'text',
       characters: node.characters,
-      styledTextSegments,
       styledCharacters,
       paragraphSpacing,
       textAutoResize,
@@ -539,10 +521,7 @@ export const createStaticRectangleNode = async (
       parent: parentNode,
       x,
       y,
-      parentAbsoluteBoundingBox:
-         node.parent && 'absoluteBoundingBox' in node.parent
-            ? node.parent.absoluteBoundingBox ?? undefined
-            : undefined,
+
       id,
       type: 'rectangle',
       effects,
@@ -606,10 +585,7 @@ export const createStaticFrameNode = async (
       parent: parentNode,
       x,
       y,
-      parentAbsoluteBoundingBox:
-         node.parent && 'absoluteBoundingBox' in node.parent
-            ? node.parent.absoluteBoundingBox ?? undefined
-            : undefined,
+
       children: [],
       id,
       type: 'frame',
@@ -692,10 +668,7 @@ export const createStaticGroupNode = async (
       absoluteRenderBounds,
       absoluteTransform,
       layoutPositioning,
-      parentAbsoluteBoundingBox:
-         node.parent && 'absoluteBoundingBox' in node.parent
-            ? node.parent.absoluteBoundingBox ?? undefined
-            : undefined,
+
       svgBytes: hasMask
          ? await node.exportAsync({
               format: 'SVG',

@@ -132,45 +132,50 @@ export function convertTextNodeToHtml(
 
       html += `<p style="${groupStyle}">`
 
-      group.forEach((charInfo, charIndex) => {
-         // Only process SolidPaint
-         const solidFills = charInfo.fills.filter(
-            (fill) => fill.type === 'SOLID' && fill.visible !== false,
-         ) as SolidPaint[]
-         const paint = solidFills.length > 0 ? solidFills[0] : null
+      if (group.length) {
+         group.forEach((charInfo, charIndex) => {
+            // Only process SolidPaint
+            const solidFills = charInfo.fills.filter(
+               (fill) => fill.type === 'SOLID' && fill.visible !== false,
+            ) as SolidPaint[]
+            const paint = solidFills.length > 0 ? solidFills[0] : null
 
-         const lineHeight =
-            charInfo.lineHeight.unit === 'AUTO'
-               ? 'normal'
-               : charInfo.lineHeight.unit === 'PIXELS'
-               ? `${charInfo.lineHeight.value}px`
-               : `${charInfo.lineHeight.value}%`
+            const lineHeight =
+               charInfo.lineHeight.unit === 'AUTO'
+                  ? 'normal'
+                  : charInfo.lineHeight.unit === 'PIXELS'
+                  ? `${charInfo.lineHeight.value}px`
+                  : `${charInfo.lineHeight.value}%`
 
-         const style = `
-         font-size: ${charInfo.fontSize}px;
-         font-weight: ${charInfo.fontWeight};
-         font-family: ${charInfo.fontName.family};
-         line-height: ${lineHeight};
-         ${convertTextDecorationToCss(charInfo.textDecoration)}
-         ${convertTextCaseToCss(charInfo.textCase)}
-         ${
-            charIndex < group.length - 1
-               ? convertLetterSpacingToCss(charInfo.letterSpacing)
-               : ''
-         }
-         ${
-            paint
-               ? `color: ${rgbaToHex(
-                    paint.color.r,
-                    paint.color.g,
-                    paint.color.b,
-                    paint.opacity,
-                 )};`
-               : ''
-         }
-       `.trimEnd()
-         html += `<span style="${style}">${charInfo.char}</span>`
-      })
+            const style = `
+            font-size: ${charInfo.fontSize}px;
+            font-weight: ${charInfo.fontWeight};
+            font-family: ${charInfo.fontName.family};
+            line-height: ${lineHeight};
+            ${convertTextDecorationToCss(charInfo.textDecoration)}
+            ${convertTextCaseToCss(charInfo.textCase)}
+            ${
+               charIndex < group.length - 1
+                  ? convertLetterSpacingToCss(charInfo.letterSpacing)
+                  : ''
+            }
+            ${
+               paint
+                  ? `color: ${rgbaToHex(
+                       paint.color.r,
+                       paint.color.g,
+                       paint.color.b,
+                       paint.opacity,
+                    )};`
+                  : ''
+            }
+          `.trimEnd()
+            html += `<span style="${style}">${charInfo.char}</span>`
+         })
+      } else {
+         // 获得 line-height，否则高度是 0 和 figma 显示不一致
+         html += `&nbsp;`
+      }
 
       html += '</p>'
    })

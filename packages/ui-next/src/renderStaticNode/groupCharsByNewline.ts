@@ -9,9 +9,9 @@ export function groupCharsByNewline(
    chars.forEach((charInfo) => {
       if (charInfo.char === '\n') {
          // Start a new group when encountering a newline
-         if (currentGroup.length > 0) {
-            groups.push(currentGroup)
-         }
+         // if (currentGroup.length > 0) {
+         groups.push(currentGroup)
+         // }
          currentGroup = []
       } else {
          currentGroup.push(charInfo)
