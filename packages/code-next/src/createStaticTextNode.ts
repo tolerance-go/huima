@@ -1,5 +1,4 @@
 import { StaticContainerNode, StaticTextNode } from '@huima/types-next'
-import { getCharPositions } from './getCharPositions'
 
 export const createStaticTextNode = (
    node: TextNode,
@@ -26,37 +25,22 @@ export const createStaticTextNode = (
       layoutPositioning,
    } = node
 
-   const charItems = node.characters.split(/(\n|(?!\n).)/g).filter(Boolean)
+   // const charItems = node.characters.split(/(\n|(?!\n).)/g).filter(Boolean)
+   // const charInfos = getCharPositions(charItems)
 
-   const charInfos = getCharPositions(charItems)
-
-   const styledCharacters = charInfos.map((charInfo) => {
-      const { start, end, char } = charInfo
-      const fontSize = node.getRangeFontSize(start, end)
-      const fontWeight = node.getRangeFontWeight(start, end)
-      const fontName = node.getRangeFontName(start, end)
-      const fills = node.getRangeFills(start, end)
-      const textCase = node.getRangeTextCase(start, end)
-      const lineHeight = node.getRangeLineHeight(start, end)
-      const letterSpacing = node.getRangeLetterSpacing(start, end)
-      const textDecoration = node.getRangeTextDecoration(start, end)
-      return {
-         start,
-         end,
-         char,
-         fontSize,
-         fontWeight,
-         fontName,
-         fills,
-         textCase,
-         lineHeight,
-         letterSpacing,
-         textDecoration,
-         // TODO: symbol 的情况没有处理
-      } as StaticTextNode['styledCharacters'][number]
-   })
+   const styledTextSegments = node.getStyledTextSegments([
+      'fontSize',
+      'fontWeight',
+      'fontName',
+      'fills',
+      'textCase',
+      'lineHeight',
+      'letterSpacing',
+      'textDecoration',
+   ])
 
    return {
+      styledTextSegments,
       parent: parentNode,
       x,
       y,
@@ -65,7 +49,6 @@ export const createStaticTextNode = (
       id: node.id,
       type: 'text',
       characters: node.characters,
-      styledCharacters,
       paragraphSpacing,
       textAutoResize,
       textAlignHorizontal,

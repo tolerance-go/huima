@@ -1,5 +1,20 @@
 import './global'
 
+export type StyledTextSegmentType = Pick<
+   StyledTextSegment,
+   | 'characters'
+   | 'start'
+   | 'end'
+   | 'fontSize'
+   | 'fontName'
+   | 'fontWeight'
+   | 'textDecoration'
+   | 'textCase'
+   | 'lineHeight'
+   | 'letterSpacing'
+   | 'fills'
+>[]
+
 export type Point = {
    x: number
    y: number
@@ -325,24 +340,7 @@ export interface StaticTextNode
       > {
    type: 'text'
    characters?: TextNode['characters']
-
-   styledCharacters: Array<
-      Pick<
-         StyledTextSegment,
-         | 'fontSize'
-         | 'fontWeight'
-         | 'fontName'
-         | 'fills'
-         | 'textCase'
-         | 'lineHeight'
-         | 'letterSpacing'
-         | 'textDecoration'
-      > & {
-         start: number
-         end: number
-         char: string
-      }
-   >
+   styledTextSegments: StyledTextSegmentType
    parent?: StaticContainerNode
 }
 

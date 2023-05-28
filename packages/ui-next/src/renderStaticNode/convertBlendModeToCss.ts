@@ -1,4 +1,4 @@
-export function convertBlendModeToCss(blendMode: BlendMode): string {
+export function convertBlendModeToCss(blendMode: BlendMode) {
    let cssBlendMode: string
 
    switch (blendMode) {
@@ -58,5 +58,7 @@ export function convertBlendModeToCss(blendMode: BlendMode): string {
          break
    }
 
-   return `mix-blend-mode: ${cssBlendMode};`
+   return {
+      'mix-blend-mode': cssBlendMode,
+   }
 }

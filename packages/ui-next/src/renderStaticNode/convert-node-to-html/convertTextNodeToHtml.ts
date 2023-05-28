@@ -12,7 +12,7 @@ import { convertRotationToCss } from '../convertRotationToCss'
 import { convertTextCaseToCss } from '../convertTextCaseToCss'
 import { convertTextDecorationToCss } from '../convertTextDecorationToCss'
 import { convertTextEffectsToCss } from '../convertTextEffectsToCss'
-import { groupCharsByNewline } from '../groupCharsByNewline'
+import { groupTextSegmentsByNewline } from '../groupTextSegmentsByNewline'
 import { rgbaToHex } from '../rgbaToHex'
 
 /**
@@ -43,64 +43,52 @@ export function convertTextNodeToHtml(
    node: StaticTextNode,
    parentNode?: StaticFrameNode | StaticGroupNode,
 ): string {
-   // 将 characters 进行分割，遇到换行符分组
-   let testGroups: StaticTextNode['styledCharacters'][] = groupCharsByNewline(
-      node.styledCharacters,
-   )
-
-   const groups: StaticTextNode['styledCharacters'][] = testGroups
-
+   const { styledTextSegments } = node
    let html = ''
 
-   const containerStyleObj = {
+   const containerStyle: Record<string, string | number | undefined | null> = {
+      display: 'flex',
+      'align-items': ((val) => {
+         if (val === 'TOP') {
+            return 'start'
+         }
+         if (val === 'CENTER') {
+            return 'center'
+         }
+         if (val === 'BOTTOM') {
+            return 'end'
+         }
+         return 'start'
+      })(node.textAlignVertical),
+      width: `${node.width}px`,
+      height: `${node.height}px`,
       ...convertRotationToCss(node.rotation),
+      ...convertBlendModeToCss(node.blendMode),
+      ...convertNodePositionToCss(node, parentNode),
    }
 
-   const containerStyle = `
-    ${convertCssObjectToString(containerStyleObj)}
-    display: flex;
-    align-items: ${((val) => {
-       if (val === 'TOP') {
-          return 'start'
-       }
-       if (val === 'CENTER') {
-          return 'center'
-       }
-       if (val === 'BOTTOM') {
-          return 'end'
-       }
-       return 'start'
-    })(node.textAlignVertical)};
-    width: ${node.width}px;
-    height: ${node.height}px;
-    ${convertBlendModeToCss(node.blendMode)}
-    ${convertCssObjectToString(convertNodePositionToCss(node, parentNode))}
-  `.trimEnd()
+   const innerContainerStyle = {
+      width: '100%',
+      'text-align': ((val) => {
+         if (val === 'LEFT') {
+            return 'left'
+         }
+         if (val === 'CENTER') {
+            return 'center'
+         }
+         if (val === 'RIGHT') {
+            return 'right'
+         }
+         if (val === 'JUSTIFIED') {
+            return 'justify'
+         }
+         return 'start'
+      })(node.textAlignHorizontal),
+      ...convertTextEffectsToCss(node.effects),
+   }
 
-   const effectsCss = convertTextEffectsToCss(node.effects)
-
-   const innerContainerStyle = `
-    width: 100%;
-    text-align: ${((val) => {
-       if (val === 'LEFT') {
-          return 'left'
-       }
-       if (val === 'CENTER') {
-          return 'center'
-       }
-       if (val === 'RIGHT') {
-          return 'right'
-       }
-       if (val === 'JUSTIFIED') {
-          return 'justify'
-       }
-       return 'start'
-    })(node.textAlignHorizontal)};
-    ${effectsCss}
-    `.trimEnd()
-
-   html += `<div style="${containerStyle}">`
-   html += `<div style="${innerContainerStyle}">`
+   html += `<div style="${convertCssObjectToString(containerStyle)}">`
+   html += `<div style="${convertCssObjectToString(innerContainerStyle)}">`
 
    /**
      * 1. 需要将 p 和 span 的浏览器默认样式移除
@@ -116,25 +104,26 @@ export function convertTextNodeToHtml(
        readonly unit: 'AUTO'
      } 需要判断处理
      */
-   groups.forEach((group, index) => {
-      const groupStyle = `
-       margin: 0;
-       padding: 0;
-       margin-bottom: ${
-          index < groups.length - 1 ? node.paragraphSpacing + 'px' : '0'
-       };
-       ${
-          node.textAutoResize === 'TRUNCATE'
-             ? 'overflow: hidden; text-overflow: ellipsis; white-space: nowrap;'
-             : ''
-       }
-     `.trimEnd()
+   const groups = groupTextSegmentsByNewline(styledTextSegments)
+   groups.forEach((segment, index) => {
+      const groupStyle: Record<string, string | number> = {
+         margin: 0,
+         padding: 0,
+         'margin-bottom':
+            index < groups.length - 1 ? node.paragraphSpacing + 'px' : '0',
+         ...(node.textAutoResize === 'TRUNCATE'
+            ? {
+                 overflow: 'hidden',
+                 'text-overflow': 'ellipsis',
+                 'white-space': 'nowrap',
+              }
+            : {}),
+      }
 
-      html += `<p style="${groupStyle}">`
+      html += `<p style="${convertCssObjectToString(groupStyle)}">`
 
-      if (group.length) {
-         group.forEach((charInfo, charIndex) => {
-            // Only process SolidPaint
+      if (segment.length) {
+         segment.forEach((charInfo, charIndex) => {
             const solidFills = charInfo.fills.filter(
                (fill) => fill.type === 'SOLID' && fill.visible !== false,
             ) as SolidPaint[]
@@ -147,30 +136,29 @@ export function convertTextNodeToHtml(
                   ? `${charInfo.lineHeight.value}px`
                   : `${charInfo.lineHeight.value}%`
 
-            const style = `
-            font-size: ${charInfo.fontSize}px;
-            font-weight: ${charInfo.fontWeight};
-            font-family: ${charInfo.fontName.family};
-            line-height: ${lineHeight};
-            ${convertTextDecorationToCss(charInfo.textDecoration)}
-            ${convertTextCaseToCss(charInfo.textCase)}
-            ${
-               charIndex < group.length - 1
+            const style = {
+               'font-size': `${charInfo.fontSize}px`,
+               'font-weight': charInfo.fontWeight,
+               'font-family': charInfo.fontName.family,
+               'line-height': lineHeight,
+               ...convertTextDecorationToCss(charInfo.textDecoration),
+               ...convertTextCaseToCss(charInfo.textCase),
+               ...(charIndex < segment.length - 1
                   ? convertLetterSpacingToCss(charInfo.letterSpacing)
-                  : ''
-            }
-            ${
-               paint
-                  ? `color: ${rgbaToHex(
+                  : {}),
+               color: paint
+                  ? rgbaToHex(
                        paint.color.r,
                        paint.color.g,
                        paint.color.b,
                        paint.opacity,
-                    )};`
-                  : ''
+                    )
+                  : undefined,
             }
-          `.trimEnd()
-            html += `<span style="${style}">${charInfo.char}</span>`
+
+            html += `<span style="${convertCssObjectToString(style)}">${
+               charInfo.characters
+            }</span>`
          })
       } else {
          // 获得 line-height，否则高度是 0 和 figma 显示不一致

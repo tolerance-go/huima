@@ -1,8 +1,8 @@
 import { rgbaToHex } from './rgbaToHex'
 
 // 只处理了 DROP_SHADOW 和 INNER_SHADOW，其他的暂时不处理，并且只处理了第一个
-export function convertTextEffectsToCss(effects: readonly Effect[]): string {
-   let cssEffects: string = ''
+export function convertTextEffectsToCss(effects: readonly Effect[]) {
+   let cssEffects: Record<string, string> = {}
 
    const supports = effects.filter(
       (effect) =>
@@ -21,7 +21,7 @@ export function convertTextEffectsToCss(effects: readonly Effect[]): string {
             effect.color.b,
             effect.color.a,
          )}`
-         cssEffects = `text-shadow: ${shadow};`
+         cssEffects['text-shadow'] = shadow
       } else if (effect.type === 'INNER_SHADOW') {
          let shadow = `inset ${effect.offset.x}px ${effect.offset.y}px ${
             effect.radius
@@ -31,7 +31,7 @@ export function convertTextEffectsToCss(effects: readonly Effect[]): string {
             effect.color.b,
             effect.color.a,
          )}`
-         cssEffects = `text-shadow: ${shadow};`
+         cssEffects['text-shadow'] = shadow
       }
    }
 
