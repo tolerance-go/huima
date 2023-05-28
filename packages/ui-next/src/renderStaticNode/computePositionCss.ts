@@ -1,4 +1,4 @@
-import { relativePoint } from '../utils/rotatePoint'
+import { relativePoint } from '../utils/relativePoint'
 
 /**
  * 这个函数根据传入的 parentAbsoluteBoundingBox 和 absoluteBoundingBox，以及
