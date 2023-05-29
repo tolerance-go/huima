@@ -3,6 +3,7 @@ import {
    StaticGroupNode,
    StaticNode,
 } from '@huima/types-next'
+import { BaseConvertSettings } from '../types'
 import { computePositionCss } from './computePositionCss'
 
 // 给我一个函数，传入一个节点，一直向上查找，直到找到第一个非 group 节点，返回这个节点和上一个 group 节点
@@ -24,6 +25,7 @@ const getUpperGroupNode = (node?: StaticContainerNode) => {
 
 // 这个函数用来判断一个节点是否需要显示绝对定位
 export const convertNodePositionToCss = (
+   settings: BaseConvertSettings,
    node: StaticNode,
    parentNode?: StaticContainerNode,
 ) => {
@@ -48,6 +50,7 @@ export const convertNodePositionToCss = (
 
    return parentNode && (!opt2 || opt1 || opt3 || opt4)
       ? computePositionCss({
+           settings,
            parentBox: opt1
               ? upperGroupNode!.absoluteBoundingBox!
               : parentNode.absoluteBoundingBox!,

@@ -1,13 +1,14 @@
 import { StaticContainerNode, StaticEllipseNode } from '@huima/types-next'
 import { isCircle } from '@huima/utils'
 import { Buffer } from 'buffer'
-import { DSLType, RuntimeEnv } from '../../types'
+import { BaseConvertSettings } from '../../types'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertFillsToCss } from '../convertFillsToCss'
 import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
 import { convertStrokesToCss } from '../convertStrokesToCss'
+import { convertToStyleAndClassAttrs } from '../convertToStyleAndClassAttrs'
 
 /**
  * 根据传入的 node，将 figma node 转换成 html 代码
@@ -22,8 +23,7 @@ import { convertStrokesToCss } from '../convertStrokesToCss'
  * 根据传入的 rotation 设置 div 的旋转角度
  */
 export function convertEllipseNodeToHtml(
-   runtimeEnv: RuntimeEnv,
-   dslType: DSLType,
+   settings: BaseConvertSettings,
    node: StaticEllipseNode,
    parentNode?: StaticContainerNode,
 ): string {
@@ -54,7 +54,7 @@ export function convertEllipseNodeToHtml(
          display: 'flex',
          'justify-content': 'center',
          'align-items': 'center',
-         ...convertNodePositionToCss(node, parentNode),
+         ...convertNodePositionToCss(settings, node, parentNode),
       })}">${html.replace('<svg', `<svg role='ellipse-vector'`)}</div>`
    }
 
@@ -81,14 +81,11 @@ export function convertEllipseNodeToHtml(
       ...borderCss,
       ...boxShadowCss,
       ...transformCss,
-      ...convertNodePositionToCss(node, parentNode),
+      ...convertNodePositionToCss(settings, node, parentNode),
    }
 
-   // 转换 CSS 对象为 CSS 字符串
-   const style = convertCssObjectToString(css)
-
    // 创建 HTML
-   const html = `<div style="${style}"></div>`
+   const html = `<div ${convertToStyleAndClassAttrs(css, settings)}></div>`
 
    return html
 }

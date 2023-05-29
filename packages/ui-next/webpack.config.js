@@ -20,6 +20,11 @@ module.exports = (env, argv) => {
       module: {
          rules: [
             {
+               test: /\.txt$/,
+               loader: 'raw-loader',
+               exclude: /node_modules/,
+            },
+            {
                test: /\.ts$/,
                loader: 'ts-loader',
                options: {
@@ -49,7 +54,7 @@ module.exports = (env, argv) => {
       },
       // Webpack tries these extensions for you if you omit the extension like "import './file'"
       resolve: {
-         extensions: ['.ts', '.js', '.vue'],
+         extensions: ['.ts', '.js', '.vue', '.txt'],
       },
       output: {
          publicPath: '/',

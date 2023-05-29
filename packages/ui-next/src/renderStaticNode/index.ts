@@ -1,5 +1,5 @@
 import { StaticContainerNode, StaticNode } from '@huima/types-next'
-import { DSLType, RuntimeEnv } from '../types'
+import { BaseConvertSettings } from '../types'
 import { convertBooleanOperationNodeToHtml } from './convert-node-to-html/convertBooleanOperationNodeToHtml'
 import { convertComponentNodeToHtml } from './convert-node-to-html/convertComponentNodeToHtml'
 import { convertEllipseNodeToHtml } from './convert-node-to-html/convertEllipseNodeToHtml'
@@ -18,29 +18,22 @@ import { convertVectorNodeToHtml } from './convert-node-to-html/convertVectorNod
  * 最后渲染到运行环境中，比如浏览器环境
  */
 export const renderStaticNode = (
-   runtimeEnv: RuntimeEnv,
-   dslType: DSLType,
+   settings: BaseConvertSettings,
    node: StaticNode,
    parentNode?: StaticContainerNode,
 ): string => {
-   if (runtimeEnv === 'web') {
-      if (dslType === 'html') {
+   if (settings.targetRuntimeEnv === 'web') {
+      if (settings.targetRuntimeDsl === 'html') {
          console.log(node)
 
          if (node.type === 'text') {
-            const content = convertTextNodeToHtml(
-               runtimeEnv,
-               dslType,
-               node,
-               parentNode,
-            )
+            const content = convertTextNodeToHtml(settings, node, parentNode)
             return content
          }
 
          if (node.type === 'rectangle') {
             const content = convertRectangleNodeToHtml(
-               runtimeEnv,
-               dslType,
+               settings,
                node,
                parentNode,
             )
@@ -48,29 +41,18 @@ export const renderStaticNode = (
          }
 
          if (node.type === 'ellipse') {
-            const content = convertEllipseNodeToHtml(
-               runtimeEnv,
-               dslType,
-               node,
-               parentNode,
-            )
+            const content = convertEllipseNodeToHtml(settings, node, parentNode)
             return content
          }
 
          if (node.type === 'frame') {
-            const content = convertFrameNodeToHtml(
-               runtimeEnv,
-               dslType,
-               node,
-               parentNode,
-            )
+            const content = convertFrameNodeToHtml(settings, node, parentNode)
             return content
          }
 
          if (node.type === 'componentNode') {
             const content = convertComponentNodeToHtml(
-               runtimeEnv,
-               dslType,
+               settings,
                node,
                parentNode,
             )
@@ -79,8 +61,7 @@ export const renderStaticNode = (
 
          if (node.type === 'instanceNode') {
             const content = convertInstanceNodeToHtml(
-               runtimeEnv,
-               dslType,
+               settings,
                node,
                parentNode,
             )
@@ -88,39 +69,23 @@ export const renderStaticNode = (
          }
 
          if (node.type === 'group') {
-            const content = convertGroupNodeToHtml(
-               runtimeEnv,
-               dslType,
-               node,
-               parentNode,
-            )
+            const content = convertGroupNodeToHtml(settings, node, parentNode)
             return content
          }
 
          if (node.type === 'line') {
-            const content = convertLineNodeToHtml(
-               runtimeEnv,
-               dslType,
-               node,
-               parentNode,
-            )
+            const content = convertLineNodeToHtml(settings, node, parentNode)
             return content
          }
 
          if (node.type === 'vector') {
-            const content = convertVectorNodeToHtml(
-               runtimeEnv,
-               dslType,
-               node,
-               parentNode,
-            )
+            const content = convertVectorNodeToHtml(settings, node, parentNode)
             return content
          }
 
          if (node.type === 'booleanOperation') {
             const content = convertBooleanOperationNodeToHtml(
-               runtimeEnv,
-               dslType,
+               settings,
                node,
                parentNode,
             )
@@ -128,22 +93,12 @@ export const renderStaticNode = (
          }
 
          if (node.type === 'polygon') {
-            const content = convertPolygonNodeToHtml(
-               runtimeEnv,
-               dslType,
-               node,
-               parentNode,
-            )
+            const content = convertPolygonNodeToHtml(settings, node, parentNode)
             return content
          }
 
          if (node.type === 'star') {
-            const content = convertStarNodeToHtml(
-               runtimeEnv,
-               dslType,
-               node,
-               parentNode,
-            )
+            const content = convertStarNodeToHtml(settings, node, parentNode)
             return content
          }
 
@@ -151,5 +106,5 @@ export const renderStaticNode = (
       }
    }
 
-   return `环境：${runtimeEnv}，DSL 类型：${dslType}，node 类型：${node.type}，还未支持转换成静态代码`
+   return `环境：${settings.targetRuntimeEnv}，DSL 类型：${settings.targetRuntimeDsl}，node 类型：${node.type}，还未支持转换成静态代码`
 }

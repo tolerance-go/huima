@@ -1,6 +1,6 @@
 import { StaticComponentNode, StaticContainerNode } from '@huima/types-next'
 import { renderStaticNode } from '..'
-import { DSLType, RuntimeEnv } from '../../types'
+import { BaseConvertSettings } from '../../types'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertFillsToCss } from '../convertFillsToCss'
@@ -8,6 +8,7 @@ import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
 import { convertStrokesToCss } from '../convertStrokesToCss'
+import { convertToStyleAndClassAttrs } from '../convertToStyleAndClassAttrs'
 import { getFrameFlexLayoutStyle } from '../getFrameFlexLayoutStyle'
 
 /**
@@ -16,8 +17,7 @@ import { getFrameFlexLayoutStyle } from '../getFrameFlexLayoutStyle'
  * @param node
  */
 export const convertComponentNodeToHtml = (
-   runtimeEnv: RuntimeEnv,
-   dslType: DSLType,
+   settings: BaseConvertSettings,
    node: StaticComponentNode,
    parentNode?: StaticContainerNode,
 ): string => {
@@ -58,17 +58,20 @@ export const convertComponentNodeToHtml = (
       ...borderCss,
       ...boxShadowCss,
       ...transformCss,
-      ...convertNodePositionToCss(node, parentNode),
+      ...convertNodePositionToCss(settings, node, parentNode),
    }
 
    // 转换 CSS 对象为 CSS 字符串
    const style = convertCssObjectToString(css)
 
    // 创建 HTML
-   const html = `<div role='frame' style="${style}">
+   const html = `<div role='frame' ${convertToStyleAndClassAttrs(
+      css,
+      settings,
+   )}>
     ${children
        .map((item) => {
-          return renderStaticNode(runtimeEnv, dslType, item, node)
+          return renderStaticNode(settings, item, node)
        })
        .join('\n')}</div>`
 

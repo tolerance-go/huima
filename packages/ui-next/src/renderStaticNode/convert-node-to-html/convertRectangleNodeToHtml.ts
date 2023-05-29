@@ -1,12 +1,11 @@
 import { StaticContainerNode, StaticRectangleNode } from '@huima/types-next'
-import { DSLType, RuntimeEnv } from '../../types'
+import { BaseConvertSettings } from '../../types'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'
-import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertFillsToCss } from '../convertFillsToCss'
 import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
-import { convertRotationToCss } from '../convertRotationToCss'
 import { convertStrokesToCss } from '../convertStrokesToCss'
+import { convertToStyleAndClassAttrs } from '../convertToStyleAndClassAttrs'
 // import { getAbsoluteAnchorPoint } from '../getAbsoluteAnchorPoint'
 
 /**
@@ -22,8 +21,7 @@ import { convertStrokesToCss } from '../convertStrokesToCss'
  * 根据传入的 rotation 设置 div 的旋转角度
  */
 export function convertRectangleNodeToHtml(
-   runtimeEnv: RuntimeEnv,
-   dslType: DSLType,
+   settings: BaseConvertSettings,
    node: StaticRectangleNode,
    parentNode?: StaticContainerNode,
 ): string {
@@ -43,7 +41,7 @@ export function convertRectangleNodeToHtml(
       node.dashPattern,
    )
    const boxShadowCss = convertFrameEffectsToCss(effects)
-   const transformCss = convertRotationToCss(rotation)
+   // const transformCss = convertRotationToCss(rotation)
 
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {
@@ -54,17 +52,14 @@ export function convertRectangleNodeToHtml(
       ...borderCss,
       ...boxShadowCss,
       // ...transformCss,
-      ...convertNodePositionToCss(node, parentNode),
+      ...convertNodePositionToCss(settings, node, parentNode),
    }
 
    // console.log('11getAbsoluteAnchorPoint', getAbsoluteAnchorPoint(node))
    // console.log('11absoluteBoundingBox', node.absoluteBoundingBox)
 
-   // 转换 CSS 对象为 CSS 字符串
-   const style = convertCssObjectToString(css)
-
    // 创建 HTML
-   const html = `<div style="${style}"></div>`
+   const html = `<div ${convertToStyleAndClassAttrs(css, settings)}></div>`
 
    return html
 }

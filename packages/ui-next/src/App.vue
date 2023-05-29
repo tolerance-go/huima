@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { StaticAtomNode, UIAction } from '@huima/types-next'
+import { StaticNode, UIAction } from '@huima/types-next'
 import ClipboardJS from 'clipboard'
 import parsers from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
@@ -7,30 +7,32 @@ import Prism from 'prismjs'
 import { computed, reactive, ref, watchEffect } from 'vue'
 import { normalizeCss } from './constants/normalize.css'
 import { renderStaticNode } from './renderStaticNode'
-import { DSLType, RuntimeEnv } from './types'
+import { BaseConvertSettings, DSLType, RuntimeEnv } from './types'
+import { getScriptStr } from './utils/getScriptStr'
 
-const selectedNode = ref<StaticAtomNode | null>(null)
+const selectedNode = ref<StaticNode | null>(null)
 
 const hoverCodeArea = ref(false)
 
 const notSupport = ref(false)
 
-const isDev = ref(false)
+const isPreview = ref(false)
 
-const baseFormSettings: {
-   enableTailwindcss: boolean
+const baseUISettings: {
    codeFontSize: number
-   targetRuntimeEnv: RuntimeEnv
-   targetRuntimeDsl: DSLType
 } = {
-   enableTailwindcss: false,
    codeFontSize: 16,
+}
+
+const baseConvertSettings: BaseConvertSettings = {
+   enableTailwindcss: false,
    targetRuntimeEnv: 'web',
    targetRuntimeDsl: 'html',
 }
 
 const formSettings = reactive({
-   ...baseFormSettings,
+   ...baseUISettings,
+   ...baseConvertSettings,
 })
 
 watchEffect(() => {
@@ -46,11 +48,7 @@ const isSettingsPage = ref(false)
 const rendererCode = computed(() => {
    if (!selectedNode.value) return ''
 
-   return renderStaticNode(
-      formSettings.targetRuntimeEnv,
-      formSettings.targetRuntimeDsl,
-      selectedNode.value,
-   )
+   return renderStaticNode(formSettings, selectedNode.value)
 })
 
 // 复制到剪贴板的 html 代码
@@ -78,15 +76,34 @@ const codeblockCode = computed(() => {
 })
 
 const rendererSrcDoc = computed(() => {
+   const tailwindScript = formSettings.enableTailwindcss
+      ? getScriptStr({
+           src: 'https://cdn.tailwindcss.com',
+           onLoad: 'handleScriptLoad()',
+        })
+      : ''
    return `
     <html>
       <head>
-        <style>
+         <style>
           ${normalizeCss}
-        </style>
+         </style>
+         ${getScriptStr({
+            content: `
+            function handleScriptLoad() {
+               document.getElementById('tailwindcssLoading').remove()
+            }
+            `,
+         })}
       </head>
       <body>
-        ${rendererCode.value}
+         ${
+            formSettings.enableTailwindcss
+               ? `<p id='tailwindcssLoading' style="text-align: center;">tailwindcss loading...</p>`
+               : ''
+         }
+         ${rendererCode.value}
+         ${tailwindScript}
       </body>
     </html>
   `
@@ -166,8 +183,8 @@ window.onmessage = (event) => {
             </select>
          </div>
          <label class="flex space-x-2 items-center mr-4">
-            <span class="text-gray-700">development</span>
-            <input v-model="isDev" type="checkbox" />
+            <span class="text-gray-700">preview</span>
+            <input v-model="isPreview" type="checkbox" />
          </label>
          <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -209,19 +226,9 @@ window.onmessage = (event) => {
             />
          </svg>
       </div>
-      <div class="flex-auto">
-         <div
-            v-if="notSupport"
-            class="flex justify-center items-center h-full italic"
-         >
-            当前节点不支持渲染
-         </div>
-         <iframe
-            v-else-if="isDev"
-            :srcdoc="rendererSrcDoc"
-            class="w-full h-full"
-         ></iframe>
-         <div class="p-5" v-else-if="isSettingsPage">
+      <div class="flex-auto overflow-auto">
+         <!-- 配置渲染优先级最高 -->
+         <div class="p-5" v-if="isSettingsPage">
             <div role="settings-page" class="grid grid-cols-1 gap-6">
                <div class="block">
                   <div class="mt-2">
@@ -242,11 +249,23 @@ window.onmessage = (event) => {
                      v-model="formSettings.codeFontSize"
                      type="number"
                      class="mt-1 block w-full"
-                     :placeholder="baseFormSettings.codeFontSize + ''"
+                     :placeholder="baseUISettings.codeFontSize + ''"
                   />
                </label>
             </div>
          </div>
+         <div
+            v-else-if="notSupport"
+            class="flex justify-center items-center h-full italic"
+         >
+            当前节点不支持渲染
+         </div>
+         <iframe
+            v-else-if="isPreview"
+            :srcdoc="rendererSrcDoc"
+            class="w-full h-full"
+         ></iframe>
+
          <div
             v-else
             class="h-full w-full relative"

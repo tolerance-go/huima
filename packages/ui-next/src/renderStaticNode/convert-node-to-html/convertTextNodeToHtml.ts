@@ -1,13 +1,13 @@
 import { StaticContainerNode, StaticTextNode } from '@huima/types-next'
-import { DSLType, RuntimeEnv } from '../../types'
+import { BaseConvertSettings } from '../../types'
 import { convertBlendModeToCss } from '../convertBlendModeToCss'
-import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertLetterSpacingToCss } from '../convertLetterSpacingToCss'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
 import { convertTextCaseToCss } from '../convertTextCaseToCss'
 import { convertTextDecorationToCss } from '../convertTextDecorationToCss'
 import { convertTextEffectsToCss } from '../convertTextEffectsToCss'
+import { convertToStyleAndClassAttrs } from '../convertToStyleAndClassAttrs'
 import { groupTextSegmentsByNewline } from '../groupTextSegmentsByNewline'
 import { rgbaToHex } from '../rgbaToHex'
 
@@ -34,8 +34,7 @@ import { rgbaToHex } from '../rgbaToHex'
   10. 只有 parentNode 不为空的时候，才需要处理定位
  */
 export function convertTextNodeToHtml(
-   runtimeEnv: RuntimeEnv,
-   dslType: DSLType,
+   settings: BaseConvertSettings,
    node: StaticTextNode,
    parentNode?: StaticContainerNode,
 ): string {
@@ -60,7 +59,7 @@ export function convertTextNodeToHtml(
       height: `${node.height}px`,
       ...convertRotationToCss(node.rotation),
       ...convertBlendModeToCss(node.blendMode),
-      ...convertNodePositionToCss(node, parentNode),
+      ...convertNodePositionToCss(settings, node, parentNode),
    }
 
    const innerContainerStyle = {
@@ -83,8 +82,8 @@ export function convertTextNodeToHtml(
       ...convertTextEffectsToCss(node.effects),
    }
 
-   html += `<div style="${convertCssObjectToString(containerStyle)}">`
-   html += `<div style="${convertCssObjectToString(innerContainerStyle)}">`
+   html += `<div ${convertToStyleAndClassAttrs(containerStyle, settings)}>`
+   html += `<div ${convertToStyleAndClassAttrs(innerContainerStyle, settings)}>`
 
    /**
      * 1. 需要将 p 和 span 的浏览器默认样式移除
@@ -116,7 +115,7 @@ export function convertTextNodeToHtml(
             : {}),
       }
 
-      html += `<p style="${convertCssObjectToString(groupStyle)}">`
+      html += `<p ${convertToStyleAndClassAttrs(groupStyle, settings)}>`
 
       if (segment.length) {
          segment.forEach((charInfo, charIndex) => {
@@ -158,16 +157,17 @@ export function convertTextNodeToHtml(
                charInfo.characters.length
             ) {
                const { ['letter-spacing']: letterSpacing, ...rest } = style
-               html += `<span style="${convertCssObjectToString(
+               html += `<span ${convertToStyleAndClassAttrs(
                   style,
-               )}">${charInfo.characters.slice(
+                  settings,
+               )}>${charInfo.characters.slice(
                   0,
                   -1,
-               )}</span><span style="${convertCssObjectToString(rest)}">${
+               )}</span><span ${convertToStyleAndClassAttrs(rest, settings)}>${
                   charInfo.characters[charInfo.characters.length - 1]
                }</span>`
             } else {
-               html += `<span style="${convertCssObjectToString(style)}">${
+               html += `<span ${convertToStyleAndClassAttrs(style, settings)}>${
                   charInfo.characters
                }</span>`
             }

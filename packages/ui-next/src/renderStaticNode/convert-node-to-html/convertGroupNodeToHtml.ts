@@ -1,10 +1,10 @@
 import { StaticContainerNode, StaticGroupNode } from '@huima/types-next'
 import { renderStaticNode } from '..'
-import { DSLType, RuntimeEnv } from '../../types'
-import { convertCssObjectToString } from '../convertCssObjectToString'
+import { BaseConvertSettings } from '../../types'
 import { convertEffectsToFilter } from '../convertEffectsToFilter'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
+import { convertToStyleAndClassAttrs } from '../convertToStyleAndClassAttrs'
 import { convertMaskNodeToHtml } from './convertMaskNodeToHtml'
 
 /**
@@ -24,15 +24,14 @@ import { convertMaskNodeToHtml } from './convertMaskNodeToHtml'
  * @returns
  */
 export const convertGroupNodeToHtml = (
-   runtimeEnv: RuntimeEnv,
-   dslType: DSLType,
+   settings: BaseConvertSettings,
    node: StaticGroupNode,
    parentNode?: StaticContainerNode,
 ): string => {
    const { width, height, effects, rotation, children, svgBytes } = node
 
    if (node.hasMask) {
-      return convertMaskNodeToHtml(runtimeEnv, dslType, node, parentNode)
+      return convertMaskNodeToHtml(settings, node, parentNode)
    }
 
    // 创建 CSS 对象
@@ -41,15 +40,12 @@ export const convertGroupNodeToHtml = (
       height: `${height}px`,
       ...convertEffectsToFilter(effects),
       ...convertRotationToCss(rotation),
-      ...convertNodePositionToCss(node, parentNode),
+      ...convertNodePositionToCss(settings, node, parentNode),
    }
-
-   // 转换 CSS 对象为 CSS 字符串
-   const style = convertCssObjectToString(css)
 
    const childrenHtml = children
       .map((item) => {
-         return renderStaticNode(runtimeEnv, dslType, item, node)
+         return renderStaticNode(settings, item, node)
       })
       .join('\n')
 
@@ -58,7 +54,10 @@ export const convertGroupNodeToHtml = (
       return childrenHtml
    }
 
-   const html = `<div role="group" style="${style}">${childrenHtml}</div>`
+   const html = `<div role="group" ${convertToStyleAndClassAttrs(
+      css,
+      settings,
+   )}>${childrenHtml}</div>`
 
    return html
 }

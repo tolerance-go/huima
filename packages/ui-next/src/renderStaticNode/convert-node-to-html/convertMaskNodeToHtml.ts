@@ -1,8 +1,9 @@
 import { StaticContainerNode, StaticGroupNode } from '@huima/types-next'
 import { Buffer } from 'buffer'
-import { DSLType, RuntimeEnv } from '../../types'
+import { BaseConvertSettings } from '../../types'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
+import { convertToStyleAndClassAttrs } from '../convertToStyleAndClassAttrs'
 
 /**
  * 根据传入的 node，将 figma node 转换成 html 代码
@@ -13,8 +14,7 @@ import { convertNodePositionToCss } from '../convertNodePositionToCss'
  * @param parentNode
  */
 export const convertMaskNodeToHtml = (
-   runtimeEnv: RuntimeEnv,
-   dslType: DSLType,
+   settings: BaseConvertSettings,
    node: StaticGroupNode,
    parentNode?: StaticContainerNode,
 ) => {
@@ -28,11 +28,14 @@ export const convertMaskNodeToHtml = (
 
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {
-      ...convertNodePositionToCss(node, parentNode),
+      ...convertNodePositionToCss(settings, node, parentNode),
    }
 
    // 转换 CSS 对象为 CSS 字符串
    const style = convertCssObjectToString(css)
 
-   return html.replace('<svg', `<svg role='mask' style="${style}"`)
+   return html.replace(
+      '<svg',
+      `<svg role='mask' ${convertToStyleAndClassAttrs(css, settings)}`,
+   )
 }

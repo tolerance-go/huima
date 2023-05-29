@@ -1,4 +1,5 @@
 import { relativePoint } from '../utils/relativePoint'
+import { BaseConvertSettings } from './../types'
 
 /**
  * 这个函数根据传入的 parentAbsoluteBoundingBox 和 absoluteBoundingBox，以及
@@ -17,10 +18,12 @@ export function computePositionCss({
    parentBox,
    nodeBox,
    constraints,
+   settings,
 }: {
    parentBox: Rect
    nodeBox: Rect
    constraints: Constraints
+   settings: BaseConvertSettings
 }) {
    let cssPosition: Record<string, string> = {
       position: 'absolute',
