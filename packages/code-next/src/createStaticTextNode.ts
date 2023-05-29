@@ -1,4 +1,5 @@
 import { StaticContainerNode, StaticTextNode } from '@huima/types-next'
+import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 
 export const createStaticTextNode = (
    node: TextNode,
@@ -40,6 +41,7 @@ export const createStaticTextNode = (
    ])
 
    return {
+      ...getBaseStaticNodeData(node),
       styledTextSegments,
       parent: parentNode,
       x,

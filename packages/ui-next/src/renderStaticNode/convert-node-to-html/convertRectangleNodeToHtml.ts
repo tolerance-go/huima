@@ -1,5 +1,5 @@
 import { StaticContainerNode, StaticRectangleNode } from '@huima/types-next'
-import { BaseConvertSettings } from '../../types'
+import { BaseConvertSettings, RenderNodeHooks } from '../../types'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'
 import { convertFillsToCss } from '../convertFillsToCss'
 import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'
@@ -24,6 +24,7 @@ export function convertRectangleNodeToHtml(
    settings: BaseConvertSettings,
    node: StaticRectangleNode,
    parentNode?: StaticContainerNode,
+   hooks?: RenderNodeHooks,
 ): string {
    // 获取 node 中的属性值
    const { width, height, cornerRadius, fills, strokes, effects, rotation } =
@@ -32,7 +33,9 @@ export function convertRectangleNodeToHtml(
    // 转换颜色，边框和效果为 CSS 属性
    const backgroundColorCss = convertFillsToCss(
       fills as Paint[],
+      node,
       node.imageFillMeta,
+      hooks,
    )
    const borderCss = convertStrokesToCss(
       strokes as Paint[],

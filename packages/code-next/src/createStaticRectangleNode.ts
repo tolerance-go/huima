@@ -1,4 +1,5 @@
 import { StaticContainerNode, StaticRectangleNode } from '@huima/types-next'
+import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 import { getCornerRadius } from './getCornerRadius'
 import { getImageFillMeta } from './getImageFillMeta'
 import { pluginApi } from './pluginApi'
@@ -36,6 +37,7 @@ export const createStaticRectangleNode = async (
    } = node
 
    return {
+      ...getBaseStaticNodeData(node),
       isMask,
       parent: parentNode,
       strokeWeight:

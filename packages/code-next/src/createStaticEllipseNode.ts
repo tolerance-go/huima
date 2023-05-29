@@ -1,5 +1,6 @@
 import { StaticContainerNode, StaticEllipseNode } from '@huima/types-next'
 import { isCircle } from '@huima/utils'
+import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 import { getImageFillMeta } from './getImageFillMeta'
 
 export const createStaticEllipseNode = async (
@@ -43,6 +44,7 @@ export const createStaticEllipseNode = async (
    }
 
    return {
+      ...getBaseStaticNodeData(node),
       svgBytes,
       arcData,
       isMask,

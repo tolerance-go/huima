@@ -23,6 +23,7 @@ export type Point = {
 export type BaseStaticNode = {
    type: string
    id: string
+   name: string
 }
 
 export interface BaseStaticContainerNode extends BaseStaticNode {

@@ -1,4 +1,5 @@
 import { StaticContainerNode, StaticPolygonNode } from '@huima/types-next'
+import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 
 export const createStaticPolygonNode = async (
    node: PolygonNode,
@@ -27,6 +28,7 @@ export const createStaticPolygonNode = async (
    } = node
 
    return {
+      ...getBaseStaticNodeData(node),
       isMask,
       parent: parentNode,
       x,

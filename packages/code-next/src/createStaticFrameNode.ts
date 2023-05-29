@@ -4,6 +4,7 @@ import {
    StaticNode,
 } from '@huima/types-next'
 import { createStaticNode } from './createStaticNode'
+import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 import { getCornerRadius } from './getCornerRadius'
 import { getImageFillMeta } from './getImageFillMeta'
 import { pluginApi } from './pluginApi'
@@ -49,6 +50,7 @@ export const createStaticFrameNode = async (
    } = node
 
    const staticNode: StaticFrameNode = {
+      ...getBaseStaticNodeData(node),
       isMask,
       parent: parentNode,
       x,

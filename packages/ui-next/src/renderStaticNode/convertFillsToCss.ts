@@ -1,4 +1,5 @@
-import { ImageFillMeta } from '@huima/types-next'
+import { ImageFillMeta, StaticNode } from '@huima/types-next'
+import { RenderNodeHooks } from '../types'
 import { rgbaToHex } from './rgbaToHex'
 
 /**
@@ -11,7 +12,9 @@ import { rgbaToHex } from './rgbaToHex'
  */
 export function convertFillsToCss(
    fills: Paint[],
+   node: StaticNode,
    imageFillMeta?: ImageFillMeta,
+   hooks?: RenderNodeHooks,
 ): Record<string, string> {
    const visibleFills = fills.filter((fill) => fill.visible !== false)
    if (visibleFills.length === 0) {
@@ -50,7 +53,15 @@ export function convertFillsToCss(
                type: `image/${imageFillMeta!.imageExtension}`,
             }),
          )
-         const backgroundImage = `url(${url})`
+         let backgroundImage = `url(${url})`
+
+         if (hooks?.convertBackgroundImage) {
+            backgroundImage = hooks.convertBackgroundImage(
+               backgroundImage,
+               imageFillMeta!,
+               node,
+            )
+         }
 
          return {
             'background-image': backgroundImage,

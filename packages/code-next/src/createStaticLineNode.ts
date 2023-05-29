@@ -1,4 +1,5 @@
 import { StaticContainerNode, StaticLineNode } from '@huima/types-next'
+import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 
 export const createStaticLineNode = async (
    node: LineNode,
@@ -27,6 +28,7 @@ export const createStaticLineNode = async (
    } = node
 
    return {
+      ...getBaseStaticNodeData(node),
       parent: parentNode,
       x,
       y,

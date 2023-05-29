@@ -1,4 +1,5 @@
 import { StaticContainerNode, StaticVectorNode } from '@huima/types-next'
+import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 
 export const createStaticVectorNode = async (
    node: VectorNode,
@@ -36,6 +37,7 @@ export const createStaticVectorNode = async (
    }
 
    return {
+      ...getBaseStaticNodeData(node),
       parent: parentNode,
       x,
       y,

@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import { StaticNode, UIAction } from '@huima/types-next'
+import { ImageFillMeta, StaticNode, UIAction } from '@huima/types-next'
+import { DEFAULT_BASE_FONT_SIZE, VIEWPORT_WIDTH } from '@huima/utils'
 import ClipboardJS from 'clipboard'
+import debounce from 'lodash.debounce'
 import parsers from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
 import Prism from 'prismjs'
 import { computed, reactive, ref, watchEffect } from 'vue'
 import { normalizeCss } from './constants/normalize.css'
-import { renderStaticNode } from './renderStaticNode'
-import { BaseConvertSettings, DSLType, RuntimeEnv } from './types'
-import { getScriptStr } from './utils/getScriptStr'
 import { isJsDesign } from './env'
-import { DEFAULT_BASE_FONT_SIZE, VIEWPORT_WIDTH } from '@huima/utils'
-import debounce from 'lodash.debounce'
+import { renderStaticNode } from './renderStaticNode'
+import { BaseConvertSettings } from './types'
+import { getScriptStr } from './utils/getScriptStr'
+import { transformBlobUrlToAssetsUrl } from './utils/transformBlobUrlToAssetsUrl'
+import { convertFigmaIdToHtmlId } from './utils/convertFigmaIdToHtmlId'
+import { extractAndSplitUrls } from './utils/extractAndSplitUrls'
 
 const i18n = reactive({
    'zh-CN': {
@@ -135,12 +138,30 @@ const rendererCode = computed(() => {
 
 // 复制到剪贴板的 html 代码
 const copiedCode = computed(() => {
+   if (!selectedNode.value) return ''
+
    const extension = 'html'
    // 使用 Prettier 格式化代码
-   const formattedCode = prettier.format(rendererCode.value, {
-      parser: extension,
-      plugins: [parsers],
-   })
+   const formattedCode = prettier.format(
+      renderStaticNode(settings, selectedNode.value, undefined, {
+         convertBackgroundImage: (
+            url: string,
+            imageFillMeta: ImageFillMeta,
+            node: StaticNode,
+         ) => {
+            return transformBlobUrlToAssetsUrl(
+               url,
+               `assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
+                  imageFillMeta.imageExtension
+               }`,
+            )
+         },
+      }),
+      {
+         parser: extension,
+         plugins: [parsers],
+      },
+   )
    return formattedCode
 })
 
@@ -203,7 +224,29 @@ const rendererSrcDoc = computed(() => {
   `
 })
 
-const handleExportBtnClick = () => {}
+const handleExportBtnClick = () => {
+   // console.log('handleExportBtnClick', nodeMaps.value)
+   // const assets = extractAndSplitUrls(copiedCode.value)
+   // exportZip(
+   //    [
+   //       {
+   //          path: 'page/index.html',
+   //          content: copiedCode.value,
+   //       },
+   //       ...assets.map((item) => {
+   //          // figma 的 node 的 id 是用 : 分隔的，所以这里要替换一下，是一个约定
+   //          const figmaNodeId = item.id.replace('-', ':')
+   //          return {
+   //             path: `page/${item.path}/${item.name}_${item.id}.${item.suffix}`,
+   //             content:
+   //                nodeMaps.value[figmaNodeId].styleMeta?.backgroundImageMeta
+   //                   ?.backgroundImageBytes ?? '',
+   //          }
+   //       }),
+   //    ],
+   //    'page',
+   // )
+}
 
 const clipboard = new ClipboardJS('#copyBtn', {
    text: () => {

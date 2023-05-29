@@ -1,6 +1,6 @@
 import { StaticContainerNode, StaticInstanceNode } from '@huima/types-next'
 import { renderStaticNode } from '..'
-import { BaseConvertSettings } from '../../types'
+import { BaseConvertSettings, RenderNodeHooks } from '../../types'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'
 import { convertFillsToCss } from '../convertFillsToCss'
 import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'
@@ -19,6 +19,7 @@ export const convertInstanceNodeToHtml = (
    settings: BaseConvertSettings,
    node: StaticInstanceNode,
    parentNode?: StaticContainerNode,
+   hooks?: RenderNodeHooks,
 ): string => {
    const {
       width,
@@ -34,7 +35,9 @@ export const convertInstanceNodeToHtml = (
    // 转换颜色，边框和效果为 CSS 属性
    const backgroundColorCss = convertFillsToCss(
       fills as Paint[],
+      node,
       node.imageFillMeta,
+      hooks,
    )
    const borderCss = convertStrokesToCss(
       strokes as Paint[],

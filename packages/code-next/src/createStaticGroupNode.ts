@@ -4,6 +4,7 @@ import {
    StaticNode,
 } from '@huima/types-next'
 import { createStaticNode } from './createStaticNode'
+import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 
 export const createStaticGroupNode = async (
    node: GroupNode,
@@ -29,6 +30,7 @@ export const createStaticGroupNode = async (
    const hasMask = node.children.some((item) => 'isMask' in item && item.isMask)
 
    const staticNode: StaticGroupNode = {
+      ...getBaseStaticNodeData(node),
       isMask,
       parent: parentNode,
       x,

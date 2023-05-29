@@ -1,7 +1,7 @@
 import { StaticContainerNode, StaticEllipseNode } from '@huima/types-next'
 import { isCircle } from '@huima/utils'
 import { Buffer } from 'buffer'
-import { BaseConvertSettings } from '../../types'
+import { BaseConvertSettings, RenderNodeHooks } from '../../types'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertFillsToCss } from '../convertFillsToCss'
 import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'
@@ -26,6 +26,7 @@ export function convertEllipseNodeToHtml(
    settings: BaseConvertSettings,
    node: StaticEllipseNode,
    parentNode?: StaticContainerNode,
+   hooks?: RenderNodeHooks,
 ): string {
    // 获取 node 中的属性值
    const {
@@ -61,7 +62,9 @@ export function convertEllipseNodeToHtml(
    // 转换颜色，边框和效果为 CSS 属性
    const backgroundColorCss = convertFillsToCss(
       fills as Paint[],
+      node,
       node.imageFillMeta,
+      hooks,
    )
    const borderCss = convertStrokesToCss(
       strokes as Paint[],

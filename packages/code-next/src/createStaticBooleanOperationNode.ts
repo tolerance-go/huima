@@ -2,6 +2,7 @@ import {
    StaticBooleanOperationNode,
    StaticContainerNode,
 } from '@huima/types-next'
+import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 
 export const createStaticBooleanOperationNode = async (
    node: BooleanOperationNode,
@@ -29,6 +30,7 @@ export const createStaticBooleanOperationNode = async (
    } = node
 
    return {
+      ...getBaseStaticNodeData(node),
       parent: parentNode,
       x,
       y,

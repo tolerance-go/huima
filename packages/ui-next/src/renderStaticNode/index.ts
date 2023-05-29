@@ -1,5 +1,5 @@
 import { StaticContainerNode, StaticNode } from '@huima/types-next'
-import { BaseConvertSettings } from '../types'
+import { BaseConvertSettings, RenderNodeHooks } from '../types'
 import { convertBooleanOperationNodeToHtml } from './convert-node-to-html/convertBooleanOperationNodeToHtml'
 import { convertComponentNodeToHtml } from './convert-node-to-html/convertComponentNodeToHtml'
 import { convertEllipseNodeToHtml } from './convert-node-to-html/convertEllipseNodeToHtml'
@@ -21,6 +21,7 @@ export const renderStaticNode = (
    settings: BaseConvertSettings,
    node: StaticNode,
    parentNode?: StaticContainerNode,
+   hooks?: RenderNodeHooks,
 ): string => {
    if (settings.targetRuntimeEnv === 'web') {
       if (settings.targetRuntimeDsl === 'html') {
@@ -36,17 +37,28 @@ export const renderStaticNode = (
                settings,
                node,
                parentNode,
+               hooks,
             )
             return content
          }
 
          if (node.type === 'ellipse') {
-            const content = convertEllipseNodeToHtml(settings, node, parentNode)
+            const content = convertEllipseNodeToHtml(
+               settings,
+               node,
+               parentNode,
+               hooks,
+            )
             return content
          }
 
          if (node.type === 'frame') {
-            const content = convertFrameNodeToHtml(settings, node, parentNode)
+            const content = convertFrameNodeToHtml(
+               settings,
+               node,
+               parentNode,
+               hooks,
+            )
             return content
          }
 
@@ -55,6 +67,7 @@ export const renderStaticNode = (
                settings,
                node,
                parentNode,
+               hooks,
             )
             return content
          }
@@ -64,6 +77,7 @@ export const renderStaticNode = (
                settings,
                node,
                parentNode,
+               hooks,
             )
             return content
          }
