@@ -6,7 +6,7 @@ import debounce from 'lodash.debounce'
 import parsers from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
 import Prism from 'prismjs'
-import { computed, reactive, ref, watchEffect } from 'vue'
+import { computed, reactive, ref, watch, watchEffect } from 'vue'
 import { normalizeCss } from './constants/normalize.css'
 import { isJsDesign } from './env'
 import { renderStaticNode } from './renderStaticNode'
@@ -20,6 +20,8 @@ import {
 import { extractAndSplitUrls } from './utils/extractAndSplitUrls'
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
+
+const showFontSettings = ref(false)
 
 const i18n = reactive({
    'zh-CN': {
@@ -72,11 +74,15 @@ const usedI18n = computed(() => {
 
 const selectedNode = ref<StaticNode | null>(null)
 
-const hoverCodeArea = ref(false)
-
 const notSupport = ref(false)
 
 const isPreview = ref(false)
+
+const baseRenderSettings: {
+   fontAssetUrlPlaceholders: string[]
+} = {
+   fontAssetUrlPlaceholders: [''],
+}
 
 const baseUISettings: {
    codeFontSize: number
@@ -98,15 +104,17 @@ const baseConvertSettings: BaseConvertSettings = {
 
 const getDefaultSettings = () => {
    return {
+      ...baseRenderSettings,
       ...baseUISettings,
       ...baseConvertSettings,
       pxConvertConfigs: {
          ...baseConvertSettings.pxConvertConfigs,
       },
+      fontAssetUrlPlaceholders: [
+         ...baseRenderSettings.fontAssetUrlPlaceholders,
+      ],
    }
 }
-
-const formSettings = reactive(getDefaultSettings())
 
 const settings = reactive(getDefaultSettings())
 
@@ -116,21 +124,6 @@ watchEffect(() => {
       settings.codeFontSize + 'px',
    )
 })
-
-const handleFormChange = () => {
-   Object.assign(settings, {
-      ...formSettings,
-      pxConvertConfigs: {
-         ...formSettings.pxConvertConfigs,
-         // 如果用户没有输入，number input 得到的是一个 ''，则使用默认值
-         viewportWidth:
-            formSettings.pxConvertConfigs.viewportWidth || VIEWPORT_WIDTH,
-         baseFontSize:
-            formSettings.pxConvertConfigs.baseFontSize ||
-            DEFAULT_BASE_FONT_SIZE,
-      },
-   })
-}
 
 const isSettingsPage = ref(false)
 
@@ -200,6 +193,11 @@ const rendererSrcDoc = computed(() => {
    return `
     <html>
       <head>
+         ${settings.fontAssetUrlPlaceholders
+            .map((url) => {
+               return `<link rel="stylesheet" href="${url}">`
+            })
+            .join('\n')}
          ${
             settings.enablePxConvert &&
             settings.pxConvertConfigs.pxConvertFormat === 'rem'
@@ -395,112 +393,102 @@ window.onmessage = (event) => {
       <div class="flex-auto overflow-auto">
          <!-- 配置渲染优先级最高 -->
          <div class="p-5" v-if="isSettingsPage">
-            <form @change="handleFormChange">
-               <div role="settings-page" class="grid grid-cols-1 gap-6">
-                  <h3 class="text-gray-700 text-sm mt-2 -mb-1">
-                     {{ usedI18n.exportLabel }}
-                  </h3>
-                  <div class="block">
-                     <div class="mt-2">
-                        <div>
-                           <label class="inline-flex items-center">
-                              <input
-                                 v-model="formSettings.enablePxConvert"
-                                 type="checkbox"
-                              />
-                              <span class="ml-2">{{
-                                 usedI18n.enablePxUnitConversion
-                              }}</span>
-                           </label>
-                        </div>
+            <div role="settings-page" class="grid grid-cols-1 gap-6">
+               <h3 class="text-gray-700 text-sm mt-2 -mb-1">
+                  {{ usedI18n.exportLabel }}
+               </h3>
+               <div class="block">
+                  <div class="mt-2">
+                     <div>
+                        <label class="inline-flex items-center">
+                           <input
+                              v-model="settings.enablePxConvert"
+                              type="checkbox"
+                           />
+                           <span class="ml-2">{{
+                              usedI18n.enablePxUnitConversion
+                           }}</span>
+                        </label>
                      </div>
                   </div>
-                  <div
-                     class="grid grid-cols-1 gap-6 pl-6"
-                     v-if="formSettings.enablePxConvert"
-                  >
-                     <label class="block">
-                        <span class="text-gray-700">{{
-                           usedI18n.targetFormat
-                        }}</span>
-                        <select
-                           v-model="
-                              formSettings.pxConvertConfigs.pxConvertFormat
-                           "
-                           class="mt-1 block w-full"
-                        >
-                           <option>rem</option>
-                           <option>vw</option>
-                        </select>
-                     </label>
-                     <label
-                        v-if="
-                           formSettings.pxConvertConfigs.pxConvertFormat ===
-                           'vw'
-                        "
-                        class="block"
-                     >
-                        <span class="text-gray-700">{{
-                           usedI18n.designDraftViewportWidth
-                        }}</span>
-                        <input
-                           v-model="formSettings.pxConvertConfigs.viewportWidth"
-                           type="number"
-                           class="mt-1 block w-full"
-                           :placeholder="
-                              baseConvertSettings.pxConvertConfigs
-                                 .viewportWidth + ''
-                           "
-                        />
-                     </label>
-                     <label
-                        v-if="
-                           formSettings.pxConvertConfigs.pxConvertFormat ===
-                           'rem'
-                        "
-                        class="block"
-                     >
-                        <span class="text-gray-700">{{
-                           usedI18n.basicFontSize
-                        }}</span>
-                        <input
-                           v-model="formSettings.pxConvertConfigs.baseFontSize"
-                           type="number"
-                           class="mt-1 block w-full"
-                           :placeholder="
-                              baseConvertSettings.pxConvertConfigs
-                                 .baseFontSize + ''
-                           "
-                        />
-                     </label>
-                  </div>
-                  <div class="block">
-                     <div class="mt-2">
-                        <div>
-                           <label class="inline-flex items-center">
-                              <input
-                                 v-model="formSettings.enableTailwindcss"
-                                 type="checkbox"
-                              />
-                              <span class="ml-2">Enable Tailwindcss</span>
-                           </label>
-                        </div>
-                     </div>
-                  </div>
-                  <h3 class="text-gray-700 text-sm mt-2 -mb-1">
-                     {{ usedI18n.uiSettingsLabel }}
-                  </h3>
+               </div>
+               <div
+                  class="grid grid-cols-1 gap-6 pl-6"
+                  v-if="settings.enablePxConvert"
+               >
                   <label class="block">
-                     <span class="text-gray-700">Code font-size</span>
+                     <span class="text-gray-700">{{
+                        usedI18n.targetFormat
+                     }}</span>
+                     <select
+                        v-model="settings.pxConvertConfigs.pxConvertFormat"
+                        class="mt-1 block w-full"
+                     >
+                        <option>rem</option>
+                        <option>vw</option>
+                     </select>
+                  </label>
+                  <label
+                     v-if="settings.pxConvertConfigs.pxConvertFormat === 'vw'"
+                     class="block"
+                  >
+                     <span class="text-gray-700">{{
+                        usedI18n.designDraftViewportWidth
+                     }}</span>
                      <input
-                        v-model="formSettings.codeFontSize"
+                        v-model="settings.pxConvertConfigs.viewportWidth"
                         type="number"
                         class="mt-1 block w-full"
-                        :placeholder="baseUISettings.codeFontSize + ''"
+                        :placeholder="
+                           baseConvertSettings.pxConvertConfigs.viewportWidth +
+                           ''
+                        "
+                     />
+                  </label>
+                  <label
+                     v-if="settings.pxConvertConfigs.pxConvertFormat === 'rem'"
+                     class="block"
+                  >
+                     <span class="text-gray-700">{{
+                        usedI18n.basicFontSize
+                     }}</span>
+                     <input
+                        v-model="settings.pxConvertConfigs.baseFontSize"
+                        type="number"
+                        class="mt-1 block w-full"
+                        :placeholder="
+                           baseConvertSettings.pxConvertConfigs.baseFontSize +
+                           ''
+                        "
                      />
                   </label>
                </div>
-            </form>
+               <div class="block">
+                  <div class="mt-2">
+                     <div>
+                        <label class="inline-flex items-center">
+                           <input
+                              v-model="settings.enableTailwindcss"
+                              type="checkbox"
+                           />
+                           <span class="ml-2">Enable Tailwindcss</span>
+                        </label>
+                     </div>
+                  </div>
+               </div>
+               <h3 class="text-gray-700 text-sm mt-2 -mb-1">
+                  {{ usedI18n.uiSettingsLabel }}
+               </h3>
+               <label class="block">
+                  <span class="text-gray-700">Code font-size</span>
+                  <input
+                     v-model="settings.codeFontSize"
+                     type="number"
+                     class="mt-1 block w-full"
+                     :placeholder="baseUISettings.codeFontSize + ''"
+                  />
+               </label>
+            </div>
          </div>
          <div
             v-else-if="notSupport"
@@ -508,29 +496,41 @@ window.onmessage = (event) => {
          >
             当前节点不支持渲染
          </div>
-         <iframe
-            v-else-if="isPreview"
-            :srcdoc="rendererSrcDoc"
-            class="w-full h-full"
-         ></iframe>
-         <div
-            v-else
-            class="h-full w-full relative"
-            @mouseenter="hoverCodeArea = true"
-            @mouseleave="hoverCodeArea = false"
-         >
+         <div v-else-if="isPreview" class="w-full h-full">
+            <iframe :srcdoc="rendererSrcDoc" class="w-full h-full"></iframe>
             <div
-               :class="{
-                  hidden: !hoverCodeArea,
-                  'inline-flex': hoverCodeArea,
-               }"
-               class="z-10 rounded-md shadow-sm absolute bottom-3 right-2"
+               class="inline-flex z-10 shadow-sm absolute bottom-3 right-2"
+               role="group-actions"
+            >
+               <button
+                  @click="showFontSettings = !showFontSettings"
+                  type="button"
+                  class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
+               >
+                  <svg
+                     xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 20 20"
+                     fill="currentColor"
+                     class="w-4 h-4 mr-2 fill-current"
+                  >
+                     <path
+                        d="M2.879 7.121A3 3 0 007.5 6.66a2.997 2.997 0 002.5 1.34 2.997 2.997 0 002.5-1.34 3 3 0 104.622-3.78l-.293-.293A2 2 0 0015.415 2H4.585a2 2 0 00-1.414.586l-.292.292a3 3 0 000 4.243zM3 9.032a4.507 4.507 0 004.5-.29A4.48 4.48 0 0010 9.5a4.48 4.48 0 002.5-.758 4.507 4.507 0 004.5.29V16.5h.25a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75v-3.5a.75.75 0 00-.75-.75h-2.5a.75.75 0 00-.75.75v3.5a.75.75 0 01-.75.75h-4.5a.75.75 0 010-1.5H3V9.032z"
+                     />
+                  </svg>
+
+                  设置字体
+               </button>
+            </div>
+         </div>
+         <div v-else class="h-full w-full relative">
+            <div
+               class="inline-flex z-10 shadow-sm absolute bottom-3 right-2"
                role="group-actions"
             >
                <button
                   id="copyBtn"
                   type="button"
-                  class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black rounded-l-lg hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
+                  class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
                >
                   <svg
                      aria-hidden="true"
@@ -548,7 +548,7 @@ window.onmessage = (event) => {
                <button
                   @click="handleExportBtnClick"
                   type="button"
-                  class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black rounded-r-md hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
+                  class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
                >
                   <svg
                      aria-hidden="true"
@@ -569,6 +569,70 @@ window.onmessage = (event) => {
             <pre
                class="language-html overflow-auto h-full w-full"
             ><code class="language-html" v-html="codeblockCode"></code></pre>
+         </div>
+      </div>
+      <div
+         v-if="showFontSettings"
+         class="absolute w-full h-full bg-white p-5 z-30"
+      >
+         <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 absolute top-5 right-5 cursor-pointer"
+            @click="showFontSettings = false"
+         >
+            <path
+               stroke-linecap="round"
+               stroke-linejoin="round"
+               d="M6 18L18 6M6 6l12 12"
+            />
+         </svg>
+         <div class="grid grid-cols-1 gap-6">
+            <h3 class="text-gray-700 text-sm mt-1 -mb-1">上传字体</h3>
+            <div class="block">
+               <div class="mt-2">
+                  <div>
+                     <label class="block">
+                        <span class="text-gray-700">字体网络地址</span>
+                        <input
+                           v-for="(
+                              fontUrl, index
+                           ) in settings.fontAssetUrlPlaceholders"
+                           v-model="settings.fontAssetUrlPlaceholders[index]"
+                           type="text"
+                           class="mt-1 block w-full"
+                           placeholder="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap"
+                        />
+                     </label>
+                  </div>
+               </div>
+               <button
+                  @click="settings.fontAssetUrlPlaceholders.push('')"
+                  type="button"
+                  class="block mt-4 w-full items-center text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
+               >
+                  <span class="inline-flex items-center px-4 py-2">
+                     <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-4 h-4 mr-2 fill-current"
+                     >
+                        <path
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                           d="M12 4.5v15m7.5-7.5h-15"
+                        />
+                     </svg>
+                     添加
+                  </span>
+               </button>
+            </div>
          </div>
       </div>
    </div>
