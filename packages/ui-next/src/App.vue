@@ -518,7 +518,7 @@ window.onmessage = (event) => {
                      />
                   </svg>
 
-                  设置字体
+                  添加字体
                </button>
             </div>
          </div>
@@ -591,12 +591,12 @@ window.onmessage = (event) => {
             />
          </svg>
          <div class="grid grid-cols-1 gap-6">
-            <h3 class="text-gray-700 text-sm mt-1 -mb-1">上传字体</h3>
+            <h3 class="text-gray-700 text-sm mt-1 -mb-1">添加字体</h3>
             <div class="block">
                <div class="mt-2">
                   <div>
                      <label class="block">
-                        <span class="text-gray-700">字体网络地址</span>
+                        <span class="text-gray-700">资源地址</span>
                         <input
                            v-for="(
                               fontUrl, index
@@ -629,7 +629,7 @@ window.onmessage = (event) => {
                            d="M12 4.5v15m7.5-7.5h-15"
                         />
                      </svg>
-                     添加
+                     继续添加
                   </span>
                </button>
             </div>
