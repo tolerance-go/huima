@@ -1,5 +1,7 @@
 # Huima
 
+[中文](https://github.com/tolerance-go/huima/blob/main/README.zh-CN.md)
+
 ![](cover.jpg)
 
 Let me automatically handle the tedious task of comparing and reproducing dull design drafts! Export UI-consistent, clean, and tidy frontend code with just one click, allowing frontend engineers to focus on dynamic design and business logic development.
