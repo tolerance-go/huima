@@ -83,7 +83,12 @@ export const renderStaticNode = (
          }
 
          if (node.type === 'group') {
-            const content = convertGroupNodeToHtml(settings, node, parentNode)
+            const content = convertGroupNodeToHtml(
+               settings,
+               node,
+               parentNode,
+               hooks,
+            )
             return content
          }
 

@@ -1,6 +1,6 @@
 import { StaticContainerNode, StaticGroupNode } from '@huima/types-next'
 import { renderStaticNode } from '..'
-import { BaseConvertSettings } from '../../types'
+import { BaseConvertSettings, RenderNodeHooks } from '../../types'
 import { convertEffectsToFilter } from '../convertEffectsToFilter'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertRotationToCss } from '../convertRotationToCss'
@@ -27,6 +27,7 @@ export const convertGroupNodeToHtml = (
    settings: BaseConvertSettings,
    node: StaticGroupNode,
    parentNode?: StaticContainerNode,
+   hooks?: RenderNodeHooks,
 ): string => {
    const { width, height, effects, rotation, children, svgBytes } = node
 
@@ -45,7 +46,7 @@ export const convertGroupNodeToHtml = (
 
    const childrenHtml = children
       .map((item) => {
-         return renderStaticNode(settings, item, node)
+         return renderStaticNode(settings, item, node, hooks)
       })
       .join('\n')
 

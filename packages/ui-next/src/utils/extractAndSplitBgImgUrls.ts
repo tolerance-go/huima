@@ -8,9 +8,10 @@ export interface UrlParts {
 /**
  * 这个函数接受一个字符串，提取其中的 URL，并将其拆分为路径、名称、ID 和后缀等部分，
  * 返回一个包含拆分结果的对象数组。
+ * url 前面必须匹配 background-image 和一个可能的空格
  */
-export function extractAndSplitUrls(input: string): UrlParts[] {
-   const urlRegex = /url\(['"]?(.*?)['"]?\)/g
+export function extractAndSplitBgImgUrls(input: string): UrlParts[] {
+   const urlRegex = /background-image\s*:\s*url\(['"]?(.*?)['"]?\)/g
    const urls: UrlParts[] = []
    let match
 

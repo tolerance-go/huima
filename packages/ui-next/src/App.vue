@@ -17,7 +17,7 @@ import {
    convertFigmaIdToHtmlId,
    convertHtmlIdToFigmaId,
 } from './utils/convertFigmaIdToHtmlId'
-import { extractAndSplitUrls } from './utils/extractAndSplitUrls'
+import { extractAndSplitBgImgUrls } from './utils/extractAndSplitBgImgUrls'
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
 
@@ -194,6 +194,7 @@ const rendererSrcDoc = computed(() => {
     <html>
       <head>
          ${settings.fontAssetUrlPlaceholders
+            .filter(Boolean)
             .map((url) => {
                return `<link rel="stylesheet" href="${url}">`
             })
@@ -251,19 +252,31 @@ const exportZip = (
 }
 
 const handleExportBtnClick = () => {
-   const assets = extractAndSplitUrls(copiedCode.value)
+   const assets = extractAndSplitBgImgUrls(copiedCode.value)
    exportZip(
       [
          {
             path: 'page/index.html',
-            content: copiedCode.value,
+            content: `
+<link href="styles/normalize.css" rel="stylesheet">
+${copiedCode.value}
+            `,
+         },
+         {
+            path: 'page/styles/normalize.css',
+            content: normalizeCss,
          },
          ...assets.map((item) => {
+            const imageFillMeta =
+               imageFillMetaNodeMaps[convertHtmlIdToFigmaId(item.id)]
+
+            if (!imageFillMeta) {
+               console.log('imageFillMeta not found', item)
+            }
+
             return {
                path: `page/${item.path}/${item.name}_${item.id}.${item.suffix}`,
-               content:
-                  imageFillMetaNodeMaps[convertHtmlIdToFigmaId(item.id)]
-                     .imageBytes,
+               content: imageFillMeta?.imageBytes,
             }
          }),
       ],

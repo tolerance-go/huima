@@ -74,7 +74,7 @@ export const convertComponentNodeToHtml = (
    )}>
     ${children
        .map((item) => {
-          return renderStaticNode(settings, item, node)
+          return renderStaticNode(settings, item, node, hooks)
        })
        .join('\n')}</div>`
 
