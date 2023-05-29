@@ -2,24 +2,23 @@
 import { ImageFillMeta, StaticNode, UIAction } from '@huima/types-next'
 import { DEFAULT_BASE_FONT_SIZE, VIEWPORT_WIDTH } from '@huima/utils'
 import ClipboardJS from 'clipboard'
-import debounce from 'lodash.debounce'
+import { saveAs } from 'file-saver'
+import JSZip from 'jszip'
 import parsers from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
 import Prism from 'prismjs'
-import { computed, reactive, ref, watch, watchEffect } from 'vue'
+import { computed, reactive, ref, watchEffect } from 'vue'
 import { normalizeCss } from './constants/normalize.css'
 import { isJsDesign } from './env'
 import { renderStaticNode } from './renderStaticNode'
 import { BaseConvertSettings } from './types'
-import { getScriptStr } from './utils/getScriptStr'
-import { transformBlobUrlToAssetsUrl } from './utils/transformBlobUrlToAssetsUrl'
 import {
    convertFigmaIdToHtmlId,
    convertHtmlIdToFigmaId,
 } from './utils/convertFigmaIdToHtmlId'
 import { extractAndSplitBgImgUrls } from './utils/extractAndSplitBgImgUrls'
-import { saveAs } from 'file-saver'
-import JSZip from 'jszip'
+import { getScriptStr } from './utils/getScriptStr'
+import { transformBlobUrlToAssetsUrl } from './utils/transformBlobUrlToAssetsUrl'
 
 const showFontSettings = ref(false)
 
@@ -40,10 +39,23 @@ const i18n = reactive({
       basicsLabel: '基础',
       configureLabel: '设置',
       copyBtnText: '复制',
+      copySuccessBtnText: '复制成功!',
       notSelectedNodeLabel: '未选择',
       unknownIdLabel: '未知',
+      miniProgram: '小程序',
+      preview: '预览',
+      theCurrentNodeDoesNotSupportRendering: '当前节点不支持渲染',
+      addFont: '添加字体',
+      addFontTitle: '添加字体',
+      resourceAddress: '资源地址',
+      continueAdding: '继续添加',
    },
    'en-US': {
+      addFont: 'Add font',
+      addFontTitle: 'Add font',
+      resourceAddress: 'Resource address',
+      continueAdding: 'Continue adding',
+      miniProgram: 'miniapp',
       generate: 'Generate',
       pleaseSelect:
          '"Please select the scene elements first, then click the Generate button"',
@@ -60,8 +72,12 @@ const i18n = reactive({
       basicsLabel: 'Basics',
       configureLabel: 'Settings',
       copyBtnText: 'Copy',
+      copySuccessBtnText: 'Copy successful!',
       notSelectedNodeLabel: 'Not selected',
       unknownIdLabel: 'Unknown',
+      preview: 'preview',
+      theCurrentNodeDoesNotSupportRendering:
+         'Rendering not supported on current node.',
    },
 })
 
@@ -290,15 +306,15 @@ const clipboard = new ClipboardJS('#copyBtn', {
    },
 })
 
-const copyBtnText = ref('复制')
+const copyBtnText = ref(usedI18n.value.copyBtnText)
 
 clipboard.on('success', function (e) {
    console.log('Text copied to clipboard')
    e.clearSelection()
-   copyBtnText.value = '复制成功!'
+   copyBtnText.value = usedI18n.value.copySuccessBtnText
 
    setTimeout(() => {
-      copyBtnText.value = '复制'
+      copyBtnText.value = usedI18n.value.copyBtnText
    }, 1500)
 })
 
@@ -345,7 +361,7 @@ window.onmessage = (event) => {
                      v-model="settings.targetRuntimeEnv"
                   >
                      <option value="web">Web</option>
-                     <option value="miniapp">小程序</option>
+                     <option value="miniapp">{{ usedI18n.miniProgram }}</option>
                   </select>
                   <select
                      class="w-1/4 min-w-max"
@@ -360,7 +376,7 @@ window.onmessage = (event) => {
             </form>
          </div>
          <label class="flex space-x-2 items-center mr-4">
-            <span class="text-gray-700">preview</span>
+            <span class="text-gray-700">{{ usedI18n.preview }}</span>
             <input v-model="isPreview" type="checkbox" />
          </label>
          <svg
@@ -507,7 +523,7 @@ window.onmessage = (event) => {
             v-else-if="notSupport"
             class="flex justify-center items-center h-full italic"
          >
-            当前节点不支持渲染
+            {{ usedI18n.theCurrentNodeDoesNotSupportRendering }}
          </div>
          <div v-else-if="isPreview" class="w-full h-full">
             <iframe :srcdoc="rendererSrcDoc" class="w-full h-full"></iframe>
@@ -531,7 +547,7 @@ window.onmessage = (event) => {
                      />
                   </svg>
 
-                  添加字体
+                  {{ usedI18n.addFont }}
                </button>
             </div>
          </div>
@@ -576,7 +592,7 @@ window.onmessage = (event) => {
                         clip-rule="evenodd"
                      ></path>
                   </svg>
-                  导出
+                  {{ usedI18n.exportBtnText }}
                </button>
             </div>
             <pre
@@ -604,12 +620,16 @@ window.onmessage = (event) => {
             />
          </svg>
          <div class="grid grid-cols-1 gap-6">
-            <h3 class="text-gray-700 text-sm mt-1 -mb-1">添加字体</h3>
+            <h3 class="text-gray-700 text-sm mt-1 -mb-1">
+               {{ usedI18n.addFontTitle }}
+            </h3>
             <div class="block">
                <div class="mt-2">
                   <div>
                      <label class="block">
-                        <span class="text-gray-700">资源地址</span>
+                        <span class="text-gray-700">{{
+                           usedI18n.resourceAddress
+                        }}</span>
                         <input
                            v-for="(
                               fontUrl, index
@@ -642,7 +662,7 @@ window.onmessage = (event) => {
                            d="M12 4.5v15m7.5-7.5h-15"
                         />
                      </svg>
-                     继续添加
+                     {{ usedI18n.continueAdding }}
                   </span>
                </button>
             </div>
