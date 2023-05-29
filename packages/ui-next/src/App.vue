@@ -13,8 +13,13 @@ import { renderStaticNode } from './renderStaticNode'
 import { BaseConvertSettings } from './types'
 import { getScriptStr } from './utils/getScriptStr'
 import { transformBlobUrlToAssetsUrl } from './utils/transformBlobUrlToAssetsUrl'
-import { convertFigmaIdToHtmlId } from './utils/convertFigmaIdToHtmlId'
+import {
+   convertFigmaIdToHtmlId,
+   convertHtmlIdToFigmaId,
+} from './utils/convertFigmaIdToHtmlId'
 import { extractAndSplitUrls } from './utils/extractAndSplitUrls'
+import { saveAs } from 'file-saver'
+import JSZip from 'jszip'
 
 const i18n = reactive({
    'zh-CN': {
@@ -136,6 +141,8 @@ const rendererCode = computed(() => {
    return renderStaticNode(settings, selectedNode.value)
 })
 
+const imageFillMetaNodeMaps: Record<string, ImageFillMeta> = {}
+
 // 复制到剪贴板的 html 代码
 const copiedCode = computed(() => {
    if (!selectedNode.value) return ''
@@ -149,11 +156,13 @@ const copiedCode = computed(() => {
             imageFillMeta: ImageFillMeta,
             node: StaticNode,
          ) => {
+            imageFillMetaNodeMaps[node.id] = imageFillMeta
+
             return transformBlobUrlToAssetsUrl(
                url,
-               `assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
+               `'assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
                   imageFillMeta.imageExtension
-               }`,
+               }'`,
             )
          },
       }),
@@ -224,28 +233,41 @@ const rendererSrcDoc = computed(() => {
   `
 })
 
+const exportZip = (
+   data: {
+      path: string
+      content: string | ArrayBuffer
+   }[],
+   filename: string = 'files',
+) => {
+   const zip = new JSZip()
+   data.forEach((item) => {
+      zip.file(item.path, item.content)
+   })
+   zip.generateAsync({ type: 'blob' }).then((blob) =>
+      saveAs(blob, `${filename}.zip`),
+   )
+}
+
 const handleExportBtnClick = () => {
-   // console.log('handleExportBtnClick', nodeMaps.value)
-   // const assets = extractAndSplitUrls(copiedCode.value)
-   // exportZip(
-   //    [
-   //       {
-   //          path: 'page/index.html',
-   //          content: copiedCode.value,
-   //       },
-   //       ...assets.map((item) => {
-   //          // figma 的 node 的 id 是用 : 分隔的，所以这里要替换一下，是一个约定
-   //          const figmaNodeId = item.id.replace('-', ':')
-   //          return {
-   //             path: `page/${item.path}/${item.name}_${item.id}.${item.suffix}`,
-   //             content:
-   //                nodeMaps.value[figmaNodeId].styleMeta?.backgroundImageMeta
-   //                   ?.backgroundImageBytes ?? '',
-   //          }
-   //       }),
-   //    ],
-   //    'page',
-   // )
+   const assets = extractAndSplitUrls(copiedCode.value)
+   exportZip(
+      [
+         {
+            path: 'page/index.html',
+            content: copiedCode.value,
+         },
+         ...assets.map((item) => {
+            return {
+               path: `page/${item.path}/${item.name}_${item.id}.${item.suffix}`,
+               content:
+                  imageFillMetaNodeMaps[convertHtmlIdToFigmaId(item.id)]
+                     .imageBytes,
+            }
+         }),
+      ],
+      'page',
+   )
 }
 
 const clipboard = new ClipboardJS('#copyBtn', {

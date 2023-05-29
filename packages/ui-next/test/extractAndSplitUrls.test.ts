@@ -3,12 +3,26 @@ import { UrlParts, extractAndSplitUrls } from '../src/utils/extractAndSplitUrls'
 
 describe('extractAndSplitUrls', () => {
    test('基本用例', () => {
-      const input = `url('assets/images/image_01.jpg')`
+      const input = `url('assets/images/image_01-02.jpg')`
       const expectedUrls = [
          {
             path: 'assets/images',
             name: 'image',
-            id: '01',
+            id: '01-02',
+            suffix: 'jpg',
+         },
+      ]
+      const urls = extractAndSplitUrls(input)
+      expect(urls).toEqual(expectedUrls)
+   })
+
+   test('多个_', () => {
+      const input = `url('assets/images/image_image_01-02.jpg')`
+      const expectedUrls = [
+         {
+            path: 'assets/images',
+            name: 'image_image',
+            id: '01-02',
             suffix: 'jpg',
          },
       ]

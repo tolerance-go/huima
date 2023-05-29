@@ -5,3 +5,10 @@
 export function convertFigmaIdToHtmlId(figmaId: string): string {
    return figmaId.replace(/:/g, '-')
 }
+
+/**
+ * 将 htmlId 转换成 figmaId
+ */
+export function convertHtmlIdToFigmaId(htmlId: string): string {
+   return htmlId.replace(/-/g, ':')
+}
