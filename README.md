@@ -8,7 +8,7 @@ Let me automatically handle the tedious task of comparing and reproducing dull d
 
 ## Features
 
--  One-click export of HTML pages, including related static resources.
+-  Export page code and static resources that match the design draft with a single click.
 -  Support for automatic layout and generation of positioning styles.
 -  Support for copying code of any node online.
 -  Support for responsive layout units such as rem and vw.
