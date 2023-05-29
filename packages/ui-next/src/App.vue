@@ -117,7 +117,7 @@ watchEffect(() => {
    )
 })
 
-const handleFormChange = debounce(() => {
+const handleFormChange = () => {
    Object.assign(settings, {
       ...formSettings,
       pxConvertConfigs: {
@@ -130,7 +130,7 @@ const handleFormChange = debounce(() => {
             DEFAULT_BASE_FONT_SIZE,
       },
    })
-}, 300)
+}
 
 const isSettingsPage = ref(false)
 
@@ -194,6 +194,9 @@ const rendererSrcDoc = computed(() => {
            onLoad: 'handleScriptLoad()',
         })
       : ''
+
+   // 注意 tailwindScript 要在 rendererCode.value 之前执行，否则加载资源的时候，无样式的 html 会闪烁
+   // tailwindScript 加载完毕后，会监听 onload 事件，计算样式的
    return `
     <html>
       <head>
@@ -226,8 +229,8 @@ const rendererSrcDoc = computed(() => {
                ? `<p id='tailwindcssLoading' style="text-align: center;">tailwindcss loading...</p>`
                : ''
          }
-         ${rendererCode.value}
          ${tailwindScript}
+         ${rendererCode.value}
       </body>
     </html>
   `
@@ -322,24 +325,28 @@ window.onmessage = (event) => {
       <div
          class="flex-none border-b px-4 py-2 flex justify-between items-center"
       >
-         <div class="flex space-x-1 flex-auto">
-            <select
-               class="w-1/4 min-w-max"
-               placeholder="选择运行环境"
-               v-model="formSettings.targetRuntimeEnv"
-            >
-               <option value="web">Web</option>
-               <option value="miniapp">小程序</option>
-            </select>
-            <select
-               class="w-1/4 min-w-max"
-               placeholder="DSL"
-               v-model="formSettings.targetRuntimeDsl"
-            >
-               <option value="html">HTML</option>
-               <option value="react">React</option>
-               <option value="vue">Vue</option>
-            </select>
+         <div class="flex-auto">
+            <form class="mb-0">
+               <div class="flex space-x-1">
+                  <select
+                     class="w-1/4 min-w-max"
+                     placeholder="选择运行环境"
+                     v-model="settings.targetRuntimeEnv"
+                  >
+                     <option value="web">Web</option>
+                     <option value="miniapp">小程序</option>
+                  </select>
+                  <select
+                     class="w-1/4 min-w-max"
+                     placeholder="DSL"
+                     v-model="settings.targetRuntimeDsl"
+                  >
+                     <option value="html">HTML</option>
+                     <option value="react">React</option>
+                     <option value="vue">Vue</option>
+                  </select>
+               </div>
+            </form>
          </div>
          <label class="flex space-x-2 items-center mr-4">
             <span class="text-gray-700">preview</span>
