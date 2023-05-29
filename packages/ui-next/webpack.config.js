@@ -64,11 +64,11 @@ module.exports = (env, argv) => {
             : path.resolve(__dirname, '../../figma-plugin'),
       },
       externals: {
-         // 'prettier/standalone': 'prettier',
-         // 'prettier/parser-html': 'prettierPlugins.html',
-         // prismjs: 'Prism',
-         // clipboard: 'ClipboardJS',
-         // jszip: 'JSZip',
+         'prettier/standalone': 'prettier',
+         'prettier/parser-html': 'prettierPlugins.html',
+         prismjs: 'Prism',
+         clipboard: 'ClipboardJS',
+         jszip: 'JSZip',
       },
       cache: false,
       plugins: [
