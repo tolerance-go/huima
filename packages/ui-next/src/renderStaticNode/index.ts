@@ -125,5 +125,5 @@ export const renderStaticNode = (
       }
    }
 
-   return `环境：${settings.targetRuntimeEnv}，DSL 类型：${settings.targetRuntimeDsl}，node 类型：${node.type}，还未支持转换成静态代码`
+   return `<p>Environment: ${settings.targetRuntimeEnv}, DSL Type: ${settings.targetRuntimeDsl}, Node Type: ${node.type}, not yet supported for conversion to static code.</p>`
 }
