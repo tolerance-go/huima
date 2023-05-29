@@ -26,6 +26,7 @@ export function getFrameFlexLayoutStyle(
       css['padding-top'] = frameNode.paddingTop + 'px'
       css['padding-right'] = frameNode.paddingRight + 'px'
       css['padding-bottom'] = frameNode.paddingBottom + 'px'
+      css['box-sizing'] = 'border-box'
 
       // 设置主轴对齐方式
       switch (frameNode.counterAxisAlignItems) {

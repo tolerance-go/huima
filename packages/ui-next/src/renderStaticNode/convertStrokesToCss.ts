@@ -1,3 +1,4 @@
+import { StrokeWeightType } from '@huima/types-next'
 import { rgbaToHex } from './rgbaToHex'
 
 /**
@@ -10,10 +11,20 @@ import { rgbaToHex } from './rgbaToHex'
  */
 export function convertStrokesToCss(
    strokes: Paint[],
-   strokeWeight: number,
+   strokeWeight: StrokeWeightType,
    strokeAlign: 'CENTER' | 'INSIDE' | 'OUTSIDE',
    dashPattern: ReadonlyArray<number>,
-): Record<string, string> {
+): Record<string, string | undefined> {
+   // 序列化 strokeWeight 始终返回对象
+   if (typeof strokeWeight === 'number') {
+      strokeWeight = {
+         strokeRightWeight: strokeWeight,
+         strokeTopWeight: strokeWeight,
+         strokeBottomWeight: strokeWeight,
+         strokeLeftWeight: strokeWeight,
+      }
+   }
+
    const visibleStrokes = strokes.filter((stroke) => stroke.visible !== false)
    if (visibleStrokes.length === 0) {
       return {}
@@ -23,29 +34,57 @@ export function convertStrokesToCss(
    const colorString = rgbaToHex(color.r, color.g, color.b, opacity)
 
    const dashArray = dashPattern ? dashPattern.join(' ') : ''
+   const dashType = dashArray ? 'dashed' : 'solid'
 
    switch (strokeAlign) {
       case 'CENTER': {
          // TODO: add support for strokeAlign 'CENTER', which is currently ignored.
          return {
-            border: `${strokeWeight}px ${
-               dashArray ? 'dashed' : 'solid'
-            } ${colorString}`,
+            'border-left': strokeWeight.strokeLeftWeight
+               ? `${strokeWeight.strokeLeftWeight}px ${dashType} ${colorString}`
+               : undefined,
+            'border-right': strokeWeight.strokeRightWeight
+               ? `${strokeWeight.strokeRightWeight}px ${dashType} ${colorString}`
+               : undefined,
+            'border-bottom': strokeWeight.strokeBottomWeight
+               ? `${strokeWeight.strokeBottomWeight}px ${dashType} ${colorString}`
+               : undefined,
+            'border-top': strokeWeight.strokeTopWeight
+               ? `${strokeWeight.strokeTopWeight}px ${dashType} ${colorString}`
+               : undefined,
          }
       }
       case 'INSIDE': {
          return {
-            border: `${strokeWeight}px ${
-               dashArray ? 'dashed' : 'solid'
-            } ${colorString}`,
+            'border-left': strokeWeight.strokeLeftWeight
+               ? `${strokeWeight.strokeLeftWeight}px ${dashType} ${colorString}`
+               : undefined,
+            'border-right': strokeWeight.strokeRightWeight
+               ? `${strokeWeight.strokeRightWeight}px ${dashType} ${colorString}`
+               : undefined,
+            'border-bottom': strokeWeight.strokeBottomWeight
+               ? `${strokeWeight.strokeBottomWeight}px ${dashType} ${colorString}`
+               : undefined,
+            'border-top': strokeWeight.strokeTopWeight
+               ? `${strokeWeight.strokeTopWeight}px ${dashType} ${colorString}`
+               : undefined,
             'box-sizing': 'border-box',
          }
       }
       case 'OUTSIDE': {
          return {
-            border: `${strokeWeight}px ${
-               dashArray ? 'dashed' : 'solid'
-            } ${colorString}`,
+            'border-left': strokeWeight.strokeLeftWeight
+               ? `${strokeWeight.strokeLeftWeight}px ${dashType} ${colorString}`
+               : undefined,
+            'border-right': strokeWeight.strokeRightWeight
+               ? `${strokeWeight.strokeRightWeight}px ${dashType} ${colorString}`
+               : undefined,
+            'border-bottom': strokeWeight.strokeBottomWeight
+               ? `${strokeWeight.strokeBottomWeight}px ${dashType} ${colorString}`
+               : undefined,
+            'border-top': strokeWeight.strokeTopWeight
+               ? `${strokeWeight.strokeTopWeight}px ${dashType} ${colorString}`
+               : undefined,
          }
       }
       default: {

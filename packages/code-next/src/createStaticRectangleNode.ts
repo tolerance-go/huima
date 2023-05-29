@@ -1,6 +1,7 @@
 import { StaticContainerNode, StaticRectangleNode } from '@huima/types-next'
 import { getCornerRadius } from './getCornerRadius'
 import { getImageFillMeta } from './getImageFillMeta'
+import { pluginApi } from './pluginApi'
 
 export const createStaticRectangleNode = async (
    node: RectangleNode,
@@ -28,11 +29,24 @@ export const createStaticRectangleNode = async (
       y,
       layoutPositioning,
       isMask,
+      strokeRightWeight,
+      strokeTopWeight,
+      strokeBottomWeight,
+      strokeLeftWeight,
    } = node
 
    return {
       isMask,
       parent: parentNode,
+      strokeWeight:
+         strokeWeight === pluginApi.mixed
+            ? {
+                 strokeRightWeight,
+                 strokeTopWeight,
+                 strokeBottomWeight,
+                 strokeLeftWeight,
+              }
+            : strokeWeight,
       x,
       y,
       id,
@@ -50,7 +64,6 @@ export const createStaticRectangleNode = async (
       cornerRadius: getCornerRadius(node),
       fills,
       strokeAlign,
-      strokeWeight,
       dashPattern,
       imageFillMeta: await getImageFillMeta(fills as ReadonlyArray<Paint>),
       layoutPositioning,

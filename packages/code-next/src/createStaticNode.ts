@@ -1,8 +1,10 @@
 import { StaticContainerNode, StaticNode } from '@huima/types-next'
 import { createStaticBooleanOperationNode } from './createStaticBooleanOperationNode'
+import { createStaticComponentNode } from './createStaticComponentNode'
 import { createStaticEllipseNode } from './createStaticEllipseNode'
 import { createStaticFrameNode } from './createStaticFrameNode'
 import { createStaticGroupNode } from './createStaticGroupNode'
+import { createStaticInstanceNode } from './createStaticInstanceNode'
 import { createStaticLineNode } from './createStaticLineNode'
 import { createStaticPolygonNode } from './createStaticPolygonNode'
 import { createStaticRectangleNode } from './createStaticRectangleNode'
@@ -103,6 +105,14 @@ export const createStaticNode = async (
 
    if (node.type === 'BOOLEAN_OPERATION') {
       return createStaticBooleanOperationNode(node, parent)
+   }
+
+   if (node.type === 'INSTANCE') {
+      return createStaticInstanceNode(node, parent)
+   }
+
+   if (node.type === 'COMPONENT') {
+      return createStaticComponentNode(node, parent)
    }
 
    return null

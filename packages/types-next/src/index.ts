@@ -45,7 +45,6 @@ export interface StaticFrameNode
          | 'absoluteTransform'
          | 'fills'
          | 'strokeAlign'
-         | 'strokeWeight'
          | 'dashPattern'
          | 'x'
          | 'y'
@@ -65,6 +64,83 @@ export interface StaticFrameNode
    cornerRadius: CornerRadiusType
    parent?: StaticContainerNode
    imageFillMeta?: ImageFillMeta
+   strokeWeight: StrokeWeightType
+}
+
+export interface StaticInstanceNode
+   extends BaseStaticContainerNode,
+      Pick<
+         InstanceNode,
+         | 'effects'
+         | 'strokes'
+         | 'constraints'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'fills'
+         | 'strokeAlign'
+         | 'dashPattern'
+         | 'x'
+         | 'y'
+         // flex 相关属性
+         | 'layoutMode'
+         | 'itemSpacing'
+         | 'paddingLeft'
+         | 'paddingTop'
+         | 'paddingRight'
+         | 'paddingBottom'
+         | 'counterAxisAlignItems'
+         | 'primaryAxisAlignItems'
+         | 'layoutPositioning'
+         | 'isMask'
+      > {
+   type: 'instanceNode'
+   cornerRadius: CornerRadiusType
+   parent?: StaticContainerNode
+   imageFillMeta?: ImageFillMeta
+   strokeWeight: StrokeWeightType
+}
+
+export interface StaticComponentNode
+   extends BaseStaticContainerNode,
+      Pick<
+         ComponentNode,
+         | 'effects'
+         | 'strokes'
+         | 'constraints'
+         | 'width'
+         | 'height'
+         | 'rotation'
+         | 'blendMode'
+         | 'absoluteBoundingBox'
+         | 'absoluteRenderBounds'
+         | 'absoluteTransform'
+         | 'fills'
+         | 'strokeAlign'
+         | 'dashPattern'
+         | 'x'
+         | 'y'
+         // flex 相关属性
+         | 'layoutMode'
+         | 'itemSpacing'
+         | 'paddingLeft'
+         | 'paddingTop'
+         | 'paddingRight'
+         | 'paddingBottom'
+         | 'counterAxisAlignItems'
+         | 'primaryAxisAlignItems'
+         | 'layoutPositioning'
+         | 'isMask'
+      > {
+   type: 'componentNode'
+   cornerRadius: CornerRadiusType
+   parent?: StaticContainerNode
+   imageFillMeta?: ImageFillMeta
+   strokeWeight: StrokeWeightType
 }
 
 export interface StaticGroupNode
@@ -118,6 +194,15 @@ export type CornerRadiusType =
      }
    | number
 
+export type StrokeWeightType =
+   | {
+        strokeRightWeight: number
+        strokeTopWeight: number
+        strokeBottomWeight: number
+        strokeLeftWeight: number
+     }
+   | number
+
 export interface StaticRectangleNode
    extends BaseStaticNode,
       Pick<
@@ -134,7 +219,6 @@ export interface StaticRectangleNode
          | 'absoluteTransform'
          | 'fills'
          | 'strokeAlign'
-         | 'strokeWeight'
          | 'dashPattern'
          | 'x'
          | 'y'
@@ -145,6 +229,7 @@ export interface StaticRectangleNode
    cornerRadius: CornerRadiusType
    parent?: StaticContainerNode
    imageFillMeta?: ImageFillMeta
+   strokeWeight: StrokeWeightType
 }
 
 export interface StaticLineNode
@@ -200,7 +285,7 @@ export interface StaticVectorNode
       > {
    type: 'vector'
    parent?: StaticContainerNode
-   svgBytes: Uint8Array
+   svgBytes?: Uint8Array
 }
 
 export interface StaticBooleanOperationNode
@@ -309,10 +394,12 @@ export interface StaticEllipseNode
          | 'y'
          | 'layoutPositioning'
          | 'isMask'
+         | 'arcData'
       > {
    type: 'ellipse'
    parent?: StaticContainerNode
    imageFillMeta?: ImageFillMeta
+   svgBytes?: Uint8Array
 }
 
 export interface StaticTextNode
@@ -356,7 +443,11 @@ export type StaticAtomNode =
 
 export type StaticNode = StaticAtomNode | StaticContainerNode
 
-export type StaticContainerNode = StaticFrameNode | StaticGroupNode
+export type StaticContainerNode =
+   | StaticFrameNode
+   | StaticGroupNode
+   | StaticComponentNode
+   | StaticInstanceNode
 // | StaticSectionNode
 
 export type ImageFillMeta = {

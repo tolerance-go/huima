@@ -26,6 +26,15 @@ export const createStaticVectorNode = async (
       layoutPositioning,
    } = node
 
+   let svgBytes: Uint8Array | undefined
+   try {
+      svgBytes = await node.exportAsync({
+         format: 'SVG',
+      })
+   } catch {
+      // ignore
+   }
+
    return {
       parent: parentNode,
       x,
@@ -47,9 +56,7 @@ export const createStaticVectorNode = async (
       isMask,
       strokeWeight,
       dashPattern,
-      svgBytes: await node.exportAsync({
-         format: 'SVG',
-      }),
+      svgBytes,
       layoutPositioning,
    }
 }

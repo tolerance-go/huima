@@ -1,9 +1,11 @@
-import { StaticFrameNode, StaticGroupNode, StaticNode } from '@huima/types-next'
+import { StaticContainerNode, StaticNode } from '@huima/types-next'
 import { DSLType, RuntimeEnv } from '../types'
 import { convertBooleanOperationNodeToHtml } from './convert-node-to-html/convertBooleanOperationNodeToHtml'
+import { convertComponentNodeToHtml } from './convert-node-to-html/convertComponentNodeToHtml'
 import { convertEllipseNodeToHtml } from './convert-node-to-html/convertEllipseNodeToHtml'
 import { convertFrameNodeToHtml } from './convert-node-to-html/convertFrameNodeToHtml'
 import { convertGroupNodeToHtml } from './convert-node-to-html/convertGroupNodeToHtml'
+import { convertInstanceNodeToHtml } from './convert-node-to-html/convertInstanceNodeToHtml'
 import { convertLineNodeToHtml } from './convert-node-to-html/convertLineNodeToHtml'
 import { convertPolygonNodeToHtml } from './convert-node-to-html/convertPolygonNodeToHtml'
 import { convertRectangleNodeToHtml } from './convert-node-to-html/convertRectangleNodeToHtml'
@@ -19,7 +21,7 @@ export const renderStaticNode = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticNode,
-   parentNode?: StaticFrameNode | StaticGroupNode,
+   parentNode?: StaticContainerNode,
 ): string => {
    if (runtimeEnv === 'web') {
       if (dslType === 'html') {
@@ -57,6 +59,26 @@ export const renderStaticNode = (
 
          if (node.type === 'frame') {
             const content = convertFrameNodeToHtml(
+               runtimeEnv,
+               dslType,
+               node,
+               parentNode,
+            )
+            return content
+         }
+
+         if (node.type === 'componentNode') {
+            const content = convertComponentNodeToHtml(
+               runtimeEnv,
+               dslType,
+               node,
+               parentNode,
+            )
+            return content
+         }
+
+         if (node.type === 'instanceNode') {
+            const content = convertInstanceNodeToHtml(
                runtimeEnv,
                dslType,
                node,

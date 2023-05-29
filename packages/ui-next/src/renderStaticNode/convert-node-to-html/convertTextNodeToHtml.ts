@@ -1,8 +1,4 @@
-import {
-   StaticFrameNode,
-   StaticGroupNode,
-   StaticTextNode,
-} from '@huima/types-next'
+import { StaticContainerNode, StaticTextNode } from '@huima/types-next'
 import { DSLType, RuntimeEnv } from '../../types'
 import { convertBlendModeToCss } from '../convertBlendModeToCss'
 import { convertCssObjectToString } from '../convertCssObjectToString'
@@ -41,7 +37,7 @@ export function convertTextNodeToHtml(
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticTextNode,
-   parentNode?: StaticFrameNode | StaticGroupNode,
+   parentNode?: StaticContainerNode,
 ): string {
    const { styledTextSegments } = node
    let html = ''

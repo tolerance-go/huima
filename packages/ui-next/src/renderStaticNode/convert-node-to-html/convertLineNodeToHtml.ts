@@ -1,8 +1,4 @@
-import {
-   StaticFrameNode,
-   StaticGroupNode,
-   StaticLineNode,
-} from '@huima/types-next'
+import { StaticContainerNode, StaticLineNode } from '@huima/types-next'
 import { Buffer } from 'buffer'
 import { DSLType, RuntimeEnv } from '../../types'
 import { convertCssObjectToString } from '../convertCssObjectToString'
@@ -22,7 +18,7 @@ export const convertLineNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticLineNode,
-   parentNode?: StaticFrameNode | StaticGroupNode,
+   parentNode?: StaticContainerNode,
 ) => {
    const { width, height, fills, strokes, effects, rotation } = node
 

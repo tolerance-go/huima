@@ -1,6 +1,6 @@
 import {
+   StaticComponentNode,
    StaticContainerNode,
-   StaticFrameNode,
    StaticNode,
 } from '@huima/types-next'
 import { createStaticNode } from './createStaticNode'
@@ -8,10 +8,10 @@ import { getCornerRadius } from './getCornerRadius'
 import { getImageFillMeta } from './getImageFillMeta'
 import { pluginApi } from './pluginApi'
 
-export const createStaticFrameNode = async (
-   node: FrameNode,
+export const createStaticComponentNode = async (
+   node: ComponentNode,
    parentNode?: StaticContainerNode,
-): Promise<StaticFrameNode> => {
+): Promise<StaticComponentNode> => {
    const {
       id,
       effects,
@@ -48,16 +48,26 @@ export const createStaticFrameNode = async (
       strokeLeftWeight,
    } = node
 
-   const staticNode: StaticFrameNode = {
+   const staticNode: StaticComponentNode = {
       isMask,
       parent: parentNode,
       x,
       y,
+
       children: [],
       id,
-      type: 'frame',
+      type: 'componentNode',
       effects,
       strokes,
+      strokeWeight:
+         strokeWeight === pluginApi.mixed
+            ? {
+                 strokeRightWeight,
+                 strokeTopWeight,
+                 strokeBottomWeight,
+                 strokeLeftWeight,
+              }
+            : strokeWeight,
       constraints,
       width,
       height,
@@ -69,15 +79,6 @@ export const createStaticFrameNode = async (
       absoluteTransform,
       fills,
       strokeAlign,
-      strokeWeight:
-         strokeWeight === pluginApi.mixed
-            ? {
-                 strokeRightWeight,
-                 strokeTopWeight,
-                 strokeBottomWeight,
-                 strokeLeftWeight,
-              }
-            : strokeWeight,
       dashPattern,
       imageFillMeta: await getImageFillMeta(fills as ReadonlyArray<Paint>),
       layoutMode,

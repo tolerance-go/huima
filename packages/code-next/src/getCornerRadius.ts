@@ -6,7 +6,7 @@ import { pluginApi } from './pluginApi'
  * topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius，否则返回 cornerRadius
  */
 export function getCornerRadius(
-   node: RectangleNode | FrameNode,
+   node: RectangleNode | FrameNode | InstanceNode | ComponentNode,
 ): CornerRadiusType {
    if (node.cornerRadius === pluginApi.mixed) {
       return {

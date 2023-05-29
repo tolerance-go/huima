@@ -1,4 +1,5 @@
 import { StaticContainerNode, StaticEllipseNode } from '@huima/types-next'
+import { isCircle } from '@huima/utils'
 import { getImageFillMeta } from './getImageFillMeta'
 
 export const createStaticEllipseNode = async (
@@ -27,9 +28,23 @@ export const createStaticEllipseNode = async (
       y,
       layoutPositioning,
       isMask,
+      arcData,
    } = node
 
+   let svgBytes: Uint8Array | undefined
+   try {
+      if (!isCircle(arcData)) {
+         svgBytes = await node.exportAsync({
+            format: 'SVG',
+         })
+      }
+   } catch {
+      // ignore
+   }
+
    return {
+      svgBytes,
+      arcData,
       isMask,
       parent: parentNode,
       x,

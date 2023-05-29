@@ -1,8 +1,6 @@
-import {
-   StaticEllipseNode,
-   StaticFrameNode,
-   StaticGroupNode,
-} from '@huima/types-next'
+import { StaticContainerNode, StaticEllipseNode } from '@huima/types-next'
+import { isCircle } from '@huima/utils'
+import { Buffer } from 'buffer'
 import { DSLType, RuntimeEnv } from '../../types'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertFillsToCss } from '../convertFillsToCss'
@@ -27,11 +25,38 @@ export function convertEllipseNodeToHtml(
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticEllipseNode,
-   parentNode?: StaticFrameNode | StaticGroupNode,
+   parentNode?: StaticContainerNode,
 ): string {
    // 获取 node 中的属性值
-   const { width, height, cornerRadius, fills, strokes, effects, rotation } =
-      node
+   const {
+      width,
+      height,
+      cornerRadius,
+      arcData,
+      fills,
+      strokes,
+      effects,
+      rotation,
+   } = node
+
+   if (!isCircle(arcData)) {
+      // 可能转换失败，导致没有 svgBytes
+      if (!node.svgBytes) {
+         return ''
+      }
+
+      const html = Buffer.from(node.svgBytes).toString()
+
+      return `<div style="${convertCssObjectToString({
+         width: `${width}px`,
+         height: `${height}px`,
+         // 居中显示
+         display: 'flex',
+         'justify-content': 'center',
+         'align-items': 'center',
+         ...convertNodePositionToCss(node, parentNode),
+      })}">${html.replace('<svg', `<svg role='ellipse-vector'`)}</div>`
+   }
 
    // 转换颜色，边框和效果为 CSS 属性
    const backgroundColorCss = convertFillsToCss(

@@ -46,4 +46,4 @@ not released
 
 -  feat: 支持 effects 样式转换 -->
 
--  支持 布局的 autoFlex 和绝对定位
+-  支持非正圆的 Ellipse，显示的定位问题

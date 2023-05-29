@@ -1,7 +1,6 @@
 import {
    StaticBooleanOperationNode,
-   StaticFrameNode,
-   StaticGroupNode,
+   StaticContainerNode,
 } from '@huima/types-next'
 import { Buffer } from 'buffer'
 import { DSLType, RuntimeEnv } from '../../types'
@@ -12,7 +11,7 @@ export const convertBooleanOperationNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticBooleanOperationNode,
-   parentNode?: StaticFrameNode | StaticGroupNode,
+   parentNode?: StaticContainerNode,
 ) => {
    const { width, height, fills, strokes, effects, rotation } = node
 

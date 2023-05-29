@@ -1,4 +1,4 @@
-import { StaticFrameNode, StaticGroupNode } from '@huima/types-next'
+import { StaticContainerNode, StaticFrameNode } from '@huima/types-next'
 import { renderStaticNode } from '..'
 import { DSLType, RuntimeEnv } from '../../types'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'
@@ -19,7 +19,7 @@ export const convertFrameNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticFrameNode,
-   parentNode?: StaticFrameNode | StaticGroupNode,
+   parentNode?: StaticContainerNode,
 ): string => {
    const {
       width,

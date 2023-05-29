@@ -317,6 +317,9 @@ importers:
       typescript:
         specifier: 5.0.4
         version: 5.0.4
+      vitest:
+        specifier: ^0.31.1
+        version: 0.31.1
 
 packages:
 

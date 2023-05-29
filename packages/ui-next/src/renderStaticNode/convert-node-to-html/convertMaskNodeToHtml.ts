@@ -1,4 +1,4 @@
-import { StaticFrameNode, StaticGroupNode } from '@huima/types-next'
+import { StaticContainerNode, StaticGroupNode } from '@huima/types-next'
 import { Buffer } from 'buffer'
 import { DSLType, RuntimeEnv } from '../../types'
 import { convertCssObjectToString } from '../convertCssObjectToString'
@@ -16,7 +16,7 @@ export const convertMaskNodeToHtml = (
    runtimeEnv: RuntimeEnv,
    dslType: DSLType,
    node: StaticGroupNode,
-   parentNode?: StaticFrameNode | StaticGroupNode,
+   parentNode?: StaticContainerNode,
 ) => {
    const { width, height, effects, rotation, svgBytes } = node
 
