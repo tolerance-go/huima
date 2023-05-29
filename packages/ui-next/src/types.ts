@@ -6,4 +6,10 @@ export type BaseConvertSettings = {
    enableTailwindcss: boolean
    targetRuntimeEnv: RuntimeEnv
    targetRuntimeDsl: DSLType
+   enablePxConvert: boolean
+   pxConvertConfigs: {
+      pxConvertFormat: 'rem' | 'vw'
+      viewportWidth: number
+      baseFontSize: number
+   }
 }

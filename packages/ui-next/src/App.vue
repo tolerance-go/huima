@@ -9,6 +9,56 @@ import { normalizeCss } from './constants/normalize.css'
 import { renderStaticNode } from './renderStaticNode'
 import { BaseConvertSettings, DSLType, RuntimeEnv } from './types'
 import { getScriptStr } from './utils/getScriptStr'
+import { isJsDesign } from './env'
+
+const i18n = reactive({
+   'zh-CN': {
+      generate: '生成',
+      pleaseSelect: '“请选择场景元素后，点击生成按钮”',
+      exportBtnText: '导出',
+      enableCssToTailwindCss: '启用 CSS 转 Tailwindcss',
+      basicFontSize: '基础字号大小',
+      designDraftViewportWidth: '设计稿视口宽度',
+      targetFormat: '目标格式',
+      enablePxUnitConversion: '启用 px 单位转换',
+      exportLabel: '导出',
+      uiSettingsLabel: '界面',
+      viewportHeightLabel: '视口高度（不包括头部）',
+      viewportWidthLabel: '视口宽度',
+      basicsLabel: '基础',
+      configureLabel: '设置',
+      copyBtnText: '复制',
+      notSelectedNodeLabel: '未选择',
+      unknownIdLabel: '未知',
+   },
+   'en-US': {
+      generate: 'Generate',
+      pleaseSelect:
+         '"Please select the scene elements first, then click the Generate button"',
+      exportBtnText: 'Export',
+      enableCssToTailwindCss: 'Enable CSS to Tailwindcss conversion',
+      basicFontSize: 'Basic font size',
+      designDraftViewportWidth: 'Design draft viewport width',
+      targetFormat: 'Target format',
+      enablePxUnitConversion: 'Enable px unit conversion',
+      exportLabel: 'Export',
+      uiSettingsLabel: 'UI',
+      viewportHeightLabel: 'Viewport height (excluding header)',
+      viewportWidthLabel: 'Viewport width',
+      basicsLabel: 'Basics',
+      configureLabel: 'Settings',
+      copyBtnText: 'Copy',
+      notSelectedNodeLabel: 'Not selected',
+      unknownIdLabel: 'Unknown',
+   },
+})
+
+const usedI18n = computed(() => {
+   if (isJsDesign) {
+      return i18n['zh-CN']
+   }
+   return i18n['en-US']
+})
 
 const selectedNode = ref<StaticNode | null>(null)
 
@@ -28,11 +78,20 @@ const baseConvertSettings: BaseConvertSettings = {
    enableTailwindcss: false,
    targetRuntimeEnv: 'web',
    targetRuntimeDsl: 'html',
+   enablePxConvert: false,
+   pxConvertConfigs: {
+      pxConvertFormat: 'rem',
+      viewportWidth: 375,
+      baseFontSize: 16,
+   },
 }
 
 const formSettings = reactive({
    ...baseUISettings,
    ...baseConvertSettings,
+   pxConvertConfigs: {
+      ...baseConvertSettings.pxConvertConfigs,
+   },
 })
 
 watchEffect(() => {
@@ -230,6 +289,79 @@ window.onmessage = (event) => {
          <!-- 配置渲染优先级最高 -->
          <div class="p-5" v-if="isSettingsPage">
             <div role="settings-page" class="grid grid-cols-1 gap-6">
+               <h3 class="text-gray-700 text-sm mt-2">
+                  {{ usedI18n.exportLabel }}
+               </h3>
+               <div class="block">
+                  <div class="mt-2">
+                     <div>
+                        <label class="inline-flex items-center">
+                           <input
+                              v-model="formSettings.enablePxConvert"
+                              type="checkbox"
+                           />
+                           <span class="ml-2">{{
+                              usedI18n.enablePxUnitConversion
+                           }}</span>
+                        </label>
+                     </div>
+                  </div>
+               </div>
+               <div
+                  class="grid grid-cols-1 gap-6 pl-6"
+                  v-if="formSettings.enablePxConvert"
+               >
+                  <label class="block">
+                     <span class="text-gray-700">{{
+                        usedI18n.targetFormat
+                     }}</span>
+                     <select
+                        v-model="formSettings.pxConvertConfigs.pxConvertFormat"
+                        class="mt-1 block w-full"
+                     >
+                        <option>rem</option>
+                        <option>vw</option>
+                     </select>
+                  </label>
+                  <label
+                     v-if="
+                        formSettings.pxConvertConfigs.pxConvertFormat === 'vw'
+                     "
+                     class="block"
+                  >
+                     <span class="text-gray-700">{{
+                        usedI18n.designDraftViewportWidth
+                     }}</span>
+                     <input
+                        v-model="formSettings.pxConvertConfigs.viewportWidth"
+                        type="number"
+                        class="mt-1 block w-full"
+                        :placeholder="
+                           baseConvertSettings.pxConvertConfigs.viewportWidth +
+                           ''
+                        "
+                     />
+                  </label>
+                  <label
+                     v-if="
+                        formSettings.pxConvertConfigs.pxConvertFormat === 'rem'
+                     "
+                     class="block"
+                  >
+                     <span class="text-gray-700">{{
+                        usedI18n.basicFontSize
+                     }}</span>
+                     <input
+                        v-model="formSettings.pxConvertConfigs.baseFontSize"
+                        type="number"
+                        class="mt-1 block w-full"
+                        :placeholder="
+                           baseConvertSettings.pxConvertConfigs.baseFontSize +
+                           ''
+                        "
+                     />
+                  </label>
+               </div>
                <div class="block">
                   <div class="mt-2">
                      <div>
@@ -243,6 +375,9 @@ window.onmessage = (event) => {
                      </div>
                   </div>
                </div>
+               <h3 class="text-gray-700 text-sm mt-2">
+                  {{ usedI18n.uiSettingsLabel }}
+               </h3>
                <label class="block">
                   <span class="text-gray-700">Code font-size</span>
                   <input
