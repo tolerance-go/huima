@@ -10,6 +10,8 @@ import { renderStaticNode } from './renderStaticNode'
 import { BaseConvertSettings, DSLType, RuntimeEnv } from './types'
 import { getScriptStr } from './utils/getScriptStr'
 import { isJsDesign } from './env'
+import { DEFAULT_BASE_FONT_SIZE, VIEWPORT_WIDTH } from '@huima/utils'
+import debounce from 'lodash.debounce'
 
 const i18n = reactive({
    'zh-CN': {
@@ -81,25 +83,46 @@ const baseConvertSettings: BaseConvertSettings = {
    enablePxConvert: false,
    pxConvertConfigs: {
       pxConvertFormat: 'rem',
-      viewportWidth: 375,
-      baseFontSize: 16,
+      viewportWidth: VIEWPORT_WIDTH,
+      baseFontSize: DEFAULT_BASE_FONT_SIZE,
    },
 }
 
-const formSettings = reactive({
-   ...baseUISettings,
-   ...baseConvertSettings,
-   pxConvertConfigs: {
-      ...baseConvertSettings.pxConvertConfigs,
-   },
-})
+const getDefaultSettings = () => {
+   return {
+      ...baseUISettings,
+      ...baseConvertSettings,
+      pxConvertConfigs: {
+         ...baseConvertSettings.pxConvertConfigs,
+      },
+   }
+}
+
+const formSettings = reactive(getDefaultSettings())
+
+const settings = reactive(getDefaultSettings())
 
 watchEffect(() => {
    document.documentElement.style.setProperty(
       '--code-font-size',
-      formSettings.codeFontSize + 'px',
+      settings.codeFontSize + 'px',
    )
 })
+
+const handleFormChange = debounce(() => {
+   Object.assign(settings, {
+      ...formSettings,
+      pxConvertConfigs: {
+         ...formSettings.pxConvertConfigs,
+         // 如果用户没有输入，number input 得到的是一个 ''，则使用默认值
+         viewportWidth:
+            formSettings.pxConvertConfigs.viewportWidth || VIEWPORT_WIDTH,
+         baseFontSize:
+            formSettings.pxConvertConfigs.baseFontSize ||
+            DEFAULT_BASE_FONT_SIZE,
+      },
+   })
+}, 300)
 
 const isSettingsPage = ref(false)
 
@@ -107,7 +130,7 @@ const isSettingsPage = ref(false)
 const rendererCode = computed(() => {
    if (!selectedNode.value) return ''
 
-   return renderStaticNode(formSettings, selectedNode.value)
+   return renderStaticNode(settings, selectedNode.value)
 })
 
 // 复制到剪贴板的 html 代码
@@ -135,7 +158,7 @@ const codeblockCode = computed(() => {
 })
 
 const rendererSrcDoc = computed(() => {
-   const tailwindScript = formSettings.enableTailwindcss
+   const tailwindScript = settings.enableTailwindcss
       ? getScriptStr({
            src: 'https://cdn.tailwindcss.com',
            onLoad: 'handleScriptLoad()',
@@ -144,6 +167,18 @@ const rendererSrcDoc = computed(() => {
    return `
     <html>
       <head>
+         ${
+            settings.enablePxConvert &&
+            settings.pxConvertConfigs.pxConvertFormat === 'rem'
+               ? `
+            <style>
+               html {
+                  font-size: ${settings.pxConvertConfigs.baseFontSize}px;
+               }
+            </style>
+         `
+               : ''
+         }
          <style>
           ${normalizeCss}
          </style>
@@ -157,7 +192,7 @@ const rendererSrcDoc = computed(() => {
       </head>
       <body>
          ${
-            formSettings.enableTailwindcss
+            settings.enableTailwindcss
                ? `<p id='tailwindcssLoading' style="text-align: center;">tailwindcss loading...</p>`
                : ''
          }
@@ -288,106 +323,112 @@ window.onmessage = (event) => {
       <div class="flex-auto overflow-auto">
          <!-- 配置渲染优先级最高 -->
          <div class="p-5" v-if="isSettingsPage">
-            <div role="settings-page" class="grid grid-cols-1 gap-6">
-               <h3 class="text-gray-700 text-sm mt-2">
-                  {{ usedI18n.exportLabel }}
-               </h3>
-               <div class="block">
-                  <div class="mt-2">
-                     <div>
-                        <label class="inline-flex items-center">
-                           <input
-                              v-model="formSettings.enablePxConvert"
-                              type="checkbox"
-                           />
-                           <span class="ml-2">{{
-                              usedI18n.enablePxUnitConversion
-                           }}</span>
-                        </label>
+            <form @change="handleFormChange">
+               <div role="settings-page" class="grid grid-cols-1 gap-6">
+                  <h3 class="text-gray-700 text-sm mt-2 -mb-1">
+                     {{ usedI18n.exportLabel }}
+                  </h3>
+                  <div class="block">
+                     <div class="mt-2">
+                        <div>
+                           <label class="inline-flex items-center">
+                              <input
+                                 v-model="formSettings.enablePxConvert"
+                                 type="checkbox"
+                              />
+                              <span class="ml-2">{{
+                                 usedI18n.enablePxUnitConversion
+                              }}</span>
+                           </label>
+                        </div>
                      </div>
                   </div>
-               </div>
-               <div
-                  class="grid grid-cols-1 gap-6 pl-6"
-                  v-if="formSettings.enablePxConvert"
-               >
-                  <label class="block">
-                     <span class="text-gray-700">{{
-                        usedI18n.targetFormat
-                     }}</span>
-                     <select
-                        v-model="formSettings.pxConvertConfigs.pxConvertFormat"
-                        class="mt-1 block w-full"
+                  <div
+                     class="grid grid-cols-1 gap-6 pl-6"
+                     v-if="formSettings.enablePxConvert"
+                  >
+                     <label class="block">
+                        <span class="text-gray-700">{{
+                           usedI18n.targetFormat
+                        }}</span>
+                        <select
+                           v-model="
+                              formSettings.pxConvertConfigs.pxConvertFormat
+                           "
+                           class="mt-1 block w-full"
+                        >
+                           <option>rem</option>
+                           <option>vw</option>
+                        </select>
+                     </label>
+                     <label
+                        v-if="
+                           formSettings.pxConvertConfigs.pxConvertFormat ===
+                           'vw'
+                        "
+                        class="block"
                      >
-                        <option>rem</option>
-                        <option>vw</option>
-                     </select>
-                  </label>
-                  <label
-                     v-if="
-                        formSettings.pxConvertConfigs.pxConvertFormat === 'vw'
-                     "
-                     class="block"
-                  >
-                     <span class="text-gray-700">{{
-                        usedI18n.designDraftViewportWidth
-                     }}</span>
-                     <input
-                        v-model="formSettings.pxConvertConfigs.viewportWidth"
-                        type="number"
-                        class="mt-1 block w-full"
-                        :placeholder="
-                           baseConvertSettings.pxConvertConfigs.viewportWidth +
-                           ''
+                        <span class="text-gray-700">{{
+                           usedI18n.designDraftViewportWidth
+                        }}</span>
+                        <input
+                           v-model="formSettings.pxConvertConfigs.viewportWidth"
+                           type="number"
+                           class="mt-1 block w-full"
+                           :placeholder="
+                              baseConvertSettings.pxConvertConfigs
+                                 .viewportWidth + ''
+                           "
+                        />
+                     </label>
+                     <label
+                        v-if="
+                           formSettings.pxConvertConfigs.pxConvertFormat ===
+                           'rem'
                         "
-                     />
-                  </label>
-                  <label
-                     v-if="
-                        formSettings.pxConvertConfigs.pxConvertFormat === 'rem'
-                     "
-                     class="block"
-                  >
-                     <span class="text-gray-700">{{
-                        usedI18n.basicFontSize
-                     }}</span>
-                     <input
-                        v-model="formSettings.pxConvertConfigs.baseFontSize"
-                        type="number"
-                        class="mt-1 block w-full"
-                        :placeholder="
-                           baseConvertSettings.pxConvertConfigs.baseFontSize +
-                           ''
-                        "
-                     />
-                  </label>
-               </div>
-               <div class="block">
-                  <div class="mt-2">
-                     <div>
-                        <label class="inline-flex items-center">
-                           <input
-                              v-model="formSettings.enableTailwindcss"
-                              type="checkbox"
-                           />
-                           <span class="ml-2">Enable Tailwindcss</span>
-                        </label>
+                        class="block"
+                     >
+                        <span class="text-gray-700">{{
+                           usedI18n.basicFontSize
+                        }}</span>
+                        <input
+                           v-model="formSettings.pxConvertConfigs.baseFontSize"
+                           type="number"
+                           class="mt-1 block w-full"
+                           :placeholder="
+                              baseConvertSettings.pxConvertConfigs
+                                 .baseFontSize + ''
+                           "
+                        />
+                     </label>
+                  </div>
+                  <div class="block">
+                     <div class="mt-2">
+                        <div>
+                           <label class="inline-flex items-center">
+                              <input
+                                 v-model="formSettings.enableTailwindcss"
+                                 type="checkbox"
+                              />
+                              <span class="ml-2">Enable Tailwindcss</span>
+                           </label>
+                        </div>
                      </div>
                   </div>
+                  <h3 class="text-gray-700 text-sm mt-2 -mb-1">
+                     {{ usedI18n.uiSettingsLabel }}
+                  </h3>
+                  <label class="block">
+                     <span class="text-gray-700">Code font-size</span>
+                     <input
+                        v-model="formSettings.codeFontSize"
+                        type="number"
+                        class="mt-1 block w-full"
+                        :placeholder="baseUISettings.codeFontSize + ''"
+                     />
+                  </label>
                </div>
-               <h3 class="text-gray-700 text-sm mt-2">
-                  {{ usedI18n.uiSettingsLabel }}
-               </h3>
-               <label class="block">
-                  <span class="text-gray-700">Code font-size</span>
-                  <input
-                     v-model="formSettings.codeFontSize"
-                     type="number"
-                     class="mt-1 block w-full"
-                     :placeholder="baseUISettings.codeFontSize + ''"
-                  />
-               </label>
-            </div>
+            </form>
          </div>
          <div
             v-else-if="notSupport"

@@ -1,4 +1,7 @@
 import { BaseConvertSettings } from '../types'
+import { convertPxToRem } from '../utils/convertPxToRem'
+import { convertPxToVw } from '../utils/convertPxToVw'
+import { replacePxValues } from '../utils/replacePxValues'
 import { convertCssObjectToString } from './convertCssObjectToString'
 import { getTailwindClassName } from './getTailwindClassName'
 
@@ -15,24 +18,43 @@ export function convertToStyleAndClassAttrs(
    const classNames: string[] = []
    let style: Record<string, string | number | undefined | null> = {}
 
-   if (settings.enableTailwindcss) {
-      for (const key in input) {
-         const value = input[key]
+   for (const key in input) {
+      let value = input[key]
 
-         if (value === undefined || value === null) {
-            continue
-         }
+      if (value === undefined || value === null) {
+         continue
+      }
 
+      if (typeof value === 'string') {
+         value = replacePxValues(value, (val) => {
+            if (settings.enablePxConvert) {
+               if (settings.pxConvertConfigs.pxConvertFormat === 'rem') {
+                  return convertPxToRem(
+                     val,
+                     settings.pxConvertConfigs.baseFontSize,
+                  )
+               }
+               if (settings.pxConvertConfigs.pxConvertFormat === 'vw') {
+                  return convertPxToVw(
+                     val,
+                     settings.pxConvertConfigs.viewportWidth,
+                  )
+               }
+            }
+            return `${val}px`
+         })
+      }
+
+      if (settings.enableTailwindcss) {
          const className = getTailwindClassName(key, value)
 
          if (className) {
             classNames.push(className)
-         } else {
-            style[key] = value
+            continue
          }
       }
-   } else {
-      style = input
+
+      style[key] = value
    }
 
    let str = ''
