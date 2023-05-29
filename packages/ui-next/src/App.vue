@@ -265,7 +265,6 @@ window.onmessage = (event) => {
             :srcdoc="rendererSrcDoc"
             class="w-full h-full"
          ></iframe>
-
          <div
             v-else
             class="h-full w-full relative"
@@ -321,7 +320,7 @@ window.onmessage = (event) => {
             </div>
             <pre
                class="language-html overflow-auto h-full w-full"
-            ><code v-html="codeblockCode"></code></pre>
+            ><code class="language-html" v-html="codeblockCode"></code></pre>
          </div>
       </div>
    </div>
