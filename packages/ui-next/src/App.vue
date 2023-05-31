@@ -54,16 +54,16 @@ const i18n = reactive({
       preview: '预览',
       theCurrentNodeDoesNotSupportRendering: '当前节点不支持渲染',
       addFont: '添加字体',
-      addFontTitle: '添加字体',
+      addFontTitle: '字体',
       resourceAddress: '资源地址',
       continueAdding: '继续添加',
    },
    'en-US': {
       addFont: 'Add font',
-      addFontTitle: 'Add font',
+      addFontTitle: 'Font',
       resourceAddress: 'Resource address',
       continueAdding: 'Continue adding',
-      miniProgram: 'miniapp',
+      miniProgram: 'Miniapp',
       generate: 'Generate',
       pleaseSelect:
          '"Please select the scene elements first, then click the Generate button"',
@@ -83,7 +83,7 @@ const i18n = reactive({
       copySuccessBtnText: 'Copy successful!',
       notSelectedNodeLabel: 'Not selected',
       unknownIdLabel: 'Unknown',
-      preview: 'preview',
+      preview: 'Preview',
       theCurrentNodeDoesNotSupportRendering:
          'Rendering not supported on current node.',
    },
@@ -209,6 +209,15 @@ const codeblockCode = computed(() => {
    return highlightedCode
 })
 
+const fontScriptStr = computed(() => {
+   return settings.fontAssetUrlPlaceholders
+      .filter(Boolean)
+      .map((url) => {
+         return `<link rel="stylesheet" href="${url}">`
+      })
+      .join('\n')
+})
+
 const rendererSrcDoc = computed(() => {
    const tailwindScript = settings.enableTailwindcss
       ? getScriptStr({
@@ -222,12 +231,7 @@ const rendererSrcDoc = computed(() => {
    return `
     <html>
       <head>
-         ${settings.fontAssetUrlPlaceholders
-            .filter(Boolean)
-            .map((url) => {
-               return `<link rel="stylesheet" href="${url}">`
-            })
-            .join('\n')}
+         ${fontScriptStr.value}
          ${
             settings.enablePxConvert &&
             settings.pxConvertConfigs.pxConvertFormat === 'rem'
@@ -288,6 +292,7 @@ const handleExportBtnClick = () => {
             path: 'page/index.html',
             content: `
 <link href="styles/normalize.css" rel="stylesheet">
+${fontScriptStr.value}
 ${copiedCode.value}
             `,
          },
@@ -399,9 +404,16 @@ window.onmessage = (event) => {
                </div>
             </form>
          </div>
-         <label class="flex space-x-2 items-center mr-4">
-            <span class="text-gray-700">{{ usedI18n.preview }}</span>
-            <input v-model="settings.isPreview" type="checkbox" />
+         <label class="relative inline-flex items-center mr-5 cursor-pointer">
+            <input
+               type="checkbox"
+               v-model="settings.isPreview"
+               class="sr-only peer"
+            />
+            <div
+               class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"
+            ></div>
+            <span class="ml-2 text-sm font-medium">{{ usedI18n.preview }}</span>
          </label>
          <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -447,7 +459,7 @@ window.onmessage = (event) => {
          <!-- 配置渲染优先级最高 -->
          <div class="p-5" v-if="isSettingsPage">
             <div role="settings-page" class="grid grid-cols-1 gap-6">
-               <h3 class="text-gray-700 text-sm mt-2 -mb-1">
+               <h3 class="text-gray-700 text-sm mt-2 -mb-2">
                   {{ usedI18n.exportLabel }}
                </h3>
                <div class="block">
@@ -529,7 +541,73 @@ window.onmessage = (event) => {
                      </div>
                   </div>
                </div>
-               <h3 class="text-gray-700 text-sm mt-2 -mb-1">
+               <h3 class="text-gray-700 text-sm mt-2 -mb-2">
+                  {{ usedI18n.addFontTitle }}
+               </h3>
+               <div class="block">
+                  <div class="mt-2">
+                     <div>
+                        <label class="block">
+                           <span class="text-gray-700">{{
+                              usedI18n.resourceAddress
+                           }}</span>
+                           <input
+                              v-for="(
+                                 fontUrl, index
+                              ) in settings.fontAssetUrlPlaceholders"
+                              v-model="settings.fontAssetUrlPlaceholders[index]"
+                              type="text"
+                              class="mt-1 block w-full"
+                              placeholder="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap"
+                           />
+                        </label>
+                     </div>
+                  </div>
+                  <button
+                     @click="settings.fontAssetUrlPlaceholders.push('')"
+                     type="button"
+                     class="block mt-4 w-full items-center text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
+                  >
+                     <span class="inline-flex items-center px-4 py-2">
+                        <svg
+                           xmlns="http://www.w3.org/2000/svg"
+                           fill="none"
+                           viewBox="0 0 24 24"
+                           stroke-width="1.5"
+                           stroke="currentColor"
+                           class="w-4 h-4 mr-2 fill-current"
+                        >
+                           <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                           />
+                        </svg>
+                        {{ usedI18n.continueAdding }}
+                     </span>
+                  </button>
+               </div>
+               <!-- <div class="block">
+                  <button
+                     @click="showFontSettings = !showFontSettings"
+                     type="button"
+                     class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
+                  >
+                     <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        class="w-4 h-4 mr-2 fill-current"
+                     >
+                        <path
+                           d="M2.879 7.121A3 3 0 007.5 6.66a2.997 2.997 0 002.5 1.34 2.997 2.997 0 002.5-1.34 3 3 0 104.622-3.78l-.293-.293A2 2 0 0015.415 2H4.585a2 2 0 00-1.414.586l-.292.292a3 3 0 000 4.243zM3 9.032a4.507 4.507 0 004.5-.29A4.48 4.48 0 0010 9.5a4.48 4.48 0 002.5-.758 4.507 4.507 0 004.5.29V16.5h.25a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75v-3.5a.75.75 0 00-.75-.75h-2.5a.75.75 0 00-.75.75v3.5a.75.75 0 01-.75.75h-4.5a.75.75 0 010-1.5H3V9.032z"
+                        />
+                     </svg>
+
+                     {{ usedI18n.addFont }}
+                  </button>
+               </div> -->
+               <h3 class="text-gray-700 text-sm mt-2 -mb-2">
                   {{ usedI18n.uiSettingsLabel }}
                </h3>
                <label class="block">
@@ -549,32 +627,11 @@ window.onmessage = (event) => {
          >
             {{ usedI18n.theCurrentNodeDoesNotSupportRendering }}
          </div>
-         <div v-else-if="settings.isPreview" class="w-full h-full">
-            <iframe :srcdoc="rendererSrcDoc" class="w-full h-full"></iframe>
-            <div
-               class="inline-flex z-10 shadow-sm absolute bottom-3 right-2"
-               role="group-actions"
-            >
-               <button
-                  @click="showFontSettings = !showFontSettings"
-                  type="button"
-                  class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
-               >
-                  <svg
-                     xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0 0 20 20"
-                     fill="currentColor"
-                     class="w-4 h-4 mr-2 fill-current"
-                  >
-                     <path
-                        d="M2.879 7.121A3 3 0 007.5 6.66a2.997 2.997 0 002.5 1.34 2.997 2.997 0 002.5-1.34 3 3 0 104.622-3.78l-.293-.293A2 2 0 0015.415 2H4.585a2 2 0 00-1.414.586l-.292.292a3 3 0 000 4.243zM3 9.032a4.507 4.507 0 004.5-.29A4.48 4.48 0 0010 9.5a4.48 4.48 0 002.5-.758 4.507 4.507 0 004.5.29V16.5h.25a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75v-3.5a.75.75 0 00-.75-.75h-2.5a.75.75 0 00-.75.75v3.5a.75.75 0 01-.75.75h-4.5a.75.75 0 010-1.5H3V9.032z"
-                     />
-                  </svg>
-
-                  {{ usedI18n.addFont }}
-               </button>
-            </div>
-         </div>
+         <iframe
+            v-else-if="settings.isPreview"
+            :srcdoc="rendererSrcDoc"
+            class="w-full h-full"
+         ></iframe>
          <div v-else class="h-full w-full relative">
             <div
                class="inline-flex z-10 shadow-sm absolute bottom-3 right-2"
@@ -624,7 +681,8 @@ window.onmessage = (event) => {
             ><code class="language-html" v-html="codeblockCode"></code></pre>
          </div>
       </div>
-      <div
+      <!-- <div
+         role="modal"
          v-if="showFontSettings"
          class="absolute w-full h-full bg-white p-5 z-30"
       >
@@ -643,55 +701,9 @@ window.onmessage = (event) => {
                d="M6 18L18 6M6 6l12 12"
             />
          </svg>
-         <div class="grid grid-cols-1 gap-6">
-            <h3 class="text-gray-700 text-sm mt-1 -mb-1">
-               {{ usedI18n.addFontTitle }}
-            </h3>
-            <div class="block">
-               <div class="mt-2">
-                  <div>
-                     <label class="block">
-                        <span class="text-gray-700">{{
-                           usedI18n.resourceAddress
-                        }}</span>
-                        <input
-                           v-for="(
-                              fontUrl, index
-                           ) in settings.fontAssetUrlPlaceholders"
-                           v-model="settings.fontAssetUrlPlaceholders[index]"
-                           type="text"
-                           class="mt-1 block w-full"
-                           placeholder="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap"
-                        />
-                     </label>
-                  </div>
-               </div>
-               <button
-                  @click="settings.fontAssetUrlPlaceholders.push('')"
-                  type="button"
-                  class="block mt-4 w-full items-center text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
-               >
-                  <span class="inline-flex items-center px-4 py-2">
-                     <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-4 h-4 mr-2 fill-current"
-                     >
-                        <path
-                           stroke-linecap="round"
-                           stroke-linejoin="round"
-                           d="M12 4.5v15m7.5-7.5h-15"
-                        />
-                     </svg>
-                     {{ usedI18n.continueAdding }}
-                  </span>
-               </button>
-            </div>
-         </div>
-      </div>
+         <h3 class="text-gray-700 text-sm mt-1 -mb-2">
+         </h3>
+      </div> -->
    </div>
 </template>
 
