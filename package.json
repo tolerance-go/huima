@@ -9,6 +9,9 @@
       "build": "concurrently \"npm:build:*\"",
       "build:figma": "pnpm -r --parallel run build",
       "build:jssj": "pnpm -r --parallel run build:jssj",
+      "changeset": "changeset",
+      "changeset:publish": "pnpm build && echo 'skip changeset publish' && git push --follow-tags --no-verify",
+      "changeset:version": "changeset version",
       "clean": "git clean -dfX",
       "dev": "concurrently \"npm:dev:*\"",
       "dev:figma": "pnpm -r --parallel run dev",
@@ -17,6 +20,7 @@
       "prepare": "husky install"
    },
    "devDependencies": {
+      "@changesets/cli": "^2.26.0",
       "concurrently": "^8.0.1",
       "husky": "^8.0.3",
       "lint-staged": "^13.1.2",
