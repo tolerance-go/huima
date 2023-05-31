@@ -390,7 +390,7 @@ window.onmessage = (event) => {
                      v-model="settings.targetRuntimeEnv"
                   >
                      <option value="web">Web</option>
-                     <option value="miniapp">{{ usedI18n.miniProgram }}</option>
+                     <!-- <option value="miniapp">{{ usedI18n.miniProgram }}</option> -->
                   </select>
                   <select
                      class="w-1/4 min-w-max"
@@ -404,7 +404,7 @@ window.onmessage = (event) => {
                </div>
             </form>
          </div>
-         <label class="relative inline-flex items-center mr-5 cursor-pointer">
+         <label class="relative inline-flex items-center mr-4 cursor-pointer">
             <input
                type="checkbox"
                v-model="settings.isPreview"
