@@ -478,6 +478,10 @@ export type BaseRenderSettings = {
 
 export type BaseUISettings = {
    codeFontSize: number
+   viewportSize: {
+      width: number
+      height: number
+   }
 }
 
 export type Settings = BaseConvertSettings & BaseUISettings & BaseRenderSettings

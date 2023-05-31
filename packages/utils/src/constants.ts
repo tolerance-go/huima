@@ -1,8 +1,11 @@
 // 视口默认高度
-export const VIEWPORT_HEIGHT = 750
+export const DEFAULT_VIEWPORT_HEIGHT = 750
 
 // 视口默认宽度
-export const VIEWPORT_WIDTH = 450
+export const DEFAULT_VIEWPORT_WIDTH = 450
+
+// 最小的视口长度
+export const MIN_VIEWPORT_LENGTH = 300
 
 // 默认插件 UI 头部高度
 export const DEFAULT_UI_HEADER_HEIGHT = 53

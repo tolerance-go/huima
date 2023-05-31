@@ -9,7 +9,12 @@ import {
    UIAction,
    postActionToCode,
 } from '@huima/types-next'
-import { DEFAULT_BASE_FONT_SIZE, VIEWPORT_WIDTH } from '@huima/utils'
+import {
+   DEFAULT_BASE_FONT_SIZE,
+   DEFAULT_VIEWPORT_HEIGHT,
+   DEFAULT_VIEWPORT_WIDTH,
+   MIN_VIEWPORT_LENGTH,
+} from '@huima/utils'
 import ClipboardJS from 'clipboard'
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
@@ -107,6 +112,10 @@ const baseRenderSettings: BaseRenderSettings = {
 
 const baseUISettings: BaseUISettings = {
    codeFontSize: 16,
+   viewportSize: {
+      width: DEFAULT_VIEWPORT_WIDTH,
+      height: DEFAULT_VIEWPORT_HEIGHT,
+   },
 }
 
 const baseConvertSettings: BaseConvertSettings = {
@@ -116,41 +125,82 @@ const baseConvertSettings: BaseConvertSettings = {
    enablePxConvert: false,
    pxConvertConfigs: {
       pxConvertFormat: 'rem',
-      viewportWidth: VIEWPORT_WIDTH,
+      viewportWidth: DEFAULT_VIEWPORT_WIDTH,
       baseFontSize: DEFAULT_BASE_FONT_SIZE,
    },
 }
 
-const getDefaultSettings = (): Settings => {
-   return {
-      ...baseRenderSettings,
-      ...baseUISettings,
-      ...baseConvertSettings,
-      pxConvertConfigs: {
-         ...baseConvertSettings.pxConvertConfigs,
-      },
-      fontAssetUrlPlaceholders: [
-         ...baseRenderSettings.fontAssetUrlPlaceholders,
-      ],
-   }
+const defaultSettings = {
+   ...baseRenderSettings,
+   ...baseUISettings,
+   ...baseConvertSettings,
 }
 
-const settings = reactive(getDefaultSettings())
+const getDefaultSettings = (): Settings => {
+   return JSON.parse(JSON.stringify(defaultSettings))
+}
+
+const formSettings = reactive(getDefaultSettings())
+
+const settings = computed(() => {
+   const fonts = formSettings.fontAssetUrlPlaceholders.filter(Boolean)
+   return {
+      ...formSettings,
+      fontAssetUrlPlaceholders: fonts.length ? fonts : [''],
+      viewportSize: {
+         width: formSettings.viewportSize.width || DEFAULT_VIEWPORT_WIDTH,
+         height: formSettings.viewportSize.height || DEFAULT_VIEWPORT_HEIGHT,
+      },
+      pxConvertConfigs: {
+         ...formSettings.pxConvertConfigs,
+         viewportWidth:
+            formSettings.pxConvertConfigs.viewportWidth ||
+            DEFAULT_VIEWPORT_WIDTH,
+         baseFontSize:
+            formSettings.pxConvertConfigs.baseFontSize ||
+            DEFAULT_BASE_FONT_SIZE,
+      },
+   }
+})
 
 watch(
    () => settings,
    () => {
-      postActionToCode('updateSettings', JSON.parse(JSON.stringify(settings)))
+      postActionToCode(
+         'updateSettings',
+         JSON.parse(JSON.stringify(settings.value)),
+      )
    },
    {
       deep: true,
    },
 )
 
+watch(
+   () =>
+      [
+         settings.value.viewportSize.height,
+         settings.value.viewportSize.width,
+      ].join(''),
+   () => {
+      // 设置宽度和高度最小为 300
+      postActionToCode('resize', {
+         width: Math.max(
+            settings.value.viewportSize.width,
+            MIN_VIEWPORT_LENGTH,
+         ),
+         height: Math.max(
+            settings.value.viewportSize.height,
+            MIN_VIEWPORT_LENGTH,
+         ),
+      })
+   },
+)
+
 watchEffect(() => {
    document.documentElement.style.setProperty(
       '--code-font-size',
-      settings.codeFontSize + 'px',
+      settings.value.codeFontSize + 'px',
    )
 })
 
@@ -160,7 +210,7 @@ const isSettingsPage = ref(false)
 const rendererCode = computed(() => {
    if (!selectedNode.value) return ''
 
-   return renderStaticNode(settings, selectedNode.value)
+   return renderStaticNode(settings.value, selectedNode.value)
 })
 
 const imageFillMetaNodeMaps: Record<string, ImageFillMeta> = {}
@@ -169,27 +219,33 @@ const imageFillMetaNodeMaps: Record<string, ImageFillMeta> = {}
 const copiedCode = computed(() => {
    if (!selectedNode.value) return ''
 
-   const htmlCode = renderStaticNode(settings, selectedNode.value, undefined, {
-      convertBackgroundImage: (
-         url: string,
-         imageFillMeta: ImageFillMeta,
-         node: StaticNode,
-      ) => {
-         imageFillMetaNodeMaps[node.id] = imageFillMeta
+   const htmlCode = renderStaticNode(
+      settings.value,
+      selectedNode.value,
+      undefined,
+      {
+         convertBackgroundImage: (
+            url: string,
+            imageFillMeta: ImageFillMeta,
+            node: StaticNode,
+         ) => {
+            imageFillMetaNodeMaps[node.id] = imageFillMeta
 
-         return transformBlobUrlToAssetsUrl(
-            url,
-            `'assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
-               imageFillMeta.imageExtension
-            }'`,
-         )
+            return transformBlobUrlToAssetsUrl(
+               url,
+               `'assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
+                  imageFillMeta.imageExtension
+               }'`,
+            )
+         },
       },
-   })
+   )
 
-   const extension = settings.targetRuntimeDsl === 'jsx' ? 'babel' : 'html'
+   const extension =
+      settings.value.targetRuntimeDsl === 'jsx' ? 'babel' : 'html'
    // 使用 Prettier 格式化代码
    const formattedCode = prettier.format(
-      settings.targetRuntimeDsl === 'jsx'
+      settings.value.targetRuntimeDsl === 'jsx'
          ? convertHtmlToJsx(htmlCode)
          : htmlCode,
       {
@@ -202,7 +258,7 @@ const copiedCode = computed(() => {
 
 // 展示在代码区的 html 代码
 const codeblockCode = computed(() => {
-   const extension = settings.targetRuntimeDsl === 'jsx' ? 'jsx' : 'html'
+   const extension = settings.value.targetRuntimeDsl === 'jsx' ? 'jsx' : 'html'
 
    // 使用 Prism 进行高亮
    const highlightedCode = Prism.highlight(
@@ -215,7 +271,7 @@ const codeblockCode = computed(() => {
 })
 
 const fontScriptStr = computed(() => {
-   return settings.fontAssetUrlPlaceholders
+   return settings.value.fontAssetUrlPlaceholders
       .filter(Boolean)
       .map((url) => {
          return `<link rel="stylesheet" href="${url}">`
@@ -224,7 +280,7 @@ const fontScriptStr = computed(() => {
 })
 
 const rendererSrcDoc = computed(() => {
-   const tailwindScript = settings.enableTailwindcss
+   const tailwindScript = settings.value.enableTailwindcss
       ? getScriptStr({
            src: 'https://cdn.tailwindcss.com',
            onLoad: 'handleScriptLoad()',
@@ -238,12 +294,12 @@ const rendererSrcDoc = computed(() => {
       <head>
          ${fontScriptStr.value}
          ${
-            settings.enablePxConvert &&
-            settings.pxConvertConfigs.pxConvertFormat === 'rem'
+            settings.value.enablePxConvert &&
+            settings.value.pxConvertConfigs.pxConvertFormat === 'rem'
                ? `
             <style>
                html {
-                  font-size: ${settings.pxConvertConfigs.baseFontSize}px;
+                  font-size: ${settings.value.pxConvertConfigs.baseFontSize}px;
                }
             </style>
          `
@@ -262,7 +318,7 @@ const rendererSrcDoc = computed(() => {
       </head>
       <body>
          ${
-            settings.enableTailwindcss
+            settings.value.enableTailwindcss
                ? `<p id='tailwindcssLoading' style="text-align: center;">tailwindcss loading...</p>`
                : ''
          }
@@ -358,7 +414,7 @@ window.onmessage = (event) => {
          payload: { settings: _settings },
       } = event.data.pluginMessage as UIAction<'initSettings'>
 
-      Object.assign(settings, _settings)
+      Object.assign(formSettings, _settings)
 
       return
    }
@@ -384,7 +440,7 @@ window.onmessage = (event) => {
 <template>
    <div class="h-screen flex flex-col">
       <div
-         class="flex-none border-b px-4 py-2 flex justify-between items-center"
+         class="flex-none border-b px-4 py-2 flex justify-between items-center overflow-x-auto"
       >
          <div class="flex-auto">
             <form class="mb-0">
@@ -392,7 +448,7 @@ window.onmessage = (event) => {
                   <select
                      class="w-1/4 min-w-max"
                      placeholder="选择运行环境"
-                     v-model="settings.targetRuntimeEnv"
+                     v-model="formSettings.targetRuntimeEnv"
                   >
                      <option value="web">Web</option>
                      <!-- <option value="miniapp">{{ usedI18n.miniProgram }}</option> -->
@@ -400,7 +456,7 @@ window.onmessage = (event) => {
                   <select
                      class="w-1/4 min-w-max"
                      placeholder="DSL"
-                     v-model="settings.targetRuntimeDsl"
+                     v-model="formSettings.targetRuntimeDsl"
                   >
                      <option value="html">HTML</option>
                      <option value="jsx">JSX</option>
@@ -409,10 +465,10 @@ window.onmessage = (event) => {
                </div>
             </form>
          </div>
-         <label class="relative inline-flex items-center mr-4 cursor-pointer">
+         <label class="relative inline-flex items-center mx-4 cursor-pointer">
             <input
                type="checkbox"
-               v-model="settings.isPreview"
+               v-model="formSettings.isPreview"
                class="sr-only peer"
             />
             <div
@@ -426,7 +482,7 @@ window.onmessage = (event) => {
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="w-6 h-6 cursor-pointer"
+            class="w-6 h-6 cursor-pointer min-w-min"
             role="back"
             v-if="isSettingsPage"
             @click="isSettingsPage = false"
@@ -443,7 +499,7 @@ window.onmessage = (event) => {
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="w-6 h-6 cursor-pointer"
+            class="w-6 h-6 cursor-pointer min-w-min"
             role="settings"
             v-if="!isSettingsPage"
             @click="isSettingsPage = true"
@@ -472,7 +528,7 @@ window.onmessage = (event) => {
                      <div>
                         <label class="inline-flex items-center">
                            <input
-                              v-model="settings.enablePxConvert"
+                              v-model="formSettings.enablePxConvert"
                               type="checkbox"
                            />
                            <span class="ml-2">{{
@@ -484,14 +540,14 @@ window.onmessage = (event) => {
                </div>
                <div
                   class="grid grid-cols-1 gap-6 pl-6"
-                  v-if="settings.enablePxConvert"
+                  v-if="formSettings.enablePxConvert"
                >
                   <label class="block">
                      <span class="text-gray-700">{{
                         usedI18n.targetFormat
                      }}</span>
                      <select
-                        v-model="settings.pxConvertConfigs.pxConvertFormat"
+                        v-model="formSettings.pxConvertConfigs.pxConvertFormat"
                         class="mt-1 block w-full"
                      >
                         <option>rem</option>
@@ -499,14 +555,16 @@ window.onmessage = (event) => {
                      </select>
                   </label>
                   <label
-                     v-if="settings.pxConvertConfigs.pxConvertFormat === 'vw'"
+                     v-if="
+                        formSettings.pxConvertConfigs.pxConvertFormat === 'vw'
+                     "
                      class="block"
                   >
                      <span class="text-gray-700">{{
                         usedI18n.designDraftViewportWidth
                      }}</span>
                      <input
-                        v-model="settings.pxConvertConfigs.viewportWidth"
+                        v-model="formSettings.pxConvertConfigs.viewportWidth"
                         type="number"
                         class="mt-1 block w-full"
                         :placeholder="
@@ -516,14 +574,16 @@ window.onmessage = (event) => {
                      />
                   </label>
                   <label
-                     v-if="settings.pxConvertConfigs.pxConvertFormat === 'rem'"
+                     v-if="
+                        formSettings.pxConvertConfigs.pxConvertFormat === 'rem'
+                     "
                      class="block"
                   >
                      <span class="text-gray-700">{{
                         usedI18n.basicFontSize
                      }}</span>
                      <input
-                        v-model="settings.pxConvertConfigs.baseFontSize"
+                        v-model="formSettings.pxConvertConfigs.baseFontSize"
                         type="number"
                         class="mt-1 block w-full"
                         :placeholder="
@@ -538,7 +598,7 @@ window.onmessage = (event) => {
                      <div>
                         <label class="inline-flex items-center">
                            <input
-                              v-model="settings.enableTailwindcss"
+                              v-model="formSettings.enableTailwindcss"
                               type="checkbox"
                            />
                            <span class="ml-2">Enable Tailwindcss</span>
@@ -561,10 +621,12 @@ window.onmessage = (event) => {
                            class="flex items-center gap-2 mt-1"
                            v-for="(
                               fontUrl, index
-                           ) in settings.fontAssetUrlPlaceholders"
+                           ) in formSettings.fontAssetUrlPlaceholders"
                         >
                            <input
-                              v-model="settings.fontAssetUrlPlaceholders[index]"
+                              v-model="
+                                 formSettings.fontAssetUrlPlaceholders[index]
+                              "
                               type="text"
                               class="flex-auto block w-full"
                               placeholder="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap"
@@ -577,7 +639,7 @@ window.onmessage = (event) => {
                               stroke="currentColor"
                               class="w-4 h-4 cursor-pointer"
                               @click="
-                                 settings.fontAssetUrlPlaceholders.splice(
+                                 formSettings.fontAssetUrlPlaceholders.splice(
                                     index,
                                     1,
                                  )
@@ -593,7 +655,7 @@ window.onmessage = (event) => {
                      </div>
                   </div>
                   <button
-                     @click="settings.fontAssetUrlPlaceholders.push('')"
+                     @click="formSettings.fontAssetUrlPlaceholders.push('')"
                      type="button"
                      class="block mt-4 w-full items-center text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
                   >
@@ -642,11 +704,28 @@ window.onmessage = (event) => {
                <label class="block">
                   <span class="text-gray-700">Code font-size</span>
                   <input
-                     v-model="settings.codeFontSize"
+                     v-model="formSettings.codeFontSize"
                      type="number"
                      class="mt-1 block w-full"
                      :placeholder="baseUISettings.codeFontSize + ''"
                   />
+               </label>
+               <label class="block">
+                  <span class="text-gray-700">Viewport width and height</span>
+                  <div class="flex mt-1 gap-1">
+                     <input
+                        v-model="formSettings.viewportSize.width"
+                        type="number"
+                        class="block w-full"
+                        :placeholder="baseUISettings.viewportSize.width + ''"
+                     />
+                     <input
+                        v-model="formSettings.viewportSize.height"
+                        type="number"
+                        class="block w-full"
+                        :placeholder="baseUISettings.viewportSize.height + ''"
+                     />
+                  </div>
                </label>
             </div>
          </div>
@@ -657,7 +736,7 @@ window.onmessage = (event) => {
             {{ usedI18n.theCurrentNodeDoesNotSupportRendering }}
          </div>
          <iframe
-            v-else-if="settings.isPreview"
+            v-else-if="formSettings.isPreview"
             :srcdoc="rendererSrcDoc"
             class="w-full h-full"
          ></iframe>
