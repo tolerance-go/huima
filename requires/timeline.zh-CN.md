@@ -1,49 +1,10 @@
-<!-- pool
+Pool
 
--  支持启用图片压缩
--  支持启用图片转 base64
--  支持外部组件引用的多文件导出
--  支持 react 语法转换
--  支持 vue 语法转换
--  支持小程序原生语法转换
--  refactor: nodeInfo 新增 relativePosition，始终为相对父节点的坐标
--  refactor: textContent 移动到 children 中，联合类型增加一项 string
--  refactor: DomNodeTree 增加节点类型
--  refactor: 新增 BaseNodeTree 及到 DomNodeTree 的转换
+-  feat: 支持旋转属性转换
+-  fix: 支持圆形的 swap 定位错误问题
 
-next
+2023 年 05 月 31 日
 
--  选中节点，直接复制代码，预览只在开发阶段，用户使用阶段不需要预览，如果出现设计实现偏差这就是 bug
--  交互改为，选中节点，直接预览代码，可以选择“运行环境”和“框架 DSL”，从单个节点支持开始，追求的是渲染结果和设计稿的 UI 一致性
-
-2023/5/18
-
--  fix: 解决复制代码时，图片 url 依赖内部环境的问题
--  feat: 支持导出代码，图片资源同步下载
-
-2023/5/19
-
--  feat: 支持调整视口尺寸
--  feat: 支持启用 px 单位转换
--  fix: 修复 playground 全局样式污染问题
-
-2023/5/20
-
--  feat: 支持启用 CSS 转 Tailwindcss
-
-2023/5/22
-
--  feat: 支持界面提示语国际化
--  feat: 支持背景渐变色转换
--  feat: 支持 Mask 导出 SVG
--  feat: 支持节点旋转渲染
--  feat: 支持文本多段样式转换
--  feat: 支持文本有序，无序列表
-
-not released
-
-2023/5/23
-
--  feat: 支持 effects 样式转换 -->
-
--  支持非正圆的 Ellipse，显示的定位问题
+-  feat: 支持 JSX 语法转换
+-  feat: 支持在线字体资源
+-  feat: 支持 UI 相关配置和中英文切换
