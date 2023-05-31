@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { ImageFillMeta, StaticNode, UIAction } from '@huima/types-next'
+import {
+   BaseConvertSettings,
+   BaseRenderSettings,
+   BaseUISettings,
+   ImageFillMeta,
+   StaticNode,
+   Settings,
+   UIAction,
+   postActionToCode,
+} from '@huima/types-next'
 import { DEFAULT_BASE_FONT_SIZE, VIEWPORT_WIDTH } from '@huima/utils'
 import ClipboardJS from 'clipboard'
 import { saveAs } from 'file-saver'
@@ -7,11 +16,10 @@ import JSZip from 'jszip'
 import parsers from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
 import Prism from 'prismjs'
-import { computed, reactive, ref, watchEffect } from 'vue'
+import { computed, reactive, ref, watch, watchEffect } from 'vue'
 import { normalizeCss } from './constants/normalize.css'
 import { isJsDesign } from './env'
 import { renderStaticNode } from './renderStaticNode'
-import { BaseConvertSettings } from './types'
 import {
    convertFigmaIdToHtmlId,
    convertHtmlIdToFigmaId,
@@ -92,17 +100,12 @@ const selectedNode = ref<StaticNode | null>(null)
 
 const notSupport = ref(false)
 
-const isPreview = ref(false)
-
-const baseRenderSettings: {
-   fontAssetUrlPlaceholders: string[]
-} = {
+const baseRenderSettings: BaseRenderSettings = {
    fontAssetUrlPlaceholders: [''],
+   isPreview: false,
 }
 
-const baseUISettings: {
-   codeFontSize: number
-} = {
+const baseUISettings: BaseUISettings = {
    codeFontSize: 16,
 }
 
@@ -118,7 +121,7 @@ const baseConvertSettings: BaseConvertSettings = {
    },
 }
 
-const getDefaultSettings = () => {
+const getDefaultSettings = (): Settings => {
    return {
       ...baseRenderSettings,
       ...baseUISettings,
@@ -133,6 +136,16 @@ const getDefaultSettings = () => {
 }
 
 const settings = reactive(getDefaultSettings())
+
+watch(
+   () => settings,
+   () => {
+      postActionToCode('updateSettings', JSON.parse(JSON.stringify(settings)))
+   },
+   {
+      deep: true,
+   },
+)
 
 watchEffect(() => {
    document.documentElement.style.setProperty(
@@ -323,11 +336,22 @@ clipboard.on('error', function (e) {
 })
 
 window.onmessage = (event) => {
+   console.log('ui: get message from code.js', event)
    if (process.env.WEBPACK_SERVE) {
       return
    }
 
    if (!event.data.pluginMessage) return
+
+   if (event.data.pluginMessage.type === 'initSettings') {
+      const {
+         payload: { settings: _settings },
+      } = event.data.pluginMessage as UIAction<'initSettings'>
+
+      Object.assign(settings, _settings)
+
+      return
+   }
 
    if (event.data.pluginMessage.type === 'selectedNode') {
       const {
@@ -377,7 +401,7 @@ window.onmessage = (event) => {
          </div>
          <label class="flex space-x-2 items-center mr-4">
             <span class="text-gray-700">{{ usedI18n.preview }}</span>
-            <input v-model="isPreview" type="checkbox" />
+            <input v-model="settings.isPreview" type="checkbox" />
          </label>
          <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -525,7 +549,7 @@ window.onmessage = (event) => {
          >
             {{ usedI18n.theCurrentNodeDoesNotSupportRendering }}
          </div>
-         <div v-else-if="isPreview" class="w-full h-full">
+         <div v-else-if="settings.isPreview" class="w-full h-full">
             <iframe :srcdoc="rendererSrcDoc" class="w-full h-full"></iframe>
             <div
                class="inline-flex z-10 shadow-sm absolute bottom-3 right-2"
