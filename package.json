@@ -7,8 +7,8 @@
    "main": "code.js",
    "scripts": {
       "build": "concurrently \"npm:build:*\"",
-      "build:figma": "pnpm -r --parallel run build",
-      "build:jssj": "pnpm -r --parallel run build:jssj",
+      "build:figma": "pnpm -r run build",
+      "build:jssj": "pnpm -r run build:jssj",
       "changeset": "changeset",
       "changeset:publish": "pnpm build && echo 'skip changeset publish' && git push --follow-tags --no-verify",
       "changeset:version": "changeset version",
