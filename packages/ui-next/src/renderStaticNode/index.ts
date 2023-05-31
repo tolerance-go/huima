@@ -24,7 +24,10 @@ export const renderStaticNode = (
    hooks?: RenderNodeHooks,
 ): string => {
    if (settings.targetRuntimeEnv === 'web') {
-      if (settings.targetRuntimeDsl === 'html') {
+      if (
+         settings.targetRuntimeDsl === 'html' ||
+         settings.targetRuntimeDsl === 'jsx'
+      ) {
          console.log(node)
 
          if (node.type === 'text') {

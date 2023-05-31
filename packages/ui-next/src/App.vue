@@ -13,7 +13,8 @@ import { DEFAULT_BASE_FONT_SIZE, VIEWPORT_WIDTH } from '@huima/utils'
 import ClipboardJS from 'clipboard'
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
-import parsers from 'prettier/parser-html'
+import parserHtml from 'prettier/parser-html'
+import parserBabel from 'prettier/parser-babel'
 import prettier from 'prettier/standalone'
 import Prism from 'prismjs'
 import { computed, reactive, ref, watch, watchEffect } from 'vue'
@@ -27,8 +28,7 @@ import {
 import { extractAndSplitBgImgUrls } from './utils/extractAndSplitBgImgUrls'
 import { getScriptStr } from './utils/getScriptStr'
 import { transformBlobUrlToAssetsUrl } from './utils/transformBlobUrlToAssetsUrl'
-
-const showFontSettings = ref(false)
+import { convertHtmlToJsx } from './utils/convertHtmlToJsx'
 
 const i18n = reactive({
    'zh-CN': {
@@ -169,28 +169,32 @@ const imageFillMetaNodeMaps: Record<string, ImageFillMeta> = {}
 const copiedCode = computed(() => {
    if (!selectedNode.value) return ''
 
-   const extension = 'html'
+   const htmlCode = renderStaticNode(settings, selectedNode.value, undefined, {
+      convertBackgroundImage: (
+         url: string,
+         imageFillMeta: ImageFillMeta,
+         node: StaticNode,
+      ) => {
+         imageFillMetaNodeMaps[node.id] = imageFillMeta
+
+         return transformBlobUrlToAssetsUrl(
+            url,
+            `'assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
+               imageFillMeta.imageExtension
+            }'`,
+         )
+      },
+   })
+
+   const extension = settings.targetRuntimeDsl === 'jsx' ? 'babel' : 'html'
    // 使用 Prettier 格式化代码
    const formattedCode = prettier.format(
-      renderStaticNode(settings, selectedNode.value, undefined, {
-         convertBackgroundImage: (
-            url: string,
-            imageFillMeta: ImageFillMeta,
-            node: StaticNode,
-         ) => {
-            imageFillMetaNodeMaps[node.id] = imageFillMeta
-
-            return transformBlobUrlToAssetsUrl(
-               url,
-               `'assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
-                  imageFillMeta.imageExtension
-               }'`,
-            )
-         },
-      }),
+      settings.targetRuntimeDsl === 'jsx'
+         ? convertHtmlToJsx(htmlCode)
+         : htmlCode,
       {
          parser: extension,
-         plugins: [parsers],
+         plugins: [parserHtml, parserBabel],
       },
    )
    return formattedCode
@@ -198,7 +202,8 @@ const copiedCode = computed(() => {
 
 // 展示在代码区的 html 代码
 const codeblockCode = computed(() => {
-   const extension = 'html'
+   const extension = settings.targetRuntimeDsl === 'jsx' ? 'jsx' : 'html'
+
    // 使用 Prism 进行高亮
    const highlightedCode = Prism.highlight(
       copiedCode.value,
@@ -398,8 +403,8 @@ window.onmessage = (event) => {
                      v-model="settings.targetRuntimeDsl"
                   >
                      <option value="html">HTML</option>
-                     <option value="react">React</option>
-                     <option value="vue">Vue</option>
+                     <option value="jsx">JSX</option>
+                     <!-- <option value="vue">Vue</option> -->
                   </select>
                </div>
             </form>

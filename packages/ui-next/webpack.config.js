@@ -66,6 +66,7 @@ module.exports = (env, argv) => {
       externals: {
          'prettier/standalone': 'prettier',
          'prettier/parser-html': 'prettierPlugins.html',
+         'prettier/parser-babel': 'prettierPlugins.babel',
          prismjs: 'Prism',
          clipboard: 'ClipboardJS',
          jszip: 'JSZip',
