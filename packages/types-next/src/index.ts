@@ -477,6 +477,7 @@ export type BaseRenderSettings = {
 }
 
 export type BaseUISettings = {
+   language: 'zh-CN' | 'en-US'
    codeFontSize: number
    viewportSize: {
       width: number

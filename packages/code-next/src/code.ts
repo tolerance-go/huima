@@ -12,7 +12,6 @@ declare global {
 }
 
 ;(async () => {
-   //====================== 工具函数 * 开始 ======================
    const postActionToUI = <T extends keyof UIEvents>(
       type: T,
       payload: UIEvents[T],
@@ -22,11 +21,9 @@ declare global {
          payload,
       })
    }
-   //====================== 工具函数 * 结束 ======================
 
    const settingsKey = '_settings'
 
-   //====================== UI 事件处理 * 开始 ======================
    pluginApi.ui.onmessage = async (message) => {
       console.log('get action from ui', message)
       if (message.type === 'resize') {
@@ -61,17 +58,6 @@ declare global {
       | Settings
       | undefined
 
-   pluginApi.on('run', async () => {
-      console.log('run settings', settings)
-      if (settings) {
-         postActionToUI('initSettings', {
-            settings,
-         })
-      }
-   })
-
-   //====================== UI 事件处理 * 结束 ======================
-
    /**
     * settings 是 ui 中处理后的，所以类似 viewportSize.height 一定会存在值
     * 所以这里就不做 max 的判断
@@ -86,4 +72,16 @@ declare global {
          DEFAULT_UI_HEADER_HEIGHT,
       width: settings?.viewportSize.width || DEFAULT_VIEWPORT_WIDTH,
    })
+
+   if (settings) {
+      postActionToUI('initSettings', {
+         settings,
+      })
+   }
+
+   if (pluginApi.currentPage.selection.length) {
+      postActionToUI('selectedNode', {
+         staticNode: await createStaticNode(pluginApi.currentPage.selection[0]),
+      })
+   }
 })()

@@ -47,14 +47,13 @@ const i18n = reactive({
       enablePxUnitConversion: '启用 px 单位转换',
       exportLabel: '导出',
       uiSettingsLabel: '界面',
+      sysSettingsLabel: '系统',
       viewportHeightLabel: '视口高度（不包括头部）',
       viewportWidthLabel: '视口宽度',
       basicsLabel: '基础',
       configureLabel: '设置',
       copyBtnText: '复制',
       copySuccessBtnText: '复制成功!',
-      notSelectedNodeLabel: '未选择',
-      unknownIdLabel: '未知',
       miniProgram: '小程序',
       preview: '预览',
       theCurrentNodeDoesNotSupportRendering: '当前节点不支持渲染',
@@ -62,8 +61,17 @@ const i18n = reactive({
       addFontTitle: '字体',
       resourceAddress: '资源地址',
       continueAdding: '继续添加',
+      tailwindcssLabel: '启用 Tailwindcss',
+      codeFontSizeLabel: '代码字体大小',
+      viewportSizeLabel: '视口宽高',
+      languageLabel: '语言',
    },
    'en-US': {
+      languageLabel: 'Language',
+      viewportSizeLabel: 'Viewport width and height',
+      codeFontSizeLabel: 'Code font-size',
+      tailwindcssLabel: 'Enable Tailwindcss',
+      sysSettingsLabel: 'system',
       addFont: 'Add font',
       addFontTitle: 'Font',
       resourceAddress: 'Resource address',
@@ -86,8 +94,6 @@ const i18n = reactive({
       configureLabel: 'Settings',
       copyBtnText: 'Copy',
       copySuccessBtnText: 'Copy successful!',
-      notSelectedNodeLabel: 'Not selected',
-      unknownIdLabel: 'Unknown',
       preview: 'Preview',
       theCurrentNodeDoesNotSupportRendering:
          'Rendering not supported on current node.',
@@ -95,10 +101,11 @@ const i18n = reactive({
 })
 
 const usedI18n = computed(() => {
-   if (isJsDesign) {
-      return i18n['zh-CN']
-   }
-   return i18n['en-US']
+   // if (isJsDesign) {
+   //    return i18n['zh-CN']
+   // }
+   // return i18n['en-US']
+   return i18n[settings.value.language]
 })
 
 const selectedNode = ref<StaticNode | null>(null)
@@ -111,6 +118,7 @@ const baseRenderSettings: BaseRenderSettings = {
 }
 
 const baseUISettings: BaseUISettings = {
+   language: isJsDesign ? 'zh-CN' : 'en-US',
    codeFontSize: 16,
    viewportSize: {
       width: DEFAULT_VIEWPORT_WIDTH,
@@ -385,15 +393,16 @@ const clipboard = new ClipboardJS('#copyBtn', {
    },
 })
 
-const copyBtnText = ref(usedI18n.value.copyBtnText)
+// 高优先级的复制按钮文案
+const highCopyBtnText = ref()
 
 clipboard.on('success', function (e) {
    console.log('Text copied to clipboard')
    e.clearSelection()
-   copyBtnText.value = usedI18n.value.copySuccessBtnText
+   highCopyBtnText.value = usedI18n.value.copySuccessBtnText
 
    setTimeout(() => {
-      copyBtnText.value = usedI18n.value.copyBtnText
+      highCopyBtnText.value = null
    }, 1500)
 })
 
@@ -519,12 +528,15 @@ window.onmessage = (event) => {
       <div class="flex-auto overflow-auto">
          <!-- 配置渲染优先级最高 -->
          <div class="p-5" v-if="isSettingsPage">
-            <div role="settings-page" class="grid grid-cols-1 gap-6">
-               <h3 class="text-gray-700 text-sm mt-2 -mb-2">
+            <h2 class="text-lg">
+               {{ usedI18n.configureLabel }}
+            </h2>
+            <div role="settings-page" class="grid grid-cols-1 gap-6 mt-3">
+               <h3 class="text-gray-700 text-sm mt-4 -mb-1">
                   {{ usedI18n.exportLabel }}
                </h3>
                <div class="block">
-                  <div class="mt-2">
+                  <div class="">
                      <div>
                         <label class="inline-flex items-center">
                            <input
@@ -594,23 +606,25 @@ window.onmessage = (event) => {
                   </label>
                </div>
                <div class="block">
-                  <div class="mt-2">
+                  <div class="">
                      <div>
                         <label class="inline-flex items-center">
                            <input
                               v-model="formSettings.enableTailwindcss"
                               type="checkbox"
                            />
-                           <span class="ml-2">Enable Tailwindcss</span>
+                           <span class="ml-2">{{
+                              usedI18n.tailwindcssLabel
+                           }}</span>
                         </label>
                      </div>
                   </div>
                </div>
-               <h3 class="text-gray-700 text-sm mt-2 -mb-2">
+               <h3 class="text-gray-700 text-sm mt-4 -mb-1">
                   {{ usedI18n.addFontTitle }}
                </h3>
                <div class="block">
-                  <div class="mt-2">
+                  <div class="">
                      <div>
                         <label class="block">
                            <span class="text-gray-700">{{
@@ -698,11 +712,13 @@ window.onmessage = (event) => {
                      {{ usedI18n.addFont }}
                   </button>
                </div> -->
-               <h3 class="text-gray-700 text-sm mt-2 -mb-2">
+               <h3 class="text-gray-700 text-sm mt-4 -mb-1">
                   {{ usedI18n.uiSettingsLabel }}
                </h3>
                <label class="block">
-                  <span class="text-gray-700">Code font-size</span>
+                  <span class="text-gray-700">{{
+                     usedI18n.codeFontSizeLabel
+                  }}</span>
                   <input
                      v-model="formSettings.codeFontSize"
                      type="number"
@@ -711,7 +727,9 @@ window.onmessage = (event) => {
                   />
                </label>
                <label class="block">
-                  <span class="text-gray-700">Viewport width and height</span>
+                  <span class="text-gray-700">{{
+                     usedI18n.viewportSizeLabel
+                  }}</span>
                   <div class="flex mt-1 gap-1">
                      <input
                         v-model="formSettings.viewportSize.width"
@@ -726,6 +744,22 @@ window.onmessage = (event) => {
                         :placeholder="baseUISettings.viewportSize.height + ''"
                      />
                   </div>
+               </label>
+
+               <h3 class="text-gray-700 text-sm mt-4 -mb-1">
+                  {{ usedI18n.sysSettingsLabel }}
+               </h3>
+               <label class="block">
+                  <span class="text-gray-700">{{
+                     usedI18n.languageLabel
+                  }}</span>
+                  <select
+                     v-model="formSettings.language"
+                     class="mt-1 block w-full"
+                  >
+                     <option value="zh-CN">中文</option>
+                     <option value="en-US">English</option>
+                  </select>
                </label>
             </div>
          </div>
@@ -761,7 +795,7 @@ window.onmessage = (event) => {
                         d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM112 192H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
                      />
                   </svg>
-                  {{ copyBtnText }}
+                  {{ highCopyBtnText ?? usedI18n.copyBtnText }}
                </button>
                <button
                   @click="handleExportBtnClick"
@@ -809,7 +843,7 @@ window.onmessage = (event) => {
                d="M6 18L18 6M6 6l12 12"
             />
          </svg>
-         <h3 class="text-gray-700 text-sm mt-1 -mb-2">
+         <h3 class="text-gray-700 text-sm mt-1">
          </h3>
       </div> -->
    </div>
