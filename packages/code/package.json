@@ -1,11 +1,16 @@
 {
-   "name": "code",
+   "name": "@huima/code",
    "version": "1.0.0",
    "description": "",
    "keywords": [],
    "license": "ISC",
    "author": "",
-   "scripts": {},
+   "scripts": {
+      "build": "webpack",
+      "build:jssj": "IS_JSSJ=true webpack",
+      "dev": "npm run build -- --watch",
+      "dev:jssj": "IS_JSSJ=true npm run build -- --watch"
+   },
    "dependencies": {
       "@huima/utils": "workspace:^",
       "buffer": "^6.0.3",

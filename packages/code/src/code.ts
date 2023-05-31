@@ -1,65 +1,87 @@
-import { UIEvents } from '@huima/types'
+import { CodeAction, Settings, UIEvents } from '@huima/types'
 import {
    DEFAULT_UI_HEADER_HEIGHT,
-   VIEWPORT_HEIGHT,
-   VIEWPORT_WIDTH,
+   DEFAULT_VIEWPORT_HEIGHT,
+   DEFAULT_VIEWPORT_WIDTH,
 } from '@huima/utils'
-import { createNodeTree } from './createNodeTree'
+import { createStaticNode } from './createStaticNode'
 import { pluginApi } from './pluginApi'
 
 declare global {
    const jsDesign: typeof figma
 }
 
-//====================== 工具函数 * 开始 ======================
+;(async () => {
+   const postActionToUI = <T extends keyof UIEvents>(
+      type: T,
+      payload: UIEvents[T],
+   ) => {
+      pluginApi.ui.postMessage({
+         type,
+         payload,
+      })
+   }
 
-const postActionToUI = <T extends keyof UIEvents>(
-   type: T,
-   payload: UIEvents[T],
-) => {
-   pluginApi.ui.postMessage({
-      type,
-      payload,
-   })
-}
+   const settingsKey = '_settings'
 
-//====================== 工具函数 * 结束 ======================
+   pluginApi.ui.onmessage = async (message) => {
+      console.log('get action from ui', message)
+      if (message.type === 'resize') {
+         const { payload } = message as CodeAction<'resize'>
+         pluginApi.ui.resize(
+            payload.width,
+            payload.height + DEFAULT_UI_HEADER_HEIGHT,
+         )
+         return
+      }
 
-//====================== UI 事件处理 * 开始 ======================
-pluginApi.ui.onmessage = async (message) => {
-   if (message.type === 'genCode') {
-      if (pluginApi.currentPage.selection.length === 1) {
-         const [node] = pluginApi.currentPage.selection
-
-         const nodeTree = await createNodeTree(node)
-
-         postActionToUI('startGen', {
-            name: node.name,
-            id: node.id,
-            nodeTree,
-         })
+      if (message.type === 'updateSettings') {
+         const { payload } = message as CodeAction<'updateSettings'>
+         pluginApi.clientStorage.setAsync(settingsKey, payload)
+         return
       }
    }
 
-   if (message.type === 'resize') {
-      pluginApi.ui.resize(message.payload.width, message.payload.height)
-   }
-}
+   pluginApi.on('selectionchange', async () => {
+      if (pluginApi.currentPage.selection.length) {
+         const [node] = pluginApi.currentPage.selection
 
-pluginApi.on('selectionchange', () => {
-   if (pluginApi.currentPage.selection.length === 1) {
-      const [node] = pluginApi.currentPage.selection
+         console.log('selectionchange', node)
 
-      postActionToUI('selectionchange', {
-         name: node.name,
-         id: node.id,
+         postActionToUI('selectedNode', {
+            staticNode: await createStaticNode(node),
+         })
+      }
+   })
+
+   const settings = (await pluginApi.clientStorage.getAsync(settingsKey)) as
+      | Settings
+      | undefined
+
+   /**
+    * settings 是 ui 中处理后的，所以类似 viewportSize.height 一定会存在值
+    * 所以这里就不做 max 的判断
+    * width: Math.max(
+         settings?.viewportSize.width || DEFAULT_VIEWPORT_WIDTH,
+         MIN_VIEWPORT_LENGTH,
+      ),
+    */
+   pluginApi.showUI(__html__, {
+      height:
+         (settings?.viewportSize.height || DEFAULT_VIEWPORT_HEIGHT) +
+         DEFAULT_UI_HEADER_HEIGHT,
+      width: settings?.viewportSize.width || DEFAULT_VIEWPORT_WIDTH,
+   })
+
+   if (settings) {
+      postActionToUI('initSettings', {
+         settings,
       })
    }
-})
 
-//====================== UI 事件处理 * 结束 ======================
-
-pluginApi.showUI(__html__, {
-   height: VIEWPORT_HEIGHT + DEFAULT_UI_HEADER_HEIGHT,
-   width: VIEWPORT_WIDTH,
-})
+   if (pluginApi.currentPage.selection.length) {
+      postActionToUI('selectedNode', {
+         staticNode: await createStaticNode(pluginApi.currentPage.selection[0]),
+      })
+   }
+})()

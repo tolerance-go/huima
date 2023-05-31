@@ -1,15 +1,14 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
-const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin')
+const { VueLoaderPlugin } = require('vue-loader')
+const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin')
 
 module.exports = (env, argv) => {
    return {
       mode:
          env.WEBPACK_WATCH || env.WEBPACK_SERVE ? 'development' : 'production',
       devServer: {
-         compress: true,
          port: 9000,
          hot: true, // 启用热更新
       },
@@ -21,6 +20,27 @@ module.exports = (env, argv) => {
       module: {
          rules: [
             {
+               test: /\.txt$/,
+               loader: 'raw-loader',
+               exclude: /node_modules/,
+            },
+            {
+               test: /\.ts$/,
+               loader: 'ts-loader',
+               options: {
+                  appendTsSuffixTo: [/\.vue$/], // 处理在vue文件中使用ts
+                  // vue 模板中的  $props, $data 和 $options 变量在 ts 的上下文中没有被使用会报错，
+                  // 所以 ts 的 lint 功能关闭，转而未来使用 eslint
+                  // transpileOnly 不能开启，否则会导致 vue 文件中的 ts 类型检测失效
+               },
+               exclude: /node_modules/,
+            },
+            {
+               test: /\.vue$/,
+               loader: 'vue-loader', // 添加对 .vue 文件的支持
+               exclude: /node_modules/,
+            },
+            {
                test: /\.css$/,
                use: [
                   'style-loader',
@@ -30,19 +50,14 @@ module.exports = (env, argv) => {
                ],
                exclude: /node_modules/,
             },
-            // Converts TypeScript code to JavaScript
-            {
-               test: /\.tsx?$/,
-               use: 'ts-loader',
-               exclude: /node_modules/,
-            },
          ],
       },
       // Webpack tries these extensions for you if you omit the extension like "import './file'"
       resolve: {
-         extensions: ['.ts', '.js'],
+         extensions: ['.ts', '.js', '.vue', '.txt'],
       },
       output: {
+         publicPath: '/',
          filename: '[name].js',
          path: process.env.IS_JSSJ
             ? path.resolve(__dirname, '../../jssj-plugin')
@@ -51,13 +66,17 @@ module.exports = (env, argv) => {
       externals: {
          'prettier/standalone': 'prettier',
          'prettier/parser-html': 'prettierPlugins.html',
+         'prettier/parser-babel': 'prettierPlugins.babel',
          prismjs: 'Prism',
          clipboard: 'ClipboardJS',
-         vue: 'Vue',
          jszip: 'JSZip',
       },
+      cache: false,
       plugins: [
+         new VueLoaderPlugin(),
          new HtmlWebpackPlugin({
+            // watch 阶段如果不设置为 false，会导致每次保存都会是老的 ui.html
+            cache: env.WEBPACK_WATCH ? false : true,
             template: 'src/ui.html',
             filename: env.WEBPACK_SERVE ? 'index.html' : 'ui.html',
             inject: 'body',
@@ -65,11 +84,8 @@ module.exports = (env, argv) => {
                IS_JSSJ: process.env.IS_JSSJ,
             },
          }),
-         new ScriptExtHtmlWebpackPlugin({
-            inline: /ui.js$/, // 将匹配这个正则表达式的文件内联到 HTML 中
-         }),
-         new ExtraWatchWebpackPlugin({
-            files: ['src/**/*.ts'], // 监听 script 重新生成 html
+         new HtmlInlineScriptPlugin({
+            scriptMatchPattern: [/ui.js$/],
          }),
          new webpack.DefinePlugin({
             'process.env.WEBPACK_SERVE': JSON.stringify(
