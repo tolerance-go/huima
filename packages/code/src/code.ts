@@ -1,5 +1,6 @@
 import { CodeAction, Settings, UIEvents } from '@huima/types'
 import {
+   DEFAULT_UI_FOOTER_HEIGHT,
    DEFAULT_UI_HEADER_HEIGHT,
    DEFAULT_VIEWPORT_HEIGHT,
    DEFAULT_VIEWPORT_WIDTH,
@@ -30,7 +31,9 @@ declare global {
          const { payload } = message as CodeAction<'resize'>
          pluginApi.ui.resize(
             payload.width,
-            payload.height + DEFAULT_UI_HEADER_HEIGHT,
+            payload.height +
+               DEFAULT_UI_HEADER_HEIGHT +
+               DEFAULT_UI_FOOTER_HEIGHT,
          )
          return
       }
@@ -69,7 +72,8 @@ declare global {
    pluginApi.showUI(__html__, {
       height:
          (settings?.viewportSize.height || DEFAULT_VIEWPORT_HEIGHT) +
-         DEFAULT_UI_HEADER_HEIGHT,
+         DEFAULT_UI_HEADER_HEIGHT +
+         DEFAULT_UI_FOOTER_HEIGHT,
       width: settings?.viewportSize.width || DEFAULT_VIEWPORT_WIDTH,
    })
 

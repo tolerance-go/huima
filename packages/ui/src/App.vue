@@ -14,6 +14,8 @@ import {
    DEFAULT_VIEWPORT_HEIGHT,
    DEFAULT_VIEWPORT_WIDTH,
    MIN_VIEWPORT_LENGTH,
+   DEFAULT_UI_HEADER_HEIGHT,
+   DEFAULT_UI_FOOTER_HEIGHT,
 } from '@huima/utils'
 import ClipboardJS from 'clipboard'
 import { saveAs } from 'file-saver'
@@ -48,8 +50,7 @@ const i18n = reactive({
       exportLabel: '导出',
       uiSettingsLabel: '界面',
       sysSettingsLabel: '系统',
-      viewportHeightLabel: '视口高度（不包括头部）',
-      viewportWidthLabel: '视口宽度',
+      viewportHeightLabel: '视口高度',
       basicsLabel: '基础',
       configureLabel: '设置',
       copyBtnText: '复制',
@@ -63,13 +64,17 @@ const i18n = reactive({
       continueAdding: '继续添加',
       tailwindcssLabel: '启用 Tailwindcss',
       codeFontSizeLabel: '代码字体大小',
-      viewportSizeLabel: '视口宽高',
+      viewportWidthLabel: '视口宽高',
       languageLabel: '语言',
+      targetRuntimeEnvLabel: '运行环境',
+      targetRuntimeDslLabel: 'DSL',
+      publishBtnText: '发布',
    },
    'en-US': {
       languageLabel: 'Language',
-      viewportSizeLabel: 'Viewport width and height',
       codeFontSizeLabel: 'Code font-size',
+      targetRuntimeEnvLabel: 'Runtime Env',
+      targetRuntimeDslLabel: 'DSL',
       tailwindcssLabel: 'Enable Tailwindcss',
       sysSettingsLabel: 'System',
       addFont: 'Add font',
@@ -88,11 +93,12 @@ const i18n = reactive({
       enablePxUnitConversion: 'Enable px unit conversion',
       exportLabel: 'Export',
       uiSettingsLabel: 'UI',
-      viewportHeightLabel: 'Viewport height (excluding header)',
+      viewportHeightLabel: 'Viewport height',
       viewportWidthLabel: 'Viewport width',
       basicsLabel: 'Basics',
       configureLabel: 'Settings',
       copyBtnText: 'Copy',
+      publishBtnText: 'Publish',
       copySuccessBtnText: 'Copy successful!',
       preview: 'Preview',
       theCurrentNodeDoesNotSupportRendering:
@@ -449,32 +455,10 @@ window.onmessage = (event) => {
 <template>
    <div class="h-screen flex flex-col">
       <div
-         class="flex-none border-b px-4 py-2 flex justify-between items-center overflow-x-auto"
+         :style="{ height: DEFAULT_UI_HEADER_HEIGHT + 'px' }"
+         class="flex-none px-2 border-b flex justify-between items-center overflow-x-auto"
       >
-         <div class="flex-auto">
-            <form class="mb-0">
-               <div class="flex space-x-1">
-                  <select
-                     class="w-1/4 min-w-max"
-                     placeholder="选择运行环境"
-                     v-model="formSettings.targetRuntimeEnv"
-                  >
-                     <option value="web">Web</option>
-                     <!-- <option value="miniapp">{{ usedI18n.miniProgram }}</option> -->
-                  </select>
-                  <select
-                     class="w-1/4 min-w-max"
-                     placeholder="DSL"
-                     v-model="formSettings.targetRuntimeDsl"
-                  >
-                     <option value="html">HTML</option>
-                     <option value="jsx">JSX</option>
-                     <!-- <option value="vue">Vue</option> -->
-                  </select>
-               </div>
-            </form>
-         </div>
-         <label class="relative inline-flex items-center mx-4 cursor-pointer">
+         <label class="relative inline-flex items-center cursor-pointer">
             <input
                type="checkbox"
                v-model="formSettings.isPreview"
@@ -535,6 +519,35 @@ window.onmessage = (event) => {
                <h3 class="text-gray-500 text-sm mt-4">
                   {{ usedI18n.exportLabel }}
                </h3>
+               <div class="block">
+                  <div class="w-full flex gap-1">
+                     <label class="block flex-1">
+                        <span class="text-gray-700">{{
+                           usedI18n.targetRuntimeEnvLabel
+                        }}</span>
+                        <select
+                           class="mt-1 w-full"
+                           v-model="formSettings.targetRuntimeEnv"
+                        >
+                           <option value="web">Web</option>
+                           <!-- <option value="miniapp">{{ usedI18n.miniProgram }}</option> -->
+                        </select>
+                     </label>
+                     <label class="block flex-1">
+                        <span class="text-gray-700">{{
+                           usedI18n.targetRuntimeDslLabel
+                        }}</span>
+                        <select
+                           class="mt-1 w-full"
+                           v-model="formSettings.targetRuntimeDsl"
+                        >
+                           <option value="html">HTML</option>
+                           <option value="jsx">JSX</option>
+                           <!-- <option value="vue">Vue</option> -->
+                        </select>
+                     </label>
+                  </div>
+               </div>
                <div class="block">
                   <div class="">
                      <div>
@@ -692,26 +705,6 @@ window.onmessage = (event) => {
                      </span>
                   </button>
                </div>
-               <!-- <div class="block">
-                  <button
-                     @click="showFontSettings = !showFontSettings"
-                     type="button"
-                     class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
-                  >
-                     <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        class="w-4 h-4 mr-2 fill-current"
-                     >
-                        <path
-                           d="M2.879 7.121A3 3 0 007.5 6.66a2.997 2.997 0 002.5 1.34 2.997 2.997 0 002.5-1.34 3 3 0 104.622-3.78l-.293-.293A2 2 0 0015.415 2H4.585a2 2 0 00-1.414.586l-.292.292a3 3 0 000 4.243zM3 9.032a4.507 4.507 0 004.5-.29A4.48 4.48 0 0010 9.5a4.48 4.48 0 002.5-.758 4.507 4.507 0 004.5.29V16.5h.25a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75v-3.5a.75.75 0 00-.75-.75h-2.5a.75.75 0 00-.75.75v3.5a.75.75 0 01-.75.75h-4.5a.75.75 0 010-1.5H3V9.032z"
-                        />
-                     </svg>
-
-                     {{ usedI18n.addFont }}
-                  </button>
-               </div> -->
                <h3 class="text-gray-500 text-sm mt-4">
                   {{ usedI18n.uiSettingsLabel }}
                </h3>
@@ -726,25 +719,34 @@ window.onmessage = (event) => {
                      :placeholder="baseUISettings.codeFontSize + ''"
                   />
                </label>
-               <label class="block">
-                  <span class="text-gray-700">{{
-                     usedI18n.viewportSizeLabel
-                  }}</span>
-                  <div class="flex mt-1 gap-1">
-                     <input
-                        v-model="formSettings.viewportSize.width"
-                        type="number"
-                        class="block w-full"
-                        :placeholder="baseUISettings.viewportSize.width + ''"
-                     />
-                     <input
-                        v-model="formSettings.viewportSize.height"
-                        type="number"
-                        class="block w-full"
-                        :placeholder="baseUISettings.viewportSize.height + ''"
-                     />
+               <div class="block">
+                  <div class="w-full flex gap-1">
+                     <label class="block flex-1">
+                        <span class="text-gray-700">{{
+                           usedI18n.viewportWidthLabel
+                        }}</span>
+                        <input
+                           v-model="formSettings.viewportSize.width"
+                           type="number"
+                           class="mt-1 block w-full"
+                           :placeholder="baseUISettings.viewportSize.width + ''"
+                        />
+                     </label>
+                     <label class="block flex-1">
+                        <span class="text-gray-700">{{
+                           usedI18n.viewportHeightLabel
+                        }}</span>
+                        <input
+                           v-model="formSettings.viewportSize.height"
+                           type="number"
+                           class="mt-1 block w-full"
+                           :placeholder="
+                              baseUISettings.viewportSize.height + ''
+                           "
+                        />
+                     </label>
                   </div>
-               </label>
+               </div>
 
                <h3 class="text-gray-500 text-sm mt-4">
                   {{ usedI18n.sysSettingsLabel }}
@@ -775,10 +777,46 @@ window.onmessage = (event) => {
             class="w-full h-full"
          ></iframe>
          <div v-else class="h-full w-full relative">
-            <div
-               class="inline-flex z-10 shadow-sm absolute bottom-3 right-2"
-               role="group-actions"
+            <pre
+               class="language-html overflow-auto h-full w-full"
+            ><code class="language-html" v-html="codeblockCode"></code></pre>
+         </div>
+      </div>
+      <div
+         :style="{
+            height: DEFAULT_UI_FOOTER_HEIGHT + 'px',
+         }"
+         class="flex-none px-2 border-t flex justify-between items-center overflow-x-auto"
+      >
+         <div
+            class="flex w-full items-center justify-end"
+            v-if="settings.isPreview"
+         >
+            <button
+               type="button"
+               class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
             >
+               <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  class="w-4 h-4 mr-2 fill-current"
+               >
+                  <path
+                     fill-rule="evenodd"
+                     d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z"
+                     clip-rule="evenodd"
+                  />
+               </svg>
+
+               {{ usedI18n.publishBtnText }}
+            </button>
+         </div>
+         <div
+            class="flex w-full items-center justify-end"
+            v-if="!settings.isPreview"
+         >
+            <div class="inline-flex z-10" role="group-actions">
                <button
                   id="copyBtn"
                   type="button"
@@ -803,49 +841,23 @@ window.onmessage = (event) => {
                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
                >
                   <svg
-                     aria-hidden="true"
-                     class="w-4 h-4 mr-2 fill-current"
-                     fill="currentColor"
-                     viewBox="0 0 20 20"
                      xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 24 24"
+                     fill="currentColor"
+                     class="w-4 h-4 mr-2 fill-current"
                   >
                      <path
                         fill-rule="evenodd"
-                        d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z"
+                        d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.25 6a.75.75 0 00-1.5 0v4.94l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V9.75z"
                         clip-rule="evenodd"
-                     ></path>
+                     />
                   </svg>
+
                   {{ usedI18n.exportBtnText }}
                </button>
             </div>
-            <pre
-               class="language-html overflow-auto h-full w-full"
-            ><code class="language-html" v-html="codeblockCode"></code></pre>
          </div>
       </div>
-      <!-- <div
-         role="modal"
-         v-if="showFontSettings"
-         class="absolute w-full h-full bg-white p-5 z-30"
-      >
-         <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6 absolute top-5 right-5 cursor-pointer"
-            @click="showFontSettings = false"
-         >
-            <path
-               stroke-linecap="round"
-               stroke-linejoin="round"
-               d="M6 18L18 6M6 6l12 12"
-            />
-         </svg>
-         <h3 class="text-gray-700 text-sm mt-1">
-         </h3>
-      </div> -->
    </div>
 </template>
 
