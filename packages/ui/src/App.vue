@@ -532,7 +532,7 @@ window.onmessage = (event) => {
                {{ usedI18n.configureLabel }}
             </h2>
             <div role="settings-page" class="grid grid-cols-1 gap-6 mt-3">
-               <h3 class="text-gray-700 text-sm mt-4 -mb-1">
+               <h3 class="text-gray-500 text-sm mt-4">
                   {{ usedI18n.exportLabel }}
                </h3>
                <div class="block">
@@ -620,7 +620,7 @@ window.onmessage = (event) => {
                      </div>
                   </div>
                </div>
-               <h3 class="text-gray-700 text-sm mt-4 -mb-1">
+               <h3 class="text-gray-500 text-sm mt-4">
                   {{ usedI18n.addFontTitle }}
                </h3>
                <div class="block">
@@ -712,7 +712,7 @@ window.onmessage = (event) => {
                      {{ usedI18n.addFont }}
                   </button>
                </div> -->
-               <h3 class="text-gray-700 text-sm mt-4 -mb-1">
+               <h3 class="text-gray-500 text-sm mt-4">
                   {{ usedI18n.uiSettingsLabel }}
                </h3>
                <label class="block">
@@ -746,7 +746,7 @@ window.onmessage = (event) => {
                   </div>
                </label>
 
-               <h3 class="text-gray-700 text-sm mt-4 -mb-1">
+               <h3 class="text-gray-500 text-sm mt-4">
                   {{ usedI18n.sysSettingsLabel }}
                </h3>
                <label class="block">
