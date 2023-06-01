@@ -6,11 +6,11 @@
    "license": "ISC",
    "author": "",
    "scripts": {
-      "build": "webpack",
-      "build:jssj": "IS_JSSJ=true webpack",
+      "build:plugin": "webpack",
+      "build:plugin:jssj": "IS_JSSJ=true webpack",
       "coverage": "vitest run --coverage",
-      "dev": "npm run build -- --watch",
-      "dev:jssj": "IS_JSSJ=true npm run build -- --watch",
+      "dev:plugin": "npm run build -- --watch",
+      "dev:plugin:jssj": "IS_JSSJ=true npm run build -- --watch",
       "serve": "webpack serve --mode development",
       "test": "vitest"
    },
