@@ -1,5 +1,6 @@
 import { StaticContainerNode, StaticTextNode } from '@huima/types'
 import { getBaseStaticNodeData } from './getBaseStaticNodeData'
+import { isJsDesign } from './pluginApi'
 
 export const createStaticTextNode = (
    node: TextNode,
@@ -26,23 +27,29 @@ export const createStaticTextNode = (
       layoutPositioning,
    } = node
 
-   // const charItems = node.characters.split(/(\n|(?!\n).)/g).filter(Boolean)
-   // const charInfos = getCharPositions(charItems)
-
-   const styledTextSegments = node.getStyledTextSegments([
-      'fontSize',
-      'fontWeight',
-      'fontName',
-      'fills',
-      'textCase',
-      'lineHeight',
-      'letterSpacing',
-      'textDecoration',
-   ])
+   const styledTextSegments = node.getStyledTextSegments(
+      [
+         'fontSize',
+         'fontName',
+         'fills',
+         'textCase',
+         'lineHeight',
+         'letterSpacing',
+         'textDecoration',
+      ].concat(isJsDesign ? [] : ['fontWeight']) as (keyof Omit<
+         StyledTextSegment,
+         'characters' | 'start' | 'end'
+      >)[],
+   )
 
    return {
       ...getBaseStaticNodeData(node),
-      styledTextSegments,
+      styledTextSegments: isJsDesign
+         ? styledTextSegments.map((item) => ({
+              ...item,
+              fontWeight: 400,
+           }))
+         : styledTextSegments,
       parent: parentNode,
       x,
       y,
