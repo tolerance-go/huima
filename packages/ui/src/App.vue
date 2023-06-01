@@ -71,7 +71,7 @@ const i18n = reactive({
       viewportSizeLabel: 'Viewport width and height',
       codeFontSizeLabel: 'Code font-size',
       tailwindcssLabel: 'Enable Tailwindcss',
-      sysSettingsLabel: 'system',
+      sysSettingsLabel: 'System',
       addFont: 'Add font',
       addFontTitle: 'Font',
       resourceAddress: 'Resource address',
