@@ -1,5 +1,5 @@
 es/
-lib/
+cjs/
 dist/
 coverage/
 /docs/.vitepress/cache/
