@@ -1,7 +1,11 @@
 import { isJsDesign, pluginApi } from './pluginApi'
 
+declare global {
+   const jsDesign: typeof figma
+}
+
 const [node] = pluginApi.currentPage.selection
-const styledTextSegments = node.getStyledTextSegments(
+const styledTextSegments = (node as TextNode).getStyledTextSegments(
    [
       'fontSize',
       'fontName',
