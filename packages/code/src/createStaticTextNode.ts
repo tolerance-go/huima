@@ -42,6 +42,8 @@ export const createStaticTextNode = (
       >)[],
    )
 
+   console.log('styledTextSegments', styledTextSegments)
+
    return {
       ...getBaseStaticNodeData(node),
       styledTextSegments: isJsDesign

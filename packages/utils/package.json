@@ -9,9 +9,9 @@
    "typings": "src/index.ts",
    "scripts": {
       "build:plugin": "tsc -p tsconfig.json",
-      "build:plugin:jssj": "npm run build",
-      "dev:plugin": "npm run build -- --watch",
-      "dev:plugin:jssj": "npm run dev",
+      "build:plugin:jssj": "IS_JSSJ=true npm run build:plugin",
+      "dev:plugin": "npm run build:plugin -- --watch",
+      "dev:plugin:jssj": "IS_JSSJ=true npm run build:plugin:jssj -- --watch",
       "test": "vitest"
    },
    "devDependencies": {

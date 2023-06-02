@@ -68,7 +68,7 @@ const i18n = reactive({
       languageLabel: '语言',
       targetRuntimeEnvLabel: '运行环境',
       targetRuntimeDslLabel: 'DSL',
-      publishBtnText: '发布',
+      uploadBtnText: '上传',
    },
    'en-US': {
       languageLabel: 'Language',
@@ -98,7 +98,7 @@ const i18n = reactive({
       basicsLabel: 'Basics',
       configureLabel: 'Settings',
       copyBtnText: 'Copy',
-      publishBtnText: 'Publish',
+      uploadBtnText: 'Upload',
       copySuccessBtnText: 'Copy successful!',
       preview: 'Preview',
       theCurrentNodeDoesNotSupportRendering:
@@ -809,7 +809,7 @@ window.onmessage = (event) => {
                   />
                </svg>
 
-               {{ usedI18n.publishBtnText }}
+               {{ usedI18n.uploadBtnText }}
             </button>
          </div>
          <div

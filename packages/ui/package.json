@@ -9,8 +9,8 @@
       "build:plugin": "webpack",
       "build:plugin:jssj": "IS_JSSJ=true webpack",
       "coverage": "vitest run --coverage",
-      "dev:plugin": "npm run build -- --watch",
-      "dev:plugin:jssj": "IS_JSSJ=true npm run build -- --watch",
+      "dev:plugin": "npm run build:plugin -- --watch",
+      "dev:plugin:jssj": "IS_JSSJ=true npm run build:plugin -- --watch",
       "serve": "webpack serve --mode development",
       "test": "vitest"
    },
