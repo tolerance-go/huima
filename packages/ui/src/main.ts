@@ -1,4 +1,4 @@
-import { UIAction } from '@huima/types'
+import { UIAction } from '@huima/common'
 import ClipboardJS from 'clipboard'
 import {
    copiedCode,

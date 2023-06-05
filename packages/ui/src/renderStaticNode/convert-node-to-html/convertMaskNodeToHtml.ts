@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticGroupNode } from '@huima/types'
+import { StaticContainerNode, StaticGroupNode } from '@huima/common'
 import { Buffer } from 'buffer'
 import { BaseConvertSettings } from '../../types'
 import { convertCssObjectToString } from '../convertCssObjectToString'

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { postActionToCode } from '@huima/types'
+import { postActionToCode } from '@huima/common'
 import {
    DEFAULT_UI_FOOTER_HEIGHT,
    DEFAULT_UI_HEADER_HEIGHT,
    MIN_VIEWPORT_LENGTH,
-} from '@huima/utils'
+} from '@huima/common'
 import axios from 'axios'
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'

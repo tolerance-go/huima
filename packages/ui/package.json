@@ -15,8 +15,7 @@
       "test": "vitest"
    },
    "dependencies": {
-      "@huima/types": "workspace:^",
-      "@huima/utils": "workspace:^",
+      "@huima/common": "workspace:^",
       "axios": "^1.4.0",
       "buffer": "^6.0.3",
       "clipboard": "^2.0.11",

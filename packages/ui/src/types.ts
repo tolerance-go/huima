@@ -1,5 +1,5 @@
-import { ImageFillMeta, StaticNode } from '@huima/types'
-export type { BaseConvertSettings, DSLType, RuntimeEnv } from '@huima/types'
+import { ImageFillMeta, StaticNode } from '@huima/common'
+export type { BaseConvertSettings, DSLType, RuntimeEnv } from '@huima/common'
 
 export type RenderNodeHooks = {
    convertBackgroundImage?: (

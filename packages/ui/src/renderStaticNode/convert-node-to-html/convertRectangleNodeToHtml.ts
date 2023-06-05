@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticRectangleNode } from '@huima/types'
+import { StaticContainerNode, StaticRectangleNode } from '@huima/common'
 import { BaseConvertSettings, RenderNodeHooks } from '../../types'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'
 import { convertFillsToCss } from '../convertFillsToCss'

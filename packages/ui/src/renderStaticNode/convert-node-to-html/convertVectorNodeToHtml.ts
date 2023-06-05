@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticVectorNode } from '@huima/types'
+import { StaticContainerNode, StaticVectorNode } from '@huima/common'
 import { Buffer } from 'buffer'
 import { BaseConvertSettings } from '../../types'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'

@@ -1,4 +1,4 @@
-import { ImageFillMeta } from '@huima/types'
+import { ImageFillMeta } from '@huima/common'
 import { pluginApi } from './pluginApi'
 
 /**

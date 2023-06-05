@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticFrameNode } from '@huima/types'
+import { StaticContainerNode, StaticFrameNode } from '@huima/common'
 import { renderStaticNode } from '..'
 import { BaseConvertSettings, RenderNodeHooks } from '../../types'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'

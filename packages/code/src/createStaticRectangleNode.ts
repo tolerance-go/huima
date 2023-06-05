@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticRectangleNode } from '@huima/types'
+import { StaticContainerNode, StaticRectangleNode } from '@huima/common'
 import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 import { getCornerRadius } from './getCornerRadius'
 import { getImageFillMeta } from './getImageFillMeta'

@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticGroupNode } from '@huima/types'
+import { StaticContainerNode, StaticGroupNode } from '@huima/common'
 import { renderStaticNode } from '..'
 import { BaseConvertSettings, RenderNodeHooks } from '../../types'
 import { convertEffectsToFilter } from '../convertEffectsToFilter'

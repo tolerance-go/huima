@@ -9,6 +9,10 @@ import {
 const handleGetToken = () => {
    window.open('http://localhost:8002/')
 }
+
+const handleTokenBlur = () => {
+   // formSettings.token =
+}
 </script>
 <template>
    <h2 class="text-lg">
@@ -31,6 +35,7 @@ const handleGetToken = () => {
             v-model="formSettings.token"
             type="password"
             class="mt-1 block w-full"
+            @blur="handleTokenBlur"
          />
       </label>
       <h3 class="text-gray-500 text-sm mt-4">

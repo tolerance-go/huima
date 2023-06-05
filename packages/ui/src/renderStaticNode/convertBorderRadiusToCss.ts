@@ -1,4 +1,4 @@
-import { CornerRadiusType } from '@huima/types'
+import { CornerRadiusType } from '@huima/common'
 
 export const convertBorderRadiusToCss = (cornerRadius: CornerRadiusType) => {
    if (typeof cornerRadius === 'number') {

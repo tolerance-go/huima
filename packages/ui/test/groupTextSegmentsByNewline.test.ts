@@ -1,4 +1,4 @@
-import { StyledTextSegmentType } from '@huima/types'
+import { StyledTextSegmentType } from '@huima/common'
 import { expect, test } from 'vitest'
 import { groupTextSegmentsByNewline } from '../src/renderStaticNode/groupTextSegmentsByNewline'
 

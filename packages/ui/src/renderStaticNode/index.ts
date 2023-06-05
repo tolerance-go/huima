@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticNode } from '@huima/types'
+import { StaticContainerNode, StaticNode } from '@huima/common'
 import { BaseConvertSettings, RenderNodeHooks } from '../types'
 import { convertBooleanOperationNodeToHtml } from './convert-node-to-html/convertBooleanOperationNodeToHtml'
 import { convertComponentNodeToHtml } from './convert-node-to-html/convertComponentNodeToHtml'

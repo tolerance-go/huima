@@ -12,13 +12,13 @@
       "dev:jssj": "IS_JSSJ=true npm run build:jssj -- --watch"
    },
    "dependencies": {
-      "@huima/utils": "workspace:^",
+      "@huima/common": "workspace:^",
       "buffer": "^6.0.3",
       "lodash.merge": "^4.6.2"
    },
    "devDependencies": {
       "@figma/plugin-typings": "^1.64.0",
-      "@huima/types": "workspace:^",
+      "@huima/common": "workspace:^",
       "@jsdesigndeveloper/plugin-typings": "^1.0.11",
       "@types/lodash.merge": "^4.6.7",
       "ts-loader": "^9.4.2",

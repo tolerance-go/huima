@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticGroupNode, StaticNode } from '@huima/types'
+import { StaticContainerNode, StaticGroupNode, StaticNode } from '@huima/common'
 import { BaseConvertSettings } from '../types'
 import { computePositionCss } from './computePositionCss'
 

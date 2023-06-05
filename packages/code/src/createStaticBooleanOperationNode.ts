@@ -1,4 +1,4 @@
-import { StaticBooleanOperationNode, StaticContainerNode } from '@huima/types'
+import { StaticBooleanOperationNode, StaticContainerNode } from '@huima/common'
 import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 
 export const createStaticBooleanOperationNode = async (
