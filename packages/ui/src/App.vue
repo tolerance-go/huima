@@ -5,11 +5,11 @@ import {
    DEFAULT_UI_HEADER_HEIGHT,
    MIN_VIEWPORT_LENGTH,
 } from '@huima/common'
-import axios from 'axios'
+import request from './utils/request'
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
 import { watch, watchEffect } from 'vue'
-import SettingsComponent from './Settings.vue'
+import SettingsComponent from './views/Settings.vue'
 import { normalizeCss } from './constants/normalize.css'
 import {
    codeblockCode,
@@ -17,17 +17,19 @@ import {
    fontScriptStr,
    formSettings,
    highCopyBtnText,
+   htmlCode,
    imageFillMetaNodeMaps,
    isSettingsPage,
    notSupport,
    rendererSrcDoc,
    selectedNode,
    settings,
-   showAlert,
    usedI18n,
 } from './states/app'
 import { convertHtmlIdToFigmaId } from './utils/convertFigmaIdToHtmlId'
 import { extractAndSplitBgImgUrls } from './utils/extractAndSplitBgImgUrls'
+import Alert from './views/Alert.vue'
+import debounce from 'lodash.debounce'
 
 watch(
    () => settings,
@@ -120,18 +122,9 @@ ${copiedCode.value}
    )
 }
 
-let timer: number | null = null
-
-const handleUploadClick = () => {
+const handleUploadClick = debounce(async () => {
    if (!settings.value.token) {
-      showAlert.value = true
-      if (timer !== null) {
-         clearTimeout(timer)
-         timer = null
-      }
-      timer = setTimeout(() => {
-         showAlert.value = false
-      }, 3000)
+      window.alert2('没有发现 token，请在设置页面配置')
       return
    }
 
@@ -139,24 +132,22 @@ const handleUploadClick = () => {
       return
    }
 
-   axios.post('/api/projects/upload', {
-      token: settings.value.token,
-      data: {
+   try {
+      await request.post('/api/projects/upload', {
+         token: settings.value.token,
          name: selectedNode.value.name,
-         html: copiedCode.value,
-      },
-   })
-}
+         html: htmlCode.value,
+      })
+      window.alert2('上传成功')
+   } catch {
+      // ignore
+   }
+}, 300)
 </script>
 
 <template>
    <div class="h-screen flex flex-col">
-      <div
-         v-if="showAlert"
-         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black py-2 px-4 text-white max-w-fit"
-      >
-         没有发现 token，请在设置页面配置
-      </div>
+      <Alert />
       <div
          :style="{ height: DEFAULT_UI_HEADER_HEIGHT + 'px' }"
          class="flex-none px-2 border-b flex justify-between items-center overflow-x-auto"

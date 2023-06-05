@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = (env, argv) => {
    return {
@@ -73,6 +74,7 @@ module.exports = (env, argv) => {
       },
       cache: false,
       plugins: [
+         new Dotenv(),
          new VueLoaderPlugin(),
          new HtmlWebpackPlugin({
             // watch 阶段如果不设置为 false，会导致每次保存都会是老的 ui.html

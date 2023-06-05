@@ -28,7 +28,6 @@
       "src/**/*.d.ts",
       "src/**/*.tsx",
       "src/**/*.vue",
-      "test/**/*.ts",
-      "../utils/src/isCircle.ts"
+      "test/**/*.ts"
    ]
 }

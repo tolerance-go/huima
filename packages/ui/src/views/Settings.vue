@@ -5,13 +5,20 @@ import {
    formSettings,
    usedI18n,
 } from '../states/app'
+import { encryptPassword } from '@huima-admin/encrypt-password'
 
 const handleGetToken = () => {
    window.open('http://localhost:8002/')
 }
 
 const handleTokenBlur = () => {
-   // formSettings.token =
+   // 加密 token
+   if (formSettings.token) {
+      formSettings.token = encryptPassword(
+         formSettings.token,
+         process.env.PLUGIN_PASSWORD_SYMMETRIC_KEY!,
+      )
+   }
 }
 </script>
 <template>

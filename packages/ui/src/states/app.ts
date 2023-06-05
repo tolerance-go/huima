@@ -111,8 +111,6 @@ export const isSettingsPage = ref(false)
 
 export const selectedNode = ref<StaticNode | null>(null)
 
-export const showAlert = ref(false)
-
 export const notSupport = ref(false)
 
 export const baseRenderSettings: BaseRenderSettings = {
@@ -186,39 +184,38 @@ export const rendererCode = computed(() => {
 
 export const imageFillMetaNodeMaps: Record<string, ImageFillMeta> = {}
 
+export const htmlCode = computed(() => {
+   if (!selectedNode.value) return ''
+
+   return renderStaticNode(settings.value, selectedNode.value, undefined, {
+      convertBackgroundImage: (
+         url: string,
+         imageFillMeta: ImageFillMeta,
+         node: StaticNode,
+      ) => {
+         imageFillMetaNodeMaps[node.id] = imageFillMeta
+
+         return transformBlobUrlToAssetsUrl(
+            url,
+            `'assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
+               imageFillMeta.imageExtension
+            }'`,
+         )
+      },
+   })
+})
+
 // 复制到剪贴板的 html 代码
 export const copiedCode = computed(() => {
    if (!selectedNode.value) return ''
-
-   const htmlCode = renderStaticNode(
-      settings.value,
-      selectedNode.value,
-      undefined,
-      {
-         convertBackgroundImage: (
-            url: string,
-            imageFillMeta: ImageFillMeta,
-            node: StaticNode,
-         ) => {
-            imageFillMetaNodeMaps[node.id] = imageFillMeta
-
-            return transformBlobUrlToAssetsUrl(
-               url,
-               `'assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
-                  imageFillMeta.imageExtension
-               }'`,
-            )
-         },
-      },
-   )
 
    const extension =
       settings.value.targetRuntimeDsl === 'jsx' ? 'babel' : 'html'
    // 使用 Prettier 格式化代码
    const formattedCode = prettier.format(
       settings.value.targetRuntimeDsl === 'jsx'
-         ? convertHtmlToJsx(htmlCode)
-         : htmlCode,
+         ? convertHtmlToJsx(htmlCode.value)
+         : htmlCode.value,
       {
          parser: extension,
          plugins: [parserHtml, parserBabel],
