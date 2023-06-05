@@ -471,9 +471,14 @@ export type BaseConvertSettings = {
    }
 }
 
+export type BaseUploadSettings = {
+   token?: string
+}
+
 export type BaseRenderSettings = {
    fontAssetUrlPlaceholders: string[]
    isPreview: boolean
+   token?: string
 }
 
 export type BaseUISettings = {
@@ -485,7 +490,10 @@ export type BaseUISettings = {
    }
 }
 
-export type Settings = BaseConvertSettings & BaseUISettings & BaseRenderSettings
+export type Settings = BaseConvertSettings &
+   BaseUISettings &
+   BaseRenderSettings &
+   BaseUploadSettings
 
 export type UIEvents = {
    selectedNode: {

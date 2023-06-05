@@ -8,10 +8,10 @@
    "main": "dist/index.js",
    "typings": "src/index.ts",
    "scripts": {
-      "build:plugin": "tsc -p tsconfig.json",
-      "build:plugin:jssj": "IS_JSSJ=true npm run build:plugin",
-      "dev:plugin": "npm run build:plugin -- --watch",
-      "dev:plugin:jssj": "IS_JSSJ=true npm run build:plugin:jssj -- --watch",
+      "build": "tsc -p tsconfig.json",
+      "build:jssj": "IS_JSSJ=true npm run build",
+      "dev": "npm run build -- --watch",
+      "dev:jssj": "IS_JSSJ=true npm run build:jssj -- --watch",
       "test": "vitest"
    },
    "devDependencies": {

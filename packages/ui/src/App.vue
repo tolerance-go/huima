@@ -1,181 +1,33 @@
 <script setup lang="ts">
+import { postActionToCode } from '@huima/types'
 import {
-   BaseConvertSettings,
-   BaseRenderSettings,
-   BaseUISettings,
-   ImageFillMeta,
-   StaticNode,
-   Settings,
-   UIAction,
-   postActionToCode,
-} from '@huima/types'
-import {
-   DEFAULT_BASE_FONT_SIZE,
-   DEFAULT_VIEWPORT_HEIGHT,
-   DEFAULT_VIEWPORT_WIDTH,
-   MIN_VIEWPORT_LENGTH,
-   DEFAULT_UI_HEADER_HEIGHT,
    DEFAULT_UI_FOOTER_HEIGHT,
+   DEFAULT_UI_HEADER_HEIGHT,
+   MIN_VIEWPORT_LENGTH,
 } from '@huima/utils'
-import ClipboardJS from 'clipboard'
+import axios from 'axios'
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
-import parserHtml from 'prettier/parser-html'
-import parserBabel from 'prettier/parser-babel'
-import prettier from 'prettier/standalone'
-import Prism from 'prismjs'
-import { computed, reactive, ref, watch, watchEffect } from 'vue'
+import { watch, watchEffect } from 'vue'
+import SettingsComponent from './Settings.vue'
 import { normalizeCss } from './constants/normalize.css'
-import { isJsDesign } from './env'
-import { renderStaticNode } from './renderStaticNode'
 import {
-   convertFigmaIdToHtmlId,
-   convertHtmlIdToFigmaId,
-} from './utils/convertFigmaIdToHtmlId'
+   codeblockCode,
+   copiedCode,
+   fontScriptStr,
+   formSettings,
+   highCopyBtnText,
+   imageFillMetaNodeMaps,
+   isSettingsPage,
+   notSupport,
+   rendererSrcDoc,
+   selectedNode,
+   settings,
+   showAlert,
+   usedI18n,
+} from './states/app'
+import { convertHtmlIdToFigmaId } from './utils/convertFigmaIdToHtmlId'
 import { extractAndSplitBgImgUrls } from './utils/extractAndSplitBgImgUrls'
-import { getScriptStr } from './utils/getScriptStr'
-import { transformBlobUrlToAssetsUrl } from './utils/transformBlobUrlToAssetsUrl'
-import { convertHtmlToJsx } from './utils/convertHtmlToJsx'
-
-const i18n = reactive({
-   'zh-CN': {
-      generate: '生成',
-      pleaseSelect: '“请选择场景元素后，点击生成按钮”',
-      exportBtnText: '导出',
-      enableCssToTailwindCss: '启用 CSS 转 Tailwindcss',
-      basicFontSize: '基础字号大小',
-      designDraftViewportWidth: '设计稿视口宽度',
-      targetFormat: '目标格式',
-      enablePxUnitConversion: '启用 px 单位转换',
-      exportLabel: '导出',
-      uiSettingsLabel: '界面',
-      sysSettingsLabel: '系统',
-      viewportHeightLabel: '视口高度',
-      basicsLabel: '基础',
-      configureLabel: '设置',
-      copyBtnText: '复制',
-      copySuccessBtnText: '复制成功!',
-      miniProgram: '小程序',
-      preview: '预览',
-      theCurrentNodeDoesNotSupportRendering: '当前节点不支持渲染',
-      addFont: '添加字体',
-      addFontTitle: '字体',
-      resourceAddress: '资源地址',
-      continueAdding: '继续添加',
-      tailwindcssLabel: '启用 Tailwindcss',
-      codeFontSizeLabel: '代码字体大小',
-      viewportWidthLabel: '视口宽高',
-      languageLabel: '语言',
-      targetRuntimeEnvLabel: '运行环境',
-      targetRuntimeDslLabel: 'DSL',
-      uploadBtnText: '上传',
-   },
-   'en-US': {
-      languageLabel: 'Language',
-      codeFontSizeLabel: 'Code font-size',
-      targetRuntimeEnvLabel: 'Runtime Env',
-      targetRuntimeDslLabel: 'DSL',
-      tailwindcssLabel: 'Enable Tailwindcss',
-      sysSettingsLabel: 'System',
-      addFont: 'Add font',
-      addFontTitle: 'Font',
-      resourceAddress: 'Resource address',
-      continueAdding: 'Continue adding',
-      miniProgram: 'Miniapp',
-      generate: 'Generate',
-      pleaseSelect:
-         '"Please select the scene elements first, then click the Generate button"',
-      exportBtnText: 'Export',
-      enableCssToTailwindCss: 'Enable CSS to Tailwindcss conversion',
-      basicFontSize: 'Basic font size',
-      designDraftViewportWidth: 'Design draft viewport width',
-      targetFormat: 'Target format',
-      enablePxUnitConversion: 'Enable px unit conversion',
-      exportLabel: 'Export',
-      uiSettingsLabel: 'UI',
-      viewportHeightLabel: 'Viewport height',
-      viewportWidthLabel: 'Viewport width',
-      basicsLabel: 'Basics',
-      configureLabel: 'Settings',
-      copyBtnText: 'Copy',
-      uploadBtnText: 'Upload',
-      copySuccessBtnText: 'Copy successful!',
-      preview: 'Preview',
-      theCurrentNodeDoesNotSupportRendering:
-         'Rendering not supported on current node.',
-   },
-})
-
-const usedI18n = computed(() => {
-   // if (isJsDesign) {
-   //    return i18n['zh-CN']
-   // }
-   // return i18n['en-US']
-   return i18n[settings.value.language]
-})
-
-const selectedNode = ref<StaticNode | null>(null)
-
-const notSupport = ref(false)
-
-const baseRenderSettings: BaseRenderSettings = {
-   fontAssetUrlPlaceholders: [''],
-   isPreview: false,
-}
-
-const baseUISettings: BaseUISettings = {
-   language: isJsDesign ? 'zh-CN' : 'en-US',
-   codeFontSize: 16,
-   viewportSize: {
-      width: DEFAULT_VIEWPORT_WIDTH,
-      height: DEFAULT_VIEWPORT_HEIGHT,
-   },
-}
-
-const baseConvertSettings: BaseConvertSettings = {
-   enableTailwindcss: false,
-   targetRuntimeEnv: 'web',
-   targetRuntimeDsl: 'html',
-   enablePxConvert: false,
-   pxConvertConfigs: {
-      pxConvertFormat: 'rem',
-      viewportWidth: DEFAULT_VIEWPORT_WIDTH,
-      baseFontSize: DEFAULT_BASE_FONT_SIZE,
-   },
-}
-
-const defaultSettings = {
-   ...baseRenderSettings,
-   ...baseUISettings,
-   ...baseConvertSettings,
-}
-
-const getDefaultSettings = (): Settings => {
-   return JSON.parse(JSON.stringify(defaultSettings))
-}
-
-const formSettings = reactive(getDefaultSettings())
-
-const settings = computed(() => {
-   const fonts = formSettings.fontAssetUrlPlaceholders.filter(Boolean)
-   return {
-      ...formSettings,
-      fontAssetUrlPlaceholders: fonts.length ? fonts : [''],
-      viewportSize: {
-         width: formSettings.viewportSize.width || DEFAULT_VIEWPORT_WIDTH,
-         height: formSettings.viewportSize.height || DEFAULT_VIEWPORT_HEIGHT,
-      },
-      pxConvertConfigs: {
-         ...formSettings.pxConvertConfigs,
-         viewportWidth:
-            formSettings.pxConvertConfigs.viewportWidth ||
-            DEFAULT_VIEWPORT_WIDTH,
-         baseFontSize:
-            formSettings.pxConvertConfigs.baseFontSize ||
-            DEFAULT_BASE_FONT_SIZE,
-      },
-   }
-})
 
 watch(
    () => settings,
@@ -216,131 +68,6 @@ watchEffect(() => {
       '--code-font-size',
       settings.value.codeFontSize + 'px',
    )
-})
-
-const isSettingsPage = ref(false)
-
-// 用于渲染 iframe 的 html 代码
-const rendererCode = computed(() => {
-   if (!selectedNode.value) return ''
-
-   return renderStaticNode(settings.value, selectedNode.value)
-})
-
-const imageFillMetaNodeMaps: Record<string, ImageFillMeta> = {}
-
-// 复制到剪贴板的 html 代码
-const copiedCode = computed(() => {
-   if (!selectedNode.value) return ''
-
-   const htmlCode = renderStaticNode(
-      settings.value,
-      selectedNode.value,
-      undefined,
-      {
-         convertBackgroundImage: (
-            url: string,
-            imageFillMeta: ImageFillMeta,
-            node: StaticNode,
-         ) => {
-            imageFillMetaNodeMaps[node.id] = imageFillMeta
-
-            return transformBlobUrlToAssetsUrl(
-               url,
-               `'assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
-                  imageFillMeta.imageExtension
-               }'`,
-            )
-         },
-      },
-   )
-
-   const extension =
-      settings.value.targetRuntimeDsl === 'jsx' ? 'babel' : 'html'
-   // 使用 Prettier 格式化代码
-   const formattedCode = prettier.format(
-      settings.value.targetRuntimeDsl === 'jsx'
-         ? convertHtmlToJsx(htmlCode)
-         : htmlCode,
-      {
-         parser: extension,
-         plugins: [parserHtml, parserBabel],
-      },
-   )
-   return formattedCode
-})
-
-// 展示在代码区的 html 代码
-const codeblockCode = computed(() => {
-   const extension = settings.value.targetRuntimeDsl === 'jsx' ? 'jsx' : 'html'
-
-   // 使用 Prism 进行高亮
-   const highlightedCode = Prism.highlight(
-      copiedCode.value,
-      Prism.languages[extension],
-      extension,
-   )
-
-   return highlightedCode
-})
-
-const fontScriptStr = computed(() => {
-   return settings.value.fontAssetUrlPlaceholders
-      .filter(Boolean)
-      .map((url) => {
-         return `<link rel="stylesheet" href="${url}">`
-      })
-      .join('\n')
-})
-
-const rendererSrcDoc = computed(() => {
-   const tailwindScript = settings.value.enableTailwindcss
-      ? getScriptStr({
-           src: 'https://cdn.tailwindcss.com',
-           onLoad: 'handleScriptLoad()',
-        })
-      : ''
-
-   // 注意 tailwindScript 要在 rendererCode.value 之前执行，否则加载资源的时候，无样式的 html 会闪烁
-   // tailwindScript 加载完毕后，会监听 onload 事件，计算样式的
-   return `
-    <html>
-      <head>
-         ${fontScriptStr.value}
-         ${
-            settings.value.enablePxConvert &&
-            settings.value.pxConvertConfigs.pxConvertFormat === 'rem'
-               ? `
-            <style>
-               html {
-                  font-size: ${settings.value.pxConvertConfigs.baseFontSize}px;
-               }
-            </style>
-         `
-               : ''
-         }
-         <style>
-          ${normalizeCss}
-         </style>
-         ${getScriptStr({
-            content: `
-            function handleScriptLoad() {
-               document.getElementById('tailwindcssLoading').remove()
-            }
-            `,
-         })}
-      </head>
-      <body>
-         ${
-            settings.value.enableTailwindcss
-               ? `<p id='tailwindcssLoading' style="text-align: center;">tailwindcss loading...</p>`
-               : ''
-         }
-         ${tailwindScript}
-         ${rendererCode.value}
-      </body>
-    </html>
-  `
 })
 
 const exportZip = (
@@ -393,67 +120,43 @@ ${copiedCode.value}
    )
 }
 
-const clipboard = new ClipboardJS('#copyBtn', {
-   text: () => {
-      return copiedCode.value
-   },
-})
+let timer: number | null = null
 
-// 高优先级的复制按钮文案
-const highCopyBtnText = ref()
-
-clipboard.on('success', function (e) {
-   console.log('Text copied to clipboard')
-   e.clearSelection()
-   highCopyBtnText.value = usedI18n.value.copySuccessBtnText
-
-   setTimeout(() => {
-      highCopyBtnText.value = null
-   }, 1500)
-})
-
-clipboard.on('error', function (e) {
-   console.error('Failed to copy text')
-})
-
-window.onmessage = (event) => {
-   console.log('ui: get message from code.js', event)
-   if (process.env.WEBPACK_SERVE) {
-      return
-   }
-
-   if (!event.data.pluginMessage) return
-
-   if (event.data.pluginMessage.type === 'initSettings') {
-      const {
-         payload: { settings: _settings },
-      } = event.data.pluginMessage as UIAction<'initSettings'>
-
-      Object.assign(formSettings, _settings)
-
-      return
-   }
-
-   if (event.data.pluginMessage.type === 'selectedNode') {
-      const {
-         payload: { staticNode },
-      } = event.data.pluginMessage as UIAction<'selectedNode'>
-
-      if (staticNode === null) {
-         notSupport.value = true
-         return
+const handleUploadClick = () => {
+   if (!settings.value.token) {
+      showAlert.value = true
+      if (timer !== null) {
+         clearTimeout(timer)
+         timer = null
       }
-
-      notSupport.value = false
-      selectedNode.value = staticNode
-
+      timer = setTimeout(() => {
+         showAlert.value = false
+      }, 3000)
       return
    }
+
+   if (!selectedNode.value) {
+      return
+   }
+
+   axios.post('/api/projects/upload', {
+      token: settings.value.token,
+      data: {
+         name: selectedNode.value.name,
+         html: copiedCode.value,
+      },
+   })
 }
 </script>
 
 <template>
    <div class="h-screen flex flex-col">
+      <div
+         v-if="showAlert"
+         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black py-2 px-4 text-white max-w-fit"
+      >
+         没有发现 token，请在设置页面配置
+      </div>
       <div
          :style="{ height: DEFAULT_UI_HEADER_HEIGHT + 'px' }"
          class="flex-none px-2 border-b flex justify-between items-center overflow-x-auto"
@@ -512,258 +215,7 @@ window.onmessage = (event) => {
       <div class="flex-auto overflow-auto">
          <!-- 配置渲染优先级最高 -->
          <div class="p-5" v-if="isSettingsPage">
-            <h2 class="text-lg">
-               {{ usedI18n.configureLabel }}
-            </h2>
-            <div role="settings-page" class="grid grid-cols-1 gap-6 mt-3">
-               <h3 class="text-gray-500 text-sm mt-4">
-                  {{ usedI18n.exportLabel }}
-               </h3>
-               <div class="block">
-                  <div class="w-full flex gap-1">
-                     <label class="block flex-1">
-                        <span class="text-gray-700">{{
-                           usedI18n.targetRuntimeEnvLabel
-                        }}</span>
-                        <select
-                           class="mt-1 w-full"
-                           v-model="formSettings.targetRuntimeEnv"
-                        >
-                           <option value="web">Web</option>
-                           <!-- <option value="miniapp">{{ usedI18n.miniProgram }}</option> -->
-                        </select>
-                     </label>
-                     <label class="block flex-1">
-                        <span class="text-gray-700">{{
-                           usedI18n.targetRuntimeDslLabel
-                        }}</span>
-                        <select
-                           class="mt-1 w-full"
-                           v-model="formSettings.targetRuntimeDsl"
-                        >
-                           <option value="html">HTML</option>
-                           <option value="jsx">JSX</option>
-                           <!-- <option value="vue">Vue</option> -->
-                        </select>
-                     </label>
-                  </div>
-               </div>
-               <div class="block">
-                  <div class="">
-                     <div>
-                        <label class="inline-flex items-center">
-                           <input
-                              v-model="formSettings.enablePxConvert"
-                              type="checkbox"
-                           />
-                           <span class="ml-2">{{
-                              usedI18n.enablePxUnitConversion
-                           }}</span>
-                        </label>
-                     </div>
-                  </div>
-               </div>
-               <div
-                  class="grid grid-cols-1 gap-6 pl-6"
-                  v-if="formSettings.enablePxConvert"
-               >
-                  <label class="block">
-                     <span class="text-gray-700">{{
-                        usedI18n.targetFormat
-                     }}</span>
-                     <select
-                        v-model="formSettings.pxConvertConfigs.pxConvertFormat"
-                        class="mt-1 block w-full"
-                     >
-                        <option>rem</option>
-                        <option>vw</option>
-                     </select>
-                  </label>
-                  <label
-                     v-if="
-                        formSettings.pxConvertConfigs.pxConvertFormat === 'vw'
-                     "
-                     class="block"
-                  >
-                     <span class="text-gray-700">{{
-                        usedI18n.designDraftViewportWidth
-                     }}</span>
-                     <input
-                        v-model="formSettings.pxConvertConfigs.viewportWidth"
-                        type="number"
-                        class="mt-1 block w-full"
-                        :placeholder="
-                           baseConvertSettings.pxConvertConfigs.viewportWidth +
-                           ''
-                        "
-                     />
-                  </label>
-                  <label
-                     v-if="
-                        formSettings.pxConvertConfigs.pxConvertFormat === 'rem'
-                     "
-                     class="block"
-                  >
-                     <span class="text-gray-700">{{
-                        usedI18n.basicFontSize
-                     }}</span>
-                     <input
-                        v-model="formSettings.pxConvertConfigs.baseFontSize"
-                        type="number"
-                        class="mt-1 block w-full"
-                        :placeholder="
-                           baseConvertSettings.pxConvertConfigs.baseFontSize +
-                           ''
-                        "
-                     />
-                  </label>
-               </div>
-               <div class="block">
-                  <div class="">
-                     <div>
-                        <label class="inline-flex items-center">
-                           <input
-                              v-model="formSettings.enableTailwindcss"
-                              type="checkbox"
-                           />
-                           <span class="ml-2">{{
-                              usedI18n.tailwindcssLabel
-                           }}</span>
-                        </label>
-                     </div>
-                  </div>
-               </div>
-               <h3 class="text-gray-500 text-sm mt-4">
-                  {{ usedI18n.addFontTitle }}
-               </h3>
-               <div class="block">
-                  <div class="">
-                     <div>
-                        <label class="block">
-                           <span class="text-gray-700">{{
-                              usedI18n.resourceAddress
-                           }}</span>
-                        </label>
-                        <div
-                           class="flex items-center gap-2 mt-1"
-                           v-for="(
-                              fontUrl, index
-                           ) in formSettings.fontAssetUrlPlaceholders"
-                        >
-                           <input
-                              v-model="
-                                 formSettings.fontAssetUrlPlaceholders[index]
-                              "
-                              type="text"
-                              class="flex-auto block w-full"
-                              placeholder="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap"
-                           />
-                           <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke-width="1.5"
-                              stroke="currentColor"
-                              class="w-4 h-4 cursor-pointer"
-                              @click="
-                                 formSettings.fontAssetUrlPlaceholders.splice(
-                                    index,
-                                    1,
-                                 )
-                              "
-                           >
-                              <path
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round"
-                                 d="M19.5 12h-15"
-                              />
-                           </svg>
-                        </div>
-                     </div>
-                  </div>
-                  <button
-                     @click="formSettings.fontAssetUrlPlaceholders.push('')"
-                     type="button"
-                     class="block mt-4 w-full items-center text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
-                  >
-                     <span class="inline-flex items-center px-4 py-2">
-                        <svg
-                           xmlns="http://www.w3.org/2000/svg"
-                           fill="none"
-                           viewBox="0 0 24 24"
-                           stroke-width="1.5"
-                           stroke="currentColor"
-                           class="w-4 h-4 mr-2 fill-current"
-                        >
-                           <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M12 4.5v15m7.5-7.5h-15"
-                           />
-                        </svg>
-                        {{ usedI18n.continueAdding }}
-                     </span>
-                  </button>
-               </div>
-               <h3 class="text-gray-500 text-sm mt-4">
-                  {{ usedI18n.uiSettingsLabel }}
-               </h3>
-               <label class="block">
-                  <span class="text-gray-700">{{
-                     usedI18n.codeFontSizeLabel
-                  }}</span>
-                  <input
-                     v-model="formSettings.codeFontSize"
-                     type="number"
-                     class="mt-1 block w-full"
-                     :placeholder="baseUISettings.codeFontSize + ''"
-                  />
-               </label>
-               <div class="block">
-                  <div class="w-full flex gap-1">
-                     <label class="block flex-1">
-                        <span class="text-gray-700">{{
-                           usedI18n.viewportWidthLabel
-                        }}</span>
-                        <input
-                           v-model="formSettings.viewportSize.width"
-                           type="number"
-                           class="mt-1 block w-full"
-                           :placeholder="baseUISettings.viewportSize.width + ''"
-                        />
-                     </label>
-                     <label class="block flex-1">
-                        <span class="text-gray-700">{{
-                           usedI18n.viewportHeightLabel
-                        }}</span>
-                        <input
-                           v-model="formSettings.viewportSize.height"
-                           type="number"
-                           class="mt-1 block w-full"
-                           :placeholder="
-                              baseUISettings.viewportSize.height + ''
-                           "
-                        />
-                     </label>
-                  </div>
-               </div>
-
-               <h3 class="text-gray-500 text-sm mt-4">
-                  {{ usedI18n.sysSettingsLabel }}
-               </h3>
-               <label class="block">
-                  <span class="text-gray-700">{{
-                     usedI18n.languageLabel
-                  }}</span>
-                  <select
-                     v-model="formSettings.language"
-                     class="mt-1 block w-full"
-                  >
-                     <option value="zh-CN">中文</option>
-                     <option value="en-US">English</option>
-                  </select>
-               </label>
-            </div>
+            <SettingsComponent />
          </div>
          <div
             v-else-if="notSupport"
@@ -793,6 +245,7 @@ window.onmessage = (event) => {
             v-if="settings.isPreview"
          >
             <button
+               @click="handleUploadClick"
                type="button"
                class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
             >

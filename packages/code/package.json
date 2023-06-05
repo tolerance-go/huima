@@ -6,10 +6,10 @@
    "license": "ISC",
    "author": "",
    "scripts": {
-      "build:plugin": "webpack",
-      "build:plugin:jssj": "IS_JSSJ=true webpack",
-      "dev:plugin": "npm run build:plugin -- --watch",
-      "dev:plugin:jssj": "IS_JSSJ=true npm run build:plugin:jssj -- --watch"
+      "build": "webpack",
+      "build:jssj": "IS_JSSJ=true webpack",
+      "dev": "npm run build -- --watch",
+      "dev:jssj": "IS_JSSJ=true npm run build:jssj -- --watch"
    },
    "dependencies": {
       "@huima/utils": "workspace:^",

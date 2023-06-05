@@ -6,17 +6,18 @@
    "license": "ISC",
    "author": "",
    "scripts": {
-      "build:plugin": "webpack",
-      "build:plugin:jssj": "IS_JSSJ=true webpack",
+      "build": "webpack",
+      "build:jssj": "IS_JSSJ=true webpack",
       "coverage": "vitest run --coverage",
-      "dev:plugin": "npm run build:plugin -- --watch",
-      "dev:plugin:jssj": "IS_JSSJ=true npm run build:plugin -- --watch",
+      "dev": "npm run build -- --watch",
+      "dev:jssj": "IS_JSSJ=true npm run build -- --watch",
       "serve": "webpack serve --mode development",
       "test": "vitest"
    },
    "dependencies": {
       "@huima/types": "workspace:^",
       "@huima/utils": "workspace:^",
+      "axios": "^1.4.0",
       "buffer": "^6.0.3",
       "clipboard": "^2.0.11",
       "file-saver": "^2.0.5",

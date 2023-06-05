@@ -70,6 +70,7 @@ declare global {
       ),
     */
    pluginApi.showUI(__html__, {
+      themeColors: false,
       height:
          (settings?.viewportSize.height || DEFAULT_VIEWPORT_HEIGHT) +
          DEFAULT_UI_HEADER_HEIGHT +
