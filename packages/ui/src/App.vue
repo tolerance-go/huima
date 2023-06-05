@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { postActionToCode } from '@huima/common'
 import {
    DEFAULT_UI_FOOTER_HEIGHT,
    DEFAULT_UI_HEADER_HEIGHT,
    MIN_VIEWPORT_LENGTH,
+   postActionToCode,
 } from '@huima/common'
-import request from './utils/request'
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
+import debounce from 'lodash.debounce'
 import { watch, watchEffect } from 'vue'
-import SettingsComponent from './views/Settings.vue'
 import { normalizeCss } from './constants/normalize.css'
+import { createServerNode } from './createServerNode'
 import {
    codeblockCode,
    copiedCode,
@@ -26,10 +26,14 @@ import {
    settings,
    usedI18n,
 } from './states/app'
-import { convertHtmlIdToFigmaId } from './utils/convertFigmaIdToHtmlId'
+import {
+   convertFigmaIdToHtmlId,
+   convertHtmlIdToFigmaId,
+} from './utils/convertFigmaIdToHtmlId'
 import { extractAndSplitBgImgUrls } from './utils/extractAndSplitBgImgUrls'
+import request from './utils/request'
 import Alert from './views/Alert.vue'
-import debounce from 'lodash.debounce'
+import SettingsComponent from './views/Settings.vue'
 
 watch(
    () => settings,
@@ -133,11 +137,57 @@ const handleUploadClick = debounce(async () => {
    }
 
    try {
-      await request.post('/api/projects/upload', {
-         token: settings.value.token,
-         name: selectedNode.value.name,
-         html: htmlCode.value,
+      const imgFiles: File[] = []
+
+      const nodeData = createServerNode(settings.value, selectedNode.value, {
+         convertImageFillMetaBytesToAssertUrl(imageFillMeta, node) {
+            imageFillMetaNodeMaps[node.id] = imageFillMeta
+
+            const blob = new Blob([imageFillMeta.imageBytes], {
+               type: 'image/' + imageFillMeta.imageExtension,
+            }) // 假设 arrayBuffer 是 JPEG 图片的数据
+
+            const imgName = `${selectedNode.value!.name}_${
+               node.name
+            }_${convertFigmaIdToHtmlId(node.id)}.${
+               imageFillMeta.imageExtension
+            }`
+
+            const file = new File([blob], imgName) // 第一个参数是文件数据，第二个参数是文件名
+
+            imgFiles.push(file)
+
+            return `/uploads/${imgName}`
+         },
       })
+
+      const formData = new FormData()
+      for (let i = 0; i < imgFiles.length; i++) {
+         formData.append('images', imgFiles[i]) // 'images' 是服务器端接收文件的字段名
+      }
+
+      await Promise.all([
+         request.post('/api/projects/images/upload', formData, {
+            headers: {
+               'Content-Type': 'multipart/form-data',
+               Authorization: `Bearer ${settings.value.token}`,
+            },
+         }),
+         request.post(
+            '/api/projects/upload',
+            {
+               token: settings.value.token,
+               name: selectedNode.value.name,
+               nodeData,
+               settings: settings.value,
+            },
+            {
+               headers: {
+                  Authorization: `Bearer ${settings.value.token}`,
+               },
+            },
+         ),
+      ])
       window.alert2('上传成功')
    } catch {
       // ignore

@@ -31,97 +31,51 @@ export const renderStaticNode = (
          console.log(node)
 
          if (node.type === 'text') {
-            const content = convertTextNodeToHtml(settings, node, parentNode)
-            return content
+            return convertTextNodeToHtml(settings, node, parentNode)
          }
 
          if (node.type === 'rectangle') {
-            const content = convertRectangleNodeToHtml(
-               settings,
-               node,
-               parentNode,
-               hooks,
-            )
-            return content
+            return convertRectangleNodeToHtml(settings, node, parentNode, hooks)
          }
 
          if (node.type === 'ellipse') {
-            const content = convertEllipseNodeToHtml(
-               settings,
-               node,
-               parentNode,
-               hooks,
-            )
-            return content
+            return convertEllipseNodeToHtml(settings, node, parentNode, hooks)
          }
 
          if (node.type === 'frame') {
-            const content = convertFrameNodeToHtml(
-               settings,
-               node,
-               parentNode,
-               hooks,
-            )
-            return content
+            return convertFrameNodeToHtml(settings, node, parentNode, hooks)
          }
 
          if (node.type === 'componentNode') {
-            const content = convertComponentNodeToHtml(
-               settings,
-               node,
-               parentNode,
-               hooks,
-            )
-            return content
+            return convertComponentNodeToHtml(settings, node, parentNode, hooks)
          }
 
          if (node.type === 'instanceNode') {
-            const content = convertInstanceNodeToHtml(
-               settings,
-               node,
-               parentNode,
-               hooks,
-            )
-            return content
+            return convertInstanceNodeToHtml(settings, node, parentNode, hooks)
          }
 
          if (node.type === 'group') {
-            const content = convertGroupNodeToHtml(
-               settings,
-               node,
-               parentNode,
-               hooks,
-            )
-            return content
+            return convertGroupNodeToHtml(settings, node, parentNode, hooks)
          }
 
          if (node.type === 'line') {
-            const content = convertLineNodeToHtml(settings, node, parentNode)
-            return content
+            return convertLineNodeToHtml(settings, node, parentNode)
          }
 
          if (node.type === 'vector') {
-            const content = convertVectorNodeToHtml(settings, node, parentNode)
-            return content
+            return convertVectorNodeToHtml(settings, node, parentNode)
          }
 
          if (node.type === 'booleanOperation') {
-            const content = convertBooleanOperationNodeToHtml(
-               settings,
-               node,
-               parentNode,
-            )
-            return content
+            return convertBooleanOperationNodeToHtml(settings, node, parentNode)
          }
 
          if (node.type === 'polygon') {
-            const content = convertPolygonNodeToHtml(settings, node, parentNode)
-            return content
+            return convertPolygonNodeToHtml(settings, node, parentNode)
          }
 
          if (node.type === 'star') {
-            const content = convertStarNodeToHtml(settings, node, parentNode)
-            return content
+            return convertStarNodeToHtml(settings, node, parentNode)
          }
 
          return ''
