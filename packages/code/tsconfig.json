@@ -2,7 +2,7 @@
 {
    "compilerOptions": {
       "target": "es6",
-      "lib": ["es6", "DOM", "ESNext"],
+      "lib": ["DOM", "ESNext"],
       "strict": true,
       "typeRoots": ["./node_modules/@types", "./node_modules/@figma"],
       "outDir": "./dist",
