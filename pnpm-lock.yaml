@@ -72,11 +72,36 @@ importers:
         specifier: ^0.31.1
         version: 0.31.1
 
-  packages/ui:
+  packages/render-static-node:
     dependencies:
       '@huima/common':
         specifier: workspace:^
         version: link:../common
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
+    devDependencies:
+      '@figma/plugin-typings':
+        specifier: ^1.64.0
+        version: 1.64.0
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: ^0.31.1
+        version: 0.31.1
+
+  packages/ui:
+    dependencies:
+      '@huima-admin/encrypt-password':
+        specifier: link:/Users/yarnb/huima/huima-admin/packages/encrypt-password
+        version: link:../../../huima-admin/packages/encrypt-password
+      '@huima/common':
+        specifier: workspace:^
+        version: link:../common
+      '@huima/render-static-node':
+        specifier: workspace:^
+        version: link:../render-static-node
       axios:
         specifier: ^1.4.0
         version: 1.4.0
@@ -119,7 +144,7 @@ importers:
         version: 4.0.7
       '@types/node':
         specifier: ^20.2.0
-        version: 20.2.0
+        version: 20.2.5
       '@types/prettier':
         specifier: ^2.7.2
         version: 2.7.2
@@ -868,10 +893,6 @@ packages:
 
   /@types/node@12.20.55:
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
-    dev: true
-
-  /@types/node@20.2.0:
-    resolution: {integrity: sha512-3iD2jaCCziTx04uudpJKwe39QxXgSUnpxXSvRQjRvHPxFQfmfP4NXIm/NURVeNlTCc+ru4WqjYGTmpXrW9uMlw==}
     dev: true
 
   /@types/node@20.2.5:

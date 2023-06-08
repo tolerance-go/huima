@@ -10,6 +10,19 @@
 import {
    BaseUploadSettings,
    ImageFillMeta,
+   ServerBooleanOperationNode,
+   ServerComponentNode,
+   ServerContainerNode,
+   ServerEllipseNode,
+   ServerFrameNode,
+   ServerGroupNode,
+   ServerInstanceNode,
+   ServerLineNode,
+   ServerNode,
+   ServerPolygonNode,
+   ServerRectangleNode,
+   ServerStarNode,
+   ServerVectorNode,
    StaticBooleanOperationNode,
    StaticComponentNode,
    StaticEllipseNode,
@@ -24,21 +37,6 @@ import {
    StaticTextNode,
    StaticVectorNode,
 } from '@huima/common'
-import {
-   ServerBooleanOperationNode,
-   ServerComponentNode,
-   ServerContainerNode,
-   ServerEllipseNode,
-   ServerFrameNode,
-   ServerGroupNode,
-   ServerInstanceNode,
-   ServerLineNode,
-   ServerNode,
-   ServerPolygonNode,
-   ServerRectangleNode,
-   ServerStarNode,
-   ServerVectorNode,
-} from './types'
 
 export type ServerNodeConvertHooks = {
    convertImageFillMetaBytesToAssertUrl: (

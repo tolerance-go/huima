@@ -16,10 +16,10 @@ window.alert2 = (msg: string) => {
    message.value = msg
    showAlert.value = true
    if (timer !== null) {
-      clearTimeout(timer)
+      window.clearTimeout(timer)
       timer = null
    }
-   timer = setTimeout(() => {
+   timer = window.setTimeout(() => {
       showAlert.value = false
       message.value = ''
    }, 3000)

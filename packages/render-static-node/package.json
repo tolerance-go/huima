@@ -1,5 +1,5 @@
 {
-   "name": "@huima/common",
+   "name": "@huima/render-static-node",
    "version": "1.0.0",
    "description": "",
    "keywords": [],
@@ -8,10 +8,12 @@
    "main": "dist/index.js",
    "scripts": {
       "build": "tsc -p tsconfig.json",
-      "build:jssj": "IS_JSSJ=true npm run build",
       "dev": "npm run build -- --watch",
-      "dev:jssj": "IS_JSSJ=true npm run build:jssj -- --watch",
       "test": "vitest"
+   },
+   "dependencies": {
+      "@huima/common": "workspace:^",
+      "buffer": "^6.0.3"
    },
    "devDependencies": {
       "@figma/plugin-typings": "^1.64.0",

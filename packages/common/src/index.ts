@@ -1,4 +1,5 @@
 export * from './constants'
 export * from './isCircle'
+export * from './postActionToCode'
 export * from './removeUndefined'
-export * from './types'
+export * from './types/index'

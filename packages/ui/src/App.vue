@@ -200,7 +200,7 @@ const handleUploadClick = debounce(async () => {
       <Alert />
       <div
          :style="{ height: DEFAULT_UI_HEADER_HEIGHT + 'px' }"
-         class="flex-none px-2 border-b flex justify-between items-center overflow-x-auto"
+         class="flex-none px-2 border-b flex justify-end gap-2 items-center overflow-x-auto"
       >
          <label class="relative inline-flex items-center cursor-pointer">
             <input
@@ -213,6 +213,21 @@ const handleUploadClick = debounce(async () => {
             ></div>
             <span class="ml-2 text-sm font-medium">{{ usedI18n.preview }}</span>
          </label>
+         <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 rotate-90 text-gray-300"
+         >
+            <path
+               stroke-linecap="round"
+               stroke-linejoin="round"
+               d="M19.5 12h-15"
+            />
+         </svg>
+
          <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

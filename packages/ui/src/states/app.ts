@@ -10,6 +10,7 @@ import {
    Settings,
    StaticNode,
 } from '@huima/common'
+import { renderStaticNode } from '@huima/render-static-node'
 import parserBabel from 'prettier/parser-babel'
 import parserHtml from 'prettier/parser-html'
 import prettier from 'prettier/standalone'
@@ -17,11 +18,9 @@ import Prism from 'prismjs'
 import { computed, reactive, ref } from 'vue'
 import { normalizeCss } from '../constants/normalize.css'
 import { isJsDesign } from '../env'
-import { renderStaticNode } from '../renderStaticNode'
 import { convertFigmaIdToHtmlId } from '../utils/convertFigmaIdToHtmlId'
 import { convertHtmlToJsx } from '../utils/convertHtmlToJsx'
 import { getScriptStr } from '../utils/getScriptStr'
-import { transformBlobUrlToAssetsUrl } from '../utils/transformBlobUrlToAssetsUrl'
 
 export const i18n = reactive({
    'zh-CN': {
@@ -179,7 +178,19 @@ export const settings = computed(() => {
 export const rendererCode = computed(() => {
    if (!selectedNode.value) return ''
 
-   return renderStaticNode(settings.value, selectedNode.value)
+   return renderStaticNode(settings.value, selectedNode.value, undefined, {
+      convertBackgroundImage: (
+         imageFillMeta: ImageFillMeta,
+         node: StaticNode,
+      ) => {
+         const url = URL.createObjectURL(
+            new Blob([imageFillMeta!.imageBytes], {
+               type: `image/${imageFillMeta!.imageExtension}`,
+            }),
+         )
+         return `url(${url})`
+      },
+   })
 })
 
 export const imageFillMetaNodeMaps: Record<string, ImageFillMeta> = {}
@@ -189,18 +200,14 @@ export const htmlCode = computed(() => {
 
    return renderStaticNode(settings.value, selectedNode.value, undefined, {
       convertBackgroundImage: (
-         url: string,
          imageFillMeta: ImageFillMeta,
          node: StaticNode,
       ) => {
          imageFillMetaNodeMaps[node.id] = imageFillMeta
 
-         return transformBlobUrlToAssetsUrl(
-            url,
-            `'assets/${node.name}_${convertFigmaIdToHtmlId(node.id)}.${
-               imageFillMeta.imageExtension
-            }'`,
-         )
+         return `url(${`'assets/${node.name}_${convertFigmaIdToHtmlId(
+            node.id,
+         )}.${imageFillMeta.imageExtension}'`})`
       },
    })
 })

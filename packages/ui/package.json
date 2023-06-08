@@ -15,8 +15,9 @@
       "test": "vitest"
    },
    "dependencies": {
-      "@huima-admin/encrypt-password": "^1.0.0",
+      "@huima-admin/encrypt-password": "link:/Users/yarnb/huima/huima-admin/packages/encrypt-password",
       "@huima/common": "workspace:^",
+      "@huima/render-static-node": "workspace:^",
       "axios": "^1.4.0",
       "buffer": "^6.0.3",
       "clipboard": "^2.0.11",
