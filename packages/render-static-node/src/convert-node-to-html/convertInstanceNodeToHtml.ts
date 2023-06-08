@@ -18,8 +18,8 @@ import { BaseConvertSettings, RenderNodeHooks } from '../types'
 export const convertInstanceNodeToHtml = (
    settings: BaseConvertSettings,
    node: StaticInstanceNode,
-   parentNode?: StaticContainerNode,
    hooks?: RenderNodeHooks,
+   parentNode?: StaticContainerNode,
 ): string => {
    const {
       width,
@@ -70,7 +70,7 @@ export const convertInstanceNodeToHtml = (
    )}>
     ${children
        .map((item) => {
-          return renderStaticNode(settings, item, node, hooks)
+          return renderStaticNode(settings, item, hooks, node)
        })
        .join('\n')}</div>`
 

@@ -17,5 +17,8 @@
       "@figma/plugin-typings": "^1.64.0",
       "typescript": "5.0.4",
       "vitest": "^0.31.1"
+   },
+   "engines": {
+      "node": ">=16.0.0"
    }
 }

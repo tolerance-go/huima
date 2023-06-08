@@ -1,4 +1,8 @@
-import { StaticContainerNode, StaticRectangleNode } from '@huima/common'
+import {
+   ServerRectangleNode,
+   StaticContainerNode,
+   StaticRectangleNode,
+} from '@huima/common'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'
 import { convertFillsToCss } from '../convertFillsToCss'
 import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'
@@ -22,9 +26,9 @@ import { BaseConvertSettings, RenderNodeHooks } from '../types'
  */
 export function convertRectangleNodeToHtml(
    settings: BaseConvertSettings,
-   node: StaticRectangleNode,
-   parentNode?: StaticContainerNode,
+   node: StaticRectangleNode | ServerRectangleNode,
    hooks?: RenderNodeHooks,
+   parentNode?: StaticContainerNode,
 ): string {
    // 获取 node 中的属性值
    const { width, height, cornerRadius, fills, strokes, effects, rotation } =

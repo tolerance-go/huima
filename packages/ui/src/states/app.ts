@@ -178,7 +178,7 @@ export const settings = computed(() => {
 export const rendererCode = computed(() => {
    if (!selectedNode.value) return ''
 
-   return renderStaticNode(settings.value, selectedNode.value, undefined, {
+   return renderStaticNode(settings.value, selectedNode.value, {
       convertBackgroundImage: (
          imageFillMeta: ImageFillMeta,
          node: StaticNode,
@@ -198,7 +198,7 @@ export const imageFillMetaNodeMaps: Record<string, ImageFillMeta> = {}
 export const htmlCode = computed(() => {
    if (!selectedNode.value) return ''
 
-   return renderStaticNode(settings.value, selectedNode.value, undefined, {
+   return renderStaticNode(settings.value, selectedNode.value, {
       convertBackgroundImage: (
          imageFillMeta: ImageFillMeta,
          node: StaticNode,

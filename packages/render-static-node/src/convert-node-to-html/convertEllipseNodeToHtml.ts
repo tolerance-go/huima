@@ -24,8 +24,8 @@ import { BaseConvertSettings, RenderNodeHooks } from '../types'
 export function convertEllipseNodeToHtml(
    settings: BaseConvertSettings,
    node: StaticEllipseNode,
-   parentNode?: StaticContainerNode,
    hooks?: RenderNodeHooks,
+   parentNode?: StaticContainerNode,
 ): string {
    // 获取 node 中的属性值
    const {

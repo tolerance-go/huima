@@ -12,7 +12,6 @@ import {
    ImageFillMeta,
    ServerBooleanOperationNode,
    ServerComponentNode,
-   ServerContainerNode,
    ServerEllipseNode,
    ServerFrameNode,
    ServerGroupNode,
@@ -25,6 +24,7 @@ import {
    ServerVectorNode,
    StaticBooleanOperationNode,
    StaticComponentNode,
+   StaticContainerNode,
    StaticEllipseNode,
    StaticFrameNode,
    StaticGroupNode,
@@ -45,72 +45,97 @@ export type ServerNodeConvertHooks = {
    ) => string
 }
 
-function handleImageFillMeta<T extends StaticNode>(
-   node: T,
-   hooks: ServerNodeConvertHooks,
-): T {
-   if ('imageFillMeta' in node && node.imageFillMeta) {
-      const { imageBytes, ...rest } = node.imageFillMeta
-      return {
-         ...node,
-         imageFillMeta: {
-            ...rest,
-            imageSrc: hooks.convertImageFillMetaBytesToAssertUrl(
-               node.imageFillMeta,
-               node,
-            ),
-         },
-      } as T
-   }
-
-   return node
-}
-
 export const convertFrameNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticFrameNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerFrameNode => {
    const children = node.children.map((child: StaticNode) =>
       createServerNode(settings, child, hooks, node),
    )
-   const updatedNode = handleImageFillMeta(node, hooks)
-   return { ...updatedNode, children }
+
+   if (node.imageFillMeta) {
+      const src = hooks.convertImageFillMetaBytesToAssertUrl(
+         node.imageFillMeta,
+         node,
+      )
+      return {
+         ...node,
+         imageFillMeta: {
+            ...node.imageFillMeta,
+            imageBytes: new Uint8Array(0),
+         },
+         imageFillSrc: src,
+         children,
+      }
+   }
+
+   return node
 }
 
 export const convertComponentNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticComponentNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerComponentNode => {
    const children = node.children.map((child: StaticNode) =>
       createServerNode(settings, child, hooks, node),
    )
-   const updatedNode = handleImageFillMeta(node, hooks)
-   return { ...updatedNode, children }
+   if (node.imageFillMeta) {
+      const src = hooks.convertImageFillMetaBytesToAssertUrl(
+         node.imageFillMeta,
+         node,
+      )
+      return {
+         ...node,
+         imageFillSrc: src,
+         imageFillMeta: {
+            ...node.imageFillMeta,
+            imageBytes: new Uint8Array(0),
+         },
+         children,
+      }
+   }
+
+   return node
 }
 
 export const convertInstanceNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticInstanceNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerInstanceNode => {
    const children = node.children.map((child: StaticNode) =>
       createServerNode(settings, child, hooks, node),
    )
 
-   const updatedNode = handleImageFillMeta(node, hooks)
-   return { ...updatedNode, children }
+   if (node.imageFillMeta) {
+      const src = hooks.convertImageFillMetaBytesToAssertUrl(
+         node.imageFillMeta,
+         node,
+      )
+      return {
+         ...node,
+         imageFillSrc: src,
+         imageFillMeta: {
+            ...node.imageFillMeta,
+            imageBytes: new Uint8Array(0),
+         },
+         children,
+      }
+   }
+
+   return node
 }
 
 export const convertGroupNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticGroupNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerGroupNode => ({
    ...node,
    children: node.children.map((child: StaticNode) =>
@@ -122,67 +147,97 @@ export const convertTextNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticTextNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): StaticTextNode => node
 
 export const convertRectangleNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticRectangleNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerRectangleNode => {
-   return handleImageFillMeta(node, hooks)
+   if (node.imageFillMeta) {
+      const src = hooks.convertImageFillMetaBytesToAssertUrl(
+         node.imageFillMeta,
+         node,
+      )
+      return {
+         ...node,
+         imageFillMeta: {
+            ...node.imageFillMeta,
+            imageBytes: new Uint8Array(0),
+         },
+         imageFillSrc: src,
+      }
+   }
+
+   return node
 }
 
 export const convertEllipseNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticEllipseNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerEllipseNode => {
-   return handleImageFillMeta(node, hooks)
+   if (node.imageFillMeta) {
+      const src = hooks.convertImageFillMetaBytesToAssertUrl(
+         node.imageFillMeta,
+         node,
+      )
+      return {
+         ...node,
+         imageFillMeta: {
+            ...node.imageFillMeta,
+            imageBytes: new Uint8Array(0),
+         },
+         imageFillSrc: src,
+      }
+   }
+
+   return node
 }
 
 export const convertLineNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticLineNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerLineNode => node
 
 export const convertVectorNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticVectorNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerVectorNode => node
 
 export const convertBooleanOperationNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticBooleanOperationNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerBooleanOperationNode => node
 
 export const convertPolygonNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticPolygonNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerPolygonNode => node
 
 export const convertStarNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticStarNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerStarNode => node
 
 export const createServerNode = (
    settings: BaseUploadSettings,
    node: StaticNode,
    hooks: ServerNodeConvertHooks,
-   parentNode?: ServerContainerNode,
+   parentNode?: StaticContainerNode,
 ): ServerNode => {
    switch (node.type) {
       case 'frame':

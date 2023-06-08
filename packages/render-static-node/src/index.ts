@@ -20,8 +20,8 @@ import { BaseConvertSettings, RenderNodeHooks } from './types'
 export const renderStaticNode = (
    settings: BaseConvertSettings,
    node: StaticNode | ServerNode,
-   parentNode?: StaticContainerNode,
    hooks?: RenderNodeHooks,
+   parentNode?: StaticContainerNode,
 ): string => {
    if (settings.targetRuntimeEnv === 'web') {
       if (
@@ -35,27 +35,27 @@ export const renderStaticNode = (
          }
 
          if (node.type === 'rectangle') {
-            return convertRectangleNodeToHtml(settings, node, parentNode, hooks)
+            return convertRectangleNodeToHtml(settings, node, hooks, parentNode)
          }
 
          if (node.type === 'ellipse') {
-            return convertEllipseNodeToHtml(settings, node, parentNode, hooks)
+            return convertEllipseNodeToHtml(settings, node, hooks, parentNode)
          }
 
          if (node.type === 'frame') {
-            return convertFrameNodeToHtml(settings, node, parentNode, hooks)
+            return convertFrameNodeToHtml(settings, node, hooks, parentNode)
          }
 
          if (node.type === 'componentNode') {
-            return convertComponentNodeToHtml(settings, node, parentNode, hooks)
+            return convertComponentNodeToHtml(settings, node, hooks, parentNode)
          }
 
          if (node.type === 'instanceNode') {
-            return convertInstanceNodeToHtml(settings, node, parentNode, hooks)
+            return convertInstanceNodeToHtml(settings, node, hooks, parentNode)
          }
 
          if (node.type === 'group') {
-            return convertGroupNodeToHtml(settings, node, parentNode, hooks)
+            return convertGroupNodeToHtml(settings, node, hooks, parentNode)
          }
 
          if (node.type === 'line') {

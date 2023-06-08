@@ -26,8 +26,8 @@ import { convertMaskNodeToHtml } from './convertMaskNodeToHtml'
 export const convertGroupNodeToHtml = (
    settings: BaseConvertSettings,
    node: StaticGroupNode,
-   parentNode?: StaticContainerNode,
    hooks?: RenderNodeHooks,
+   parentNode?: StaticContainerNode,
 ): string => {
    const { width, height, effects, rotation, children, svgBytes } = node
 
@@ -46,7 +46,7 @@ export const convertGroupNodeToHtml = (
 
    const childrenHtml = children
       .map((item) => {
-         return renderStaticNode(settings, item, node, hooks)
+         return renderStaticNode(settings, item, hooks, node)
       })
       .join('\n')
 

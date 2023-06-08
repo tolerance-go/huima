@@ -1,4 +1,4 @@
-import { ImageFillMeta, StaticNode } from '@huima/common'
+import { ImageFillMeta, ServerNode, StaticNode } from '@huima/common'
 import { rgbaToHex } from './rgbaToHex'
 import { RenderNodeHooks } from './types'
 
@@ -12,7 +12,7 @@ import { RenderNodeHooks } from './types'
  */
 export function convertFillsToCss(
    fills: Paint[],
-   node: StaticNode,
+   node: StaticNode | ServerNode,
    imageFillMeta?: ImageFillMeta,
    hooks?: RenderNodeHooks,
 ): Record<string, string | undefined> {

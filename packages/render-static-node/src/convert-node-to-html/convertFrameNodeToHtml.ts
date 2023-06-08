@@ -19,8 +19,8 @@ import { BaseConvertSettings, RenderNodeHooks } from '../types'
 export const convertFrameNodeToHtml = (
    settings: BaseConvertSettings,
    node: StaticFrameNode,
-   parentNode?: StaticContainerNode,
    hooks?: RenderNodeHooks,
+   parentNode?: StaticContainerNode,
 ): string => {
    const {
       width,
@@ -74,7 +74,7 @@ export const convertFrameNodeToHtml = (
    )}>
     ${children
        .map((item) => {
-          return renderStaticNode(settings, item, node, hooks)
+          return renderStaticNode(settings, item, hooks, node)
        })
        .join('\n')}</div>`
 
