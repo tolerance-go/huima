@@ -1,4 +1,4 @@
-import { StrokeWeightType } from '@huima/common'
+import { StrokeWeightType } from '@huima/common/types'
 import { rgbaToHex } from './rgbaToHex'
 
 /**

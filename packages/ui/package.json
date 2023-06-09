@@ -6,8 +6,10 @@
    "license": "ISC",
    "author": "",
    "scripts": {
-      "build": "webpack",
-      "build:jssj": "IS_JSSJ=true webpack",
+      "build": "npm run clean && webpack",
+      "build:jssj": "npm run clean:jssj && IS_JSSJ=true webpack",
+      "clean": "rimraf ../../figma-plugin/ui.html ../../figma-plugin/ui.js.LICENSE.txt",
+      "clean:jssj": "rimraf ../../jssj-plugin/ui.html ../../jssj-plugin/ui.js.LICENSE.txt",
       "coverage": "vitest run --coverage",
       "dev": "npm run build -- --watch",
       "dev:jssj": "IS_JSSJ=true npm run build -- --watch",

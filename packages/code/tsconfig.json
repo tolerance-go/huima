@@ -1,14 +1,14 @@
 // tsconfig.json
 {
    "compilerOptions": {
-      "target": "es6",
+      "target": "es5",
       "lib": ["DOM", "ESNext"],
       "strict": true,
       "typeRoots": ["./node_modules/@types", "./node_modules/@figma"],
       "outDir": "./dist",
       "jsx": "react",
       "allowJs": true,
-      "moduleResolution": "node",
+      "moduleResolution": "node16",
       "allowSyntheticDefaultImports": true
    },
    "include": ["src/**/*.ts"]

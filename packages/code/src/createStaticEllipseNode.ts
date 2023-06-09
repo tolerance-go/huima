@@ -1,4 +1,5 @@
-import { StaticContainerNode, StaticEllipseNode, isCircle } from '@huima/common'
+import { isCircle } from '@huima/common/isCircle'
+import { StaticContainerNode, StaticEllipseNode } from '@huima/common/types'
 import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 import { getImageFillMeta } from './getImageFillMeta'
 

@@ -1,4 +1,5 @@
-import { StaticContainerNode, StaticEllipseNode, isCircle } from '@huima/common'
+import { isCircle } from '@huima/common/isCircle'
+import { StaticContainerNode, StaticEllipseNode } from '@huima/common/types'
 import { Buffer } from 'buffer'
 import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertFillsToCss } from '../convertFillsToCss'

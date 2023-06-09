@@ -3,7 +3,7 @@
    "compilerOptions": {
       "typeRoots": ["./node_modules/@types", "./node_modules/@figma"],
 
-      "target": "ES6",
+      "target": "es5",
       "useDefineForClassFields": true,
       "module": "ESNext",
       "lib": ["ES2020", "DOM", "DOM.Iterable"],

@@ -1,4 +1,8 @@
-import { StaticContainerNode, StaticFrameNode, StaticNode } from '@huima/common'
+import {
+   StaticContainerNode,
+   StaticFrameNode,
+   StaticNode,
+} from '@huima/common/types'
 import { createStaticNode } from './createStaticNode'
 import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 import { getCornerRadius } from './getCornerRadius'

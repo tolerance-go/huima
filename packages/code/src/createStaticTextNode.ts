@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticTextNode } from '@huima/common'
+import { StaticContainerNode, StaticTextNode } from '@huima/common/types'
 import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 import { isJsDesign } from './pluginApi'
 

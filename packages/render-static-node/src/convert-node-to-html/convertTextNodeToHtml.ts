@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticTextNode } from '@huima/common'
+import { StaticContainerNode, StaticTextNode } from '@huima/common/types'
 import { convertBlendModeToCss } from '../convertBlendModeToCss'
 import { convertLetterSpacingToCss } from '../convertLetterSpacingToCss'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'

@@ -1,4 +1,8 @@
-import { ServerNode, StaticContainerNode, StaticNode } from '@huima/common'
+import {
+   ServerNode,
+   StaticContainerNode,
+   StaticNode,
+} from '@huima/common/types'
 import { convertBooleanOperationNodeToHtml } from './convert-node-to-html/convertBooleanOperationNodeToHtml'
 import { convertComponentNodeToHtml } from './convert-node-to-html/convertComponentNodeToHtml'
 import { convertEllipseNodeToHtml } from './convert-node-to-html/convertEllipseNodeToHtml'

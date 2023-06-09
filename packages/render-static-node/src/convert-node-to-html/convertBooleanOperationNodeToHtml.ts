@@ -1,4 +1,7 @@
-import { StaticBooleanOperationNode, StaticContainerNode } from '@huima/common'
+import {
+   StaticBooleanOperationNode,
+   StaticContainerNode,
+} from '@huima/common/types'
 import { Buffer } from 'buffer'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertToStyleAndClassAttrs } from '../convertToStyleAndClassAttrs'

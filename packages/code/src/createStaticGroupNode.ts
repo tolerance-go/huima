@@ -1,4 +1,8 @@
-import { StaticContainerNode, StaticGroupNode, StaticNode } from '@huima/common'
+import {
+   StaticContainerNode,
+   StaticGroupNode,
+   StaticNode,
+} from '@huima/common/types'
 import { createStaticNode } from './createStaticNode'
 import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 

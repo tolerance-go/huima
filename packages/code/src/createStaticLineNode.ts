@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticLineNode } from '@huima/common'
+import { StaticContainerNode, StaticLineNode } from '@huima/common/types'
 import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 
 export const createStaticLineNode = async (

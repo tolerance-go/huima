@@ -5,10 +5,17 @@
    "keywords": [],
    "license": "ISC",
    "author": "",
-   "main": "dist/index.js",
+   "exports": {
+      "./types": "./dist/types/index.js",
+      "./constants": "./dist/constants.js",
+      "./isCircle": "./dist/isCircle.js",
+      "./postActionToCode": "./dist/postActionToCode.js",
+      "./removeUndefined": "./dist/removeUndefined.js"
+   },
    "scripts": {
-      "build": "tsc -p tsconfig.json",
-      "build:jssj": "IS_JSSJ=true npm run build",
+      "build": "npm run clean && tsc -p tsconfig.json",
+      "build:jssj": "npm run clean && IS_JSSJ=true npm run build",
+      "clean": "rimraf ./dist",
       "dev": "npm run build -- --watch",
       "dev:jssj": "IS_JSSJ=true npm run build:jssj -- --watch",
       "test": "vitest"

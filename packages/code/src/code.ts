@@ -1,12 +1,10 @@
 import {
-   CodeAction,
    DEFAULT_UI_FOOTER_HEIGHT,
    DEFAULT_UI_HEADER_HEIGHT,
    DEFAULT_VIEWPORT_HEIGHT,
    DEFAULT_VIEWPORT_WIDTH,
-   Settings,
-   UIEvents,
-} from '@huima/common'
+} from '@huima/common/constants'
+import { CodeAction, Settings, UIEvents } from '@huima/common/types'
 import { createStaticNode } from './createStaticNode'
 import { pluginApi } from './pluginApi'
 

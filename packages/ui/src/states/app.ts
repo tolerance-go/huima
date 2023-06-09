@@ -1,15 +1,17 @@
 import {
+   DEFAULT_BASE_FONT_SIZE,
+   DEFAULT_VIEWPORT_HEIGHT,
+   DEFAULT_VIEWPORT_WIDTH,
+} from '@huima/common/constants'
+import {
    BaseConvertSettings,
    BaseRenderSettings,
    BaseUISettings,
    BaseUploadSettings,
-   DEFAULT_BASE_FONT_SIZE,
-   DEFAULT_VIEWPORT_HEIGHT,
-   DEFAULT_VIEWPORT_WIDTH,
    ImageFillMeta,
    Settings,
    StaticNode,
-} from '@huima/common'
+} from '@huima/common/types'
 import { renderStaticNode } from '@huima/render-static-node'
 import parserBabel from 'prettier/parser-babel'
 import parserHtml from 'prettier/parser-html'

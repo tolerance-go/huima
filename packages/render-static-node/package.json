@@ -7,7 +7,8 @@
    "author": "",
    "main": "dist/index.js",
    "scripts": {
-      "build": "tsc -p tsconfig.json",
+      "build": "npm run clean && tsc -p tsconfig.build.json",
+      "clean": "rimraf ./dist",
       "dev": "npm run build -- --watch",
       "test": "vitest"
    },
