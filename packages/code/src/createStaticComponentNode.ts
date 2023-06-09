@@ -2,7 +2,7 @@ import {
    StaticComponentNode,
    StaticContainerNode,
    StaticNode,
-} from '@huima/common/types'
+} from '@huima/common/dist/types'
 import { createStaticNode } from './createStaticNode'
 import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 import { getCornerRadius } from './getCornerRadius'

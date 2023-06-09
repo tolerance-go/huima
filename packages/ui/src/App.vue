@@ -3,8 +3,8 @@ import {
    DEFAULT_UI_FOOTER_HEIGHT,
    DEFAULT_UI_HEADER_HEIGHT,
    MIN_VIEWPORT_LENGTH,
-} from '@huima/common/constants'
-import { postActionToCode } from '@huima/common/postActionToCode'
+} from '@huima/common/dist/constants'
+import { postActionToCode } from '@huima/common/dist/postActionToCode'
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
 import debounce from 'lodash.debounce'

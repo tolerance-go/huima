@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticStarNode } from '@huima/common/types'
+import { StaticContainerNode, StaticStarNode } from '@huima/common/dist/types'
 import { Buffer } from 'buffer'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertToStyleAndClassAttrs } from '../convertToStyleAndClassAttrs'

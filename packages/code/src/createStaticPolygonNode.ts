@@ -1,4 +1,7 @@
-import { StaticContainerNode, StaticPolygonNode } from '@huima/common/types'
+import {
+   StaticContainerNode,
+   StaticPolygonNode,
+} from '@huima/common/dist/types'
 import { getBaseStaticNodeData } from './getBaseStaticNodeData'
 
 export const createStaticPolygonNode = async (

@@ -1,4 +1,4 @@
-import { ImageFillMeta, ServerNode, StaticNode } from '@huima/common/types'
+import { ImageFillMeta, ServerNode, StaticNode } from '@huima/common/dist/types'
 import { rgbaToHex } from './rgbaToHex'
 import { RenderNodeHooks } from './types'
 

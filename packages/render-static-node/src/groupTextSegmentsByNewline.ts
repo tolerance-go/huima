@@ -1,4 +1,4 @@
-import { StyledTextSegmentType } from '@huima/common/types'
+import { StyledTextSegmentType } from '@huima/common/dist/types'
 
 /**
  * 这个函数将传入的数组继续进行分割

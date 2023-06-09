@@ -36,7 +36,7 @@ import {
    StaticStarNode,
    StaticTextNode,
    StaticVectorNode,
-} from '@huima/common/types'
+} from '@huima/common/dist/types'
 
 export type ServerNodeConvertHooks = {
    convertImageFillMetaBytesToAssertUrl: (

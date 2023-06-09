@@ -1,4 +1,4 @@
-import { CornerRadiusType } from '@huima/common/types'
+import { CornerRadiusType } from '@huima/common/dist/types'
 import { pluginApi } from './pluginApi'
 
 /**

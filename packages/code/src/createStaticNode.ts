@@ -1,4 +1,4 @@
-import { StaticContainerNode, StaticNode } from '@huima/common/types'
+import { StaticContainerNode, StaticNode } from '@huima/common/dist/types'
 import { createStaticBooleanOperationNode } from './createStaticBooleanOperationNode'
 import { createStaticComponentNode } from './createStaticComponentNode'
 import { createStaticEllipseNode } from './createStaticEllipseNode'

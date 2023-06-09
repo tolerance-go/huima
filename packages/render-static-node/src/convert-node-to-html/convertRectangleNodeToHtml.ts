@@ -2,7 +2,7 @@ import {
    ServerRectangleNode,
    StaticContainerNode,
    StaticRectangleNode,
-} from '@huima/common/types'
+} from '@huima/common/dist/types'
 import { convertBorderRadiusToCss } from '../convertBorderRadiusToCss'
 import { convertFillsToCss } from '../convertFillsToCss'
 import { convertFrameEffectsToCss } from '../convertFrameEffectsToCss'

@@ -5,13 +5,6 @@
    "keywords": [],
    "license": "ISC",
    "author": "",
-   "exports": {
-      "./types": "./dist/types/index.js",
-      "./constants": "./dist/constants.js",
-      "./isCircle": "./dist/isCircle.js",
-      "./postActionToCode": "./dist/postActionToCode.js",
-      "./removeUndefined": "./dist/removeUndefined.js"
-   },
    "scripts": {
       "build": "npm run clean && tsc -p tsconfig.json",
       "build:jssj": "npm run clean && IS_JSSJ=true npm run build",

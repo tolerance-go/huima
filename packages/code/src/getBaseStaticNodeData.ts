@@ -1,4 +1,4 @@
-import { BaseStaticNode } from '@huima/common/types'
+import { BaseStaticNode } from '@huima/common/dist/types'
 
 /**
  * 这个函数接受 SceneNode 然后返回 BaseStaticNode 数据，每一个
