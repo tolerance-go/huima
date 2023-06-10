@@ -90,4 +90,4 @@ export const renderStaticNode = (
 }
 
 export * from './types'
-export { StaticNode }
+export { StaticNode, ServerNode }

@@ -21,6 +21,7 @@ import {
    ServerPolygonNode,
    ServerRectangleNode,
    ServerStarNode,
+   ServerTextNode,
    ServerVectorNode,
    StaticBooleanOperationNode,
    StaticComponentNode,
@@ -67,11 +68,15 @@ export const convertFrameNodeToServer = (
             imageBytes: new Uint8Array(0),
          },
          imageFillSrc: src,
+         serverNode: true,
          children,
       }
    }
 
-   return node
+   return {
+      ...node,
+      serverNode: true,
+   }
 }
 
 export const convertComponentNodeToServer = (
@@ -95,11 +100,15 @@ export const convertComponentNodeToServer = (
             ...node.imageFillMeta,
             imageBytes: new Uint8Array(0),
          },
+         serverNode: true,
          children,
       }
    }
 
-   return node
+   return {
+      ...node,
+      serverNode: true,
+   }
 }
 
 export const convertInstanceNodeToServer = (
@@ -124,11 +133,15 @@ export const convertInstanceNodeToServer = (
             ...node.imageFillMeta,
             imageBytes: new Uint8Array(0),
          },
+         serverNode: true,
          children,
       }
    }
 
-   return node
+   return {
+      ...node,
+      serverNode: true,
+   }
 }
 
 export const convertGroupNodeToServer = (
@@ -138,6 +151,8 @@ export const convertGroupNodeToServer = (
    parentNode?: StaticContainerNode,
 ): ServerGroupNode => ({
    ...node,
+   serverNode: true,
+   svgStr: node.svgBytes && Buffer.from(node.svgBytes).toString(),
    children: node.children.map((child: StaticNode) =>
       createServerNode(settings, child, hooks, node),
    ),
@@ -148,7 +163,12 @@ export const convertTextNodeToServer = (
    node: StaticTextNode,
    hooks: ServerNodeConvertHooks,
    parentNode?: StaticContainerNode,
-): StaticTextNode => node
+): ServerTextNode => {
+   return {
+      ...node,
+      serverNode: true,
+   }
+}
 
 export const convertRectangleNodeToServer = (
    settings: BaseUploadSettings,
@@ -168,10 +188,14 @@ export const convertRectangleNodeToServer = (
             imageBytes: new Uint8Array(0),
          },
          imageFillSrc: src,
+         serverNode: true,
       }
    }
 
-   return node
+   return {
+      ...node,
+      serverNode: true,
+   }
 }
 
 export const convertEllipseNodeToServer = (
@@ -192,10 +216,14 @@ export const convertEllipseNodeToServer = (
             imageBytes: new Uint8Array(0),
          },
          imageFillSrc: src,
+         svgStr: node.svgBytes && Buffer.from(node.svgBytes).toString(),
       }
    }
 
-   return node
+   return {
+      ...node,
+      serverNode: true,
+   }
 }
 
 export const convertLineNodeToServer = (
@@ -203,35 +231,64 @@ export const convertLineNodeToServer = (
    node: StaticLineNode,
    hooks: ServerNodeConvertHooks,
    parentNode?: StaticContainerNode,
-): ServerLineNode => node
+): ServerLineNode => {
+   return {
+      ...node,
+      serverNode: true,
+      svgStr: Buffer.from(node.svgBytes).toString(),
+   }
+}
 
 export const convertVectorNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticVectorNode,
    hooks: ServerNodeConvertHooks,
    parentNode?: StaticContainerNode,
-): ServerVectorNode => node
+): ServerVectorNode => {
+   return {
+      ...node,
+      serverNode: true,
+   }
+}
 
 export const convertBooleanOperationNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticBooleanOperationNode,
    hooks: ServerNodeConvertHooks,
    parentNode?: StaticContainerNode,
-): ServerBooleanOperationNode => node
+): ServerBooleanOperationNode => {
+   return {
+      ...node,
+      serverNode: true,
+      svgStr: Buffer.from(node.svgBytes).toString(),
+   }
+}
 
 export const convertPolygonNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticPolygonNode,
    hooks: ServerNodeConvertHooks,
    parentNode?: StaticContainerNode,
-): ServerPolygonNode => node
+): ServerPolygonNode => {
+   return {
+      ...node,
+      serverNode: true,
+      svgStr: Buffer.from(node.svgBytes).toString(),
+   }
+}
 
 export const convertStarNodeToServer = (
    settings: BaseUploadSettings,
    node: StaticStarNode,
    hooks: ServerNodeConvertHooks,
    parentNode?: StaticContainerNode,
-): ServerStarNode => node
+): ServerStarNode => {
+   return {
+      ...node,
+      serverNode: true,
+      svgStr: Buffer.from(node.svgBytes).toString(),
+   }
+}
 
 export const createServerNode = (
    settings: BaseUploadSettings,
