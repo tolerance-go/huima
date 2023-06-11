@@ -16,8 +16,9 @@ import {
    StaticVectorNode,
 } from './static-node'
 
-export type ServerNodeTag = {
+export type ServerNodeBase = {
    serverNode?: true
+   parentId?: string
 }
 
 /**
@@ -26,48 +27,48 @@ export type ServerNodeTag = {
 export type ServerFrameNode = Omit<StaticFrameNode, 'children'> & {
    imageFillSrc?: string
    children: ServerNode[]
-} & ServerNodeTag
+} & ServerNodeBase
 
 export type ServerComponentNode = Omit<StaticComponentNode, 'children'> & {
    imageFillSrc?: string
    children: ServerNode[]
-} & ServerNodeTag
+} & ServerNodeBase
 
 export type ServerInstanceNode = Omit<StaticInstanceNode, 'children'> & {
    imageFillSrc?: string
    children: ServerNode[]
-} & ServerNodeTag
+} & ServerNodeBase
 
 export type ServerRectangleNode = StaticRectangleNode & {
    imageFillSrc?: string
-} & ServerNodeTag
+} & ServerNodeBase
 
 export type ServerEllipseNode = StaticEllipseNode & {
    imageFillSrc?: string
    svgStr?: string
-} & ServerNodeTag
+} & ServerNodeBase
 
 export type ServerGroupNode = Omit<StaticGroupNode, 'children'> & {
    children: ServerNode[]
    svgStr?: string
-} & ServerNodeTag
+} & ServerNodeBase
 
-export type ServerTextNode = StaticTextNode & ServerNodeTag
+export type ServerTextNode = StaticTextNode & ServerNodeBase
 export type ServerLineNode = StaticLineNode & {
    svgStr?: string
-} & ServerNodeTag
+} & ServerNodeBase
 export type ServerVectorNode = StaticVectorNode & {
    svgStr?: string
-} & ServerNodeTag
+} & ServerNodeBase
 export type ServerBooleanOperationNode = StaticBooleanOperationNode & {
    svgStr?: string
-} & ServerNodeTag
+} & ServerNodeBase
 export type ServerPolygonNode = StaticPolygonNode & {
    svgStr?: string
-} & ServerNodeTag
+} & ServerNodeBase
 export type ServerStarNode = StaticStarNode & {
    svgStr?: string
-} & ServerNodeTag
+} & ServerNodeBase
 
 export type ServerAtomNode =
    | ServerTextNode

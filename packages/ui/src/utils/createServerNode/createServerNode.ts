@@ -88,5 +88,6 @@ export const createServerNode = (
       ...serverNode,
       // 服务端存储的数据结构中，不需要 parent 对象，后期可以存储一个 parentId
       parent: undefined,
+      parentId: parentNode?.id,
    }
 }

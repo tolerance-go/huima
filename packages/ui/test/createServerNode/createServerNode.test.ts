@@ -5,10 +5,12 @@ import {
    StaticNode,
    StaticVectorNode,
 } from '@huima/common/dist/types'
+import { renderStaticNode } from '@huima/render-static-node'
 import { Buffer } from 'buffer'
 import { describe, expect, test } from 'vitest'
-import { createServerNode } from '../src/utils/createServerNode/createServerNode'
-import { ServerNodeConvertHooks } from '../src/utils/createServerNode/types'
+import { createServerNode } from '../../src/utils/createServerNode/createServerNode'
+import { ServerNodeConvertHooks } from '../../src/utils/createServerNode/types'
+import groupData from './group.json'
 
 describe('createServerNode', () => {
    const settings: BaseUploadSettings = {} // 初始化你的设置对象；
@@ -123,5 +125,60 @@ describe('createServerNode', () => {
       const serverNode = createServerNode(settings, starNode, hooks)
 
       expect(serverNode).toEqual(expectedOutput)
+   })
+
+   test('group 嵌套', () => {
+      expect(
+         renderStaticNode(
+            {
+               enableTailwindcss: false,
+               targetRuntimeEnv: 'web',
+               targetRuntimeDsl: 'html',
+               enablePxConvert: false,
+               pxConvertConfigs: {
+                  pxConvertFormat: 'rem',
+                  viewportWidth: 0,
+                  baseFontSize: 0,
+               },
+            },
+            createServerNode(
+               settings,
+               groupData as unknown as StaticNode,
+               hooks,
+            ),
+         ),
+      ).toMatchInlineSnapshot(`
+        "<div role='frame' style=\\"width: 238px;
+        height: 397px;
+        border-radius: 0px;
+        background-color: #ffffffff;
+        transform: rotate(-3.1805546814635168e-15deg);\\" >
+            <div role=\\"group\\" style=\\"width: 90px;
+        height: 249px;
+        transform: rotate(0deg);
+        position: absolute;
+        left: 47px;
+        top: 60px;\\" ><div style=\\"width: 90px;
+        height: 71px;
+        border-radius: 0px;
+        background-color: #d9d9d9ff;
+        position: absolute;
+        left: 0px;
+        top: 0px;\\" ></div>
+        <div style=\\"width: 90px;
+        height: 71px;
+        border-radius: 0px;
+        background-color: #d9d9d9ff;
+        position: absolute;
+        left: 0px;
+        top: 0px;\\" ></div>
+        <div style=\\"width: 90px;
+        height: 71px;
+        border-radius: 0px;
+        background-color: #d9d9d9ff;
+        position: absolute;
+        left: 0px;
+        top: 0px;\\" ></div></div></div>"
+      `)
    })
 })

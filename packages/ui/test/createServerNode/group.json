@@ -1,0 +1,358 @@
+{
+   "x": 3666,
+   "y": -2075,
+   "id": "684:195",
+   "name": "Frame 80",
+   "type": "frame",
+   "fills": [
+      {
+         "type": "SOLID",
+         "color": {
+            "b": 1,
+            "g": 1,
+            "r": 1
+         },
+         "opacity": 1,
+         "visible": true,
+         "blendMode": "NORMAL"
+      }
+   ],
+   "width": 238,
+   "height": 397,
+   "isMask": false,
+   "effects": [],
+   "strokes": [],
+   "children": [
+      {
+         "x": 47,
+         "y": 60,
+         "id": "684:207",
+         "name": "Group 5",
+         "type": "group",
+         "width": 90,
+         "height": 249,
+         "isMask": false,
+         "effects": [],
+         "hasMask": false,
+         "children": [
+            {
+               "x": 47,
+               "y": 149,
+               "id": "684:208",
+               "name": "Group 3",
+               "type": "group",
+               "width": 90,
+               "height": 71,
+               "isMask": false,
+               "effects": [],
+               "hasMask": false,
+               "children": [
+                  {
+                     "x": 47,
+                     "y": 149,
+                     "id": "684:209",
+                     "name": "Rectangle 11",
+                     "type": "rectangle",
+                     "fills": [
+                        {
+                           "type": "SOLID",
+                           "color": {
+                              "b": 0.8509804010391235,
+                              "g": 0.8509804010391235,
+                              "r": 0.8509804010391235
+                           },
+                           "opacity": 1,
+                           "visible": true,
+                           "blendMode": "NORMAL"
+                        }
+                     ],
+                     "width": 90,
+                     "height": 71,
+                     "isMask": false,
+                     "effects": [],
+                     "strokes": [],
+                     "rotation": 0,
+                     "blendMode": "PASS_THROUGH",
+                     "serverNode": true,
+                     "constraints": {
+                        "vertical": "MIN",
+                        "horizontal": "MIN"
+                     },
+                     "dashPattern": [],
+                     "strokeAlign": "INSIDE",
+                     "cornerRadius": 0,
+                     "strokeWeight": 0.2261294275522232,
+                     "absoluteTransform": [
+                        [1, 5.551115123125783e-17, 3713],
+                        [-5.551115123125783e-17, 1, -1926]
+                     ],
+                     "layoutPositioning": "AUTO",
+                     "absoluteBoundingBox": {
+                        "x": 3713,
+                        "y": -1926,
+                        "width": 90,
+                        "height": 71
+                     },
+                     "absoluteRenderBounds": {
+                        "x": 3713,
+                        "y": -1926,
+                        "width": 90,
+                        "height": 71
+                     }
+                  }
+               ],
+               "rotation": 0,
+               "blendMode": "PASS_THROUGH",
+               "serverNode": true,
+               "absoluteTransform": [
+                  [1, 5.551115123125783e-17, 3713],
+                  [-5.551115123125783e-17, 1, -1926]
+               ],
+               "layoutPositioning": "AUTO",
+               "absoluteBoundingBox": {
+                  "x": 3713,
+                  "y": -1926,
+                  "width": 90,
+                  "height": 71
+               },
+               "absoluteRenderBounds": {
+                  "x": 3713,
+                  "y": -1926,
+                  "width": 90,
+                  "height": 71
+               }
+            },
+            {
+               "x": 47,
+               "y": 60,
+               "id": "684:210",
+               "name": "Group 5",
+               "type": "group",
+               "width": 90,
+               "height": 71,
+               "isMask": false,
+               "effects": [],
+               "hasMask": false,
+               "children": [
+                  {
+                     "x": 47,
+                     "y": 60,
+                     "id": "684:211",
+                     "name": "Rectangle 11",
+                     "type": "rectangle",
+                     "fills": [
+                        {
+                           "type": "SOLID",
+                           "color": {
+                              "b": 0.8509804010391235,
+                              "g": 0.8509804010391235,
+                              "r": 0.8509804010391235
+                           },
+                           "opacity": 1,
+                           "visible": true,
+                           "blendMode": "NORMAL"
+                        }
+                     ],
+                     "width": 90,
+                     "height": 71,
+                     "isMask": false,
+                     "effects": [],
+                     "strokes": [],
+                     "rotation": 0,
+                     "blendMode": "PASS_THROUGH",
+                     "serverNode": true,
+                     "constraints": {
+                        "vertical": "MIN",
+                        "horizontal": "MIN"
+                     },
+                     "dashPattern": [],
+                     "strokeAlign": "INSIDE",
+                     "cornerRadius": 0,
+                     "strokeWeight": 0.2261294275522232,
+                     "absoluteTransform": [
+                        [1, 5.551115123125783e-17, 3713],
+                        [-5.551115123125783e-17, 1, -2015]
+                     ],
+                     "layoutPositioning": "AUTO",
+                     "absoluteBoundingBox": {
+                        "x": 3713,
+                        "y": -2015,
+                        "width": 90,
+                        "height": 71
+                     },
+                     "absoluteRenderBounds": {
+                        "x": 3713,
+                        "y": -2015,
+                        "width": 90,
+                        "height": 71
+                     }
+                  }
+               ],
+               "rotation": 0,
+               "blendMode": "PASS_THROUGH",
+               "serverNode": true,
+               "absoluteTransform": [
+                  [1, 5.551115123125783e-17, 3713],
+                  [-5.551115123125783e-17, 1, -2015]
+               ],
+               "layoutPositioning": "AUTO",
+               "absoluteBoundingBox": {
+                  "x": 3713,
+                  "y": -2015,
+                  "width": 90,
+                  "height": 71
+               },
+               "absoluteRenderBounds": {
+                  "x": 3713,
+                  "y": -2015,
+                  "width": 90,
+                  "height": 71
+               }
+            },
+            {
+               "x": 47,
+               "y": 238,
+               "id": "684:212",
+               "name": "Group 4",
+               "type": "group",
+               "width": 90,
+               "height": 71,
+               "isMask": false,
+               "effects": [],
+               "hasMask": false,
+               "children": [
+                  {
+                     "x": 47,
+                     "y": 238,
+                     "id": "684:213",
+                     "name": "Rectangle 11",
+                     "type": "rectangle",
+                     "fills": [
+                        {
+                           "type": "SOLID",
+                           "color": {
+                              "b": 0.8509804010391235,
+                              "g": 0.8509804010391235,
+                              "r": 0.8509804010391235
+                           },
+                           "opacity": 1,
+                           "visible": true,
+                           "blendMode": "NORMAL"
+                        }
+                     ],
+                     "width": 90,
+                     "height": 71,
+                     "isMask": false,
+                     "effects": [],
+                     "strokes": [],
+                     "rotation": 0,
+                     "blendMode": "PASS_THROUGH",
+                     "serverNode": true,
+                     "constraints": {
+                        "vertical": "MIN",
+                        "horizontal": "MIN"
+                     },
+                     "dashPattern": [],
+                     "strokeAlign": "INSIDE",
+                     "cornerRadius": 0,
+                     "strokeWeight": 0.2261294275522232,
+                     "absoluteTransform": [
+                        [1, 5.551115123125783e-17, 3713],
+                        [-5.551115123125783e-17, 1, -1837]
+                     ],
+                     "layoutPositioning": "AUTO",
+                     "absoluteBoundingBox": {
+                        "x": 3713,
+                        "y": -1837,
+                        "width": 90,
+                        "height": 71
+                     },
+                     "absoluteRenderBounds": {
+                        "x": 3713,
+                        "y": -1837,
+                        "width": 90,
+                        "height": 71
+                     }
+                  }
+               ],
+               "rotation": 0,
+               "blendMode": "PASS_THROUGH",
+               "serverNode": true,
+               "absoluteTransform": [
+                  [1, 5.551115123125783e-17, 3713],
+                  [-5.551115123125783e-17, 1, -1837]
+               ],
+               "layoutPositioning": "AUTO",
+               "absoluteBoundingBox": {
+                  "x": 3713,
+                  "y": -1837,
+                  "width": 90,
+                  "height": 71
+               },
+               "absoluteRenderBounds": {
+                  "x": 3713,
+                  "y": -1837,
+                  "width": 90,
+                  "height": 71
+               }
+            }
+         ],
+         "rotation": 0,
+         "blendMode": "PASS_THROUGH",
+         "serverNode": true,
+         "absoluteTransform": [
+            [1, 5.551115123125783e-17, 3713],
+            [-5.551115123125783e-17, 1, -2015]
+         ],
+         "layoutPositioning": "AUTO",
+         "absoluteBoundingBox": {
+            "x": 3713,
+            "y": -2015,
+            "width": 90,
+            "height": 249
+         },
+         "absoluteRenderBounds": {
+            "x": 3713,
+            "y": -2015,
+            "width": 90,
+            "height": 249
+         }
+      }
+   ],
+   "rotation": 0.0000000000000031805546814635168,
+   "blendMode": "PASS_THROUGH",
+   "layoutMode": "NONE",
+   "paddingTop": 0,
+   "serverNode": true,
+   "constraints": {
+      "vertical": "MIN",
+      "horizontal": "MIN"
+   },
+   "dashPattern": [],
+   "itemSpacing": 0,
+   "paddingLeft": 0,
+   "strokeAlign": "INSIDE",
+   "cornerRadius": 0,
+   "paddingRight": 0,
+   "strokeWeight": 1,
+   "paddingBottom": 0,
+   "absoluteTransform": [
+      [1, 5.551115123125783e-17, 3666],
+      [-5.551115123125783e-17, 1, -2075]
+   ],
+   "layoutPositioning": "AUTO",
+   "absoluteBoundingBox": {
+      "x": 3666,
+      "y": -2075,
+      "width": 238,
+      "height": 397
+   },
+   "absoluteRenderBounds": {
+      "x": 3666,
+      "y": -2075,
+      "width": 238,
+      "height": 397
+   },
+   "counterAxisAlignItems": "MIN",
+   "primaryAxisAlignItems": "MIN"
+}

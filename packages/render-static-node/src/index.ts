@@ -1,4 +1,5 @@
 import {
+   ServerContainerNode,
    ServerNode,
    StaticContainerNode,
    StaticNode,
@@ -90,4 +91,4 @@ export const renderStaticNode = (
 }
 
 export * from './types'
-export { StaticNode, ServerNode }
+export { StaticNode, ServerNode, ServerContainerNode }

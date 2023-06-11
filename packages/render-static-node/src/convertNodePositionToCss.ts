@@ -1,4 +1,5 @@
 import {
+   ServerContainerNode,
    StaticContainerNode,
    StaticGroupNode,
    StaticNode,
@@ -8,7 +9,9 @@ import { BaseConvertSettings } from './types'
 
 // 给我一个函数，传入一个节点，一直向上查找，直到找到第一个非 group 节点，返回这个节点和上一个 group 节点
 // 一直找到头，如果没有符合条件的话返回空
-const getUpperGroupNode = (node?: StaticContainerNode) => {
+const getUpperGroupNode = (
+   node?: StaticContainerNode | ServerContainerNode,
+) => {
    let upperGroupNode: StaticGroupNode | null = null
    let parent = node
    while (parent) {
@@ -18,7 +21,7 @@ const getUpperGroupNode = (node?: StaticContainerNode) => {
       if (parent.type === 'group') {
          upperGroupNode = parent
       }
-      parent = parent.parent as StaticContainerNode
+      parent = parent.parent as StaticContainerNode | ServerContainerNode
    }
    return upperGroupNode
 }
