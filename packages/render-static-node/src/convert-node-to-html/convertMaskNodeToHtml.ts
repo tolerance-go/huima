@@ -1,6 +1,9 @@
-import { StaticContainerNode, StaticGroupNode } from '@huima/common/dist/types'
+import {
+   ServerGroupNode,
+   StaticContainerNode,
+   StaticGroupNode,
+} from '@huima/common/dist/types'
 import { Buffer } from 'buffer'
-import { convertCssObjectToString } from '../convertCssObjectToString'
 import { convertNodePositionToCss } from '../convertNodePositionToCss'
 import { convertToStyleAndClassAttrs } from '../convertToStyleAndClassAttrs'
 import { BaseConvertSettings } from '../types'
@@ -15,24 +18,31 @@ import { BaseConvertSettings } from '../types'
  */
 export const convertMaskNodeToHtml = (
    settings: BaseConvertSettings,
-   node: StaticGroupNode,
+   node: StaticGroupNode | ServerGroupNode,
    parentNode?: StaticContainerNode,
 ) => {
    const { width, height, effects, rotation, svgBytes } = node
-
-   if (!svgBytes) {
-      throw new Error('render mask but svgBytes is undefined.')
-   }
-
-   const html = Buffer.from(svgBytes).toString()
 
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {
       ...convertNodePositionToCss(settings, node, parentNode),
    }
 
-   // 转换 CSS 对象为 CSS 字符串
-   const style = convertCssObjectToString(css)
+   if ('serverNode' in node && node.serverNode) {
+      if (!node.svgStr) {
+         throw new Error('node.svgStr is undefined')
+      }
+      return node.svgStr.replace(
+         '<svg',
+         `<svg role='vector' ${convertToStyleAndClassAttrs(css, settings)}`,
+      )
+   }
+
+   if (!svgBytes) {
+      throw new Error('render mask but svgBytes is undefined.')
+   }
+
+   const html = Buffer.from(svgBytes).toString()
 
    return html.replace(
       '<svg',

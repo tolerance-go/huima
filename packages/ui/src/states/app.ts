@@ -181,7 +181,7 @@ export const rendererCode = computed(() => {
    if (!selectedNode.value) return ''
 
    return renderStaticNode(settings.value, selectedNode.value, {
-      convertBackgroundImage: (
+      convertBackgroundImageCss: (
          imageFillMeta: ImageFillMeta,
          node: StaticNode,
       ) => {
@@ -201,7 +201,7 @@ export const htmlCode = computed(() => {
    if (!selectedNode.value) return ''
 
    return renderStaticNode(settings.value, selectedNode.value, {
-      convertBackgroundImage: (
+      convertBackgroundImageCss: (
          imageFillMeta: ImageFillMeta,
          node: StaticNode,
       ) => {

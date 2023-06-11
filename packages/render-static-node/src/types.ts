@@ -6,7 +6,7 @@ export type {
 } from '@huima/common/dist/types'
 
 export type RenderNodeHooks = {
-   convertBackgroundImage?: (
+   convertBackgroundImageCss?: (
       imageFillMeta: ImageFillMeta,
       node: StaticNode | ServerNode,
    ) => string

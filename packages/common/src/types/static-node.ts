@@ -284,7 +284,7 @@ export interface StaticVectorNode
       > {
    type: 'vector'
    parent?: StaticContainerNode
-   svgBytes?: Uint8Array
+   svgBytes: Uint8Array
 }
 
 export interface StaticBooleanOperationNode

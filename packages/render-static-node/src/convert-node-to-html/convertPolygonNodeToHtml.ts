@@ -1,4 +1,5 @@
 import {
+   ServerPolygonNode,
    StaticContainerNode,
    StaticPolygonNode,
 } from '@huima/common/dist/types'
@@ -17,17 +18,26 @@ import { BaseConvertSettings } from '../types'
  */
 export const convertPolygonNodeToHtml = (
    settings: BaseConvertSettings,
-   node: StaticPolygonNode,
+   node: StaticPolygonNode | ServerPolygonNode,
    parentNode?: StaticContainerNode,
 ) => {
    const { width, height, fills, strokes, effects, rotation } = node
-
-   const html = Buffer.from(node.svgBytes).toString()
 
    // 创建 CSS 对象
    const css: Record<string, string | number | null | undefined> = {
       ...convertNodePositionToCss(settings, node, parentNode),
    }
+
+   if ('serverNode' in node && node.serverNode) {
+      if (!node.svgStr) {
+         throw new Error('node.svgStr is undefined')
+      }
+      return node.svgStr.replace(
+         '<svg',
+         `<svg role='vector' ${convertToStyleAndClassAttrs(css, settings)}`,
+      )
+   }
+   const html = Buffer.from(node.svgBytes).toString()
 
    return html.replace(
       '<svg',

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { convertPxToVw } from '../src/utils/convertPxToVw'
+import { convertPxToVw } from '../dist/utils/convertPxToVw'
 
 describe('convertPxToVw', () => {
    test('基本用例', () => {

@@ -8,9 +8,9 @@ import { postActionToCode } from '@huima/common/dist/postActionToCode'
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
 import debounce from 'lodash.debounce'
-import { watch, watchEffect } from 'vue'
+import { toRaw, watch, watchEffect } from 'vue'
 import { normalizeCss } from './constants/normalize.css'
-import { createServerNode } from './createServerNode'
+import { createServerNode } from './utils/createServerNode'
 import {
    codeblockCode,
    copiedCode,
@@ -136,10 +136,12 @@ const handleUploadClick = debounce(async () => {
       return
    }
 
-   try {
-      const imgFiles: File[] = []
+   const imgFiles: File[] = []
 
-      const nodeData = createServerNode(settings.value, selectedNode.value, {
+   const nodeData = createServerNode(
+      toRaw(settings.value),
+      selectedNode.value,
+      {
          convertImageFillMetaBytesToAssertUrl(imageFillMeta, node) {
             imageFillMetaNodeMaps[node.id] = imageFillMeta
 
@@ -159,39 +161,39 @@ const handleUploadClick = debounce(async () => {
 
             return `/uploads/${imgName}`
          },
-      })
+      },
+   )
 
-      const formData = new FormData()
-      for (let i = 0; i < imgFiles.length; i++) {
-         formData.append('images', imgFiles[i]) // 'images' 是服务器端接收文件的字段名
-      }
+   const formData = new FormData()
+   for (let i = 0; i < imgFiles.length; i++) {
+      formData.append('images', imgFiles[i]) // 'images' 是服务器端接收文件的字段名
+   }
 
-      await Promise.all([
-         request.post('/api/projects/images/upload', formData, {
+   await Promise.all([
+      request.post('/api/projects/images/upload', formData, {
+         headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${settings.value.token}`,
+         },
+      }),
+      request.post(
+         '/api/projects/upload',
+         {
+            token: settings.value.token,
+            name: selectedNode.value.name,
+            nodeData,
+            settings: settings.value,
+         },
+         {
             headers: {
-               'Content-Type': 'multipart/form-data',
                Authorization: `Bearer ${settings.value.token}`,
             },
-         }),
-         request.post(
-            '/api/projects/upload',
-            {
-               token: settings.value.token,
-               name: selectedNode.value.name,
-               nodeData,
-               settings: settings.value,
-            },
-            {
-               headers: {
-                  Authorization: `Bearer ${settings.value.token}`,
-               },
-            },
-         ),
-      ])
-      window.alert2('上传成功')
-   } catch {
-      // ignore
-   }
+         },
+      ),
+   ])
+   window.alert2(
+      '上传成功，<a class="underline text-blue-500" href="http://localhost:8002/zh/admin/projects" target="_blank">立即查看</a>',
+   )
 }, 300)
 </script>
 

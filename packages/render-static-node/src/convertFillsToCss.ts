@@ -49,8 +49,11 @@ export function convertFillsToCss(
             imageFill.scaleMode === 'FILL' ? 'cover' : 'contain'
 
          let backgroundImage: string | undefined
-         if (hooks?.convertBackgroundImage) {
-            backgroundImage = hooks.convertBackgroundImage(imageFillMeta!, node)
+         if (hooks?.convertBackgroundImageCss) {
+            backgroundImage = hooks.convertBackgroundImageCss(
+               imageFillMeta!,
+               node,
+            )
          }
 
          return {
