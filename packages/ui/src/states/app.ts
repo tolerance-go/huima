@@ -1,3 +1,4 @@
+import { User as HuimaUser } from '@huima-admin/db'
 import {
    DEFAULT_BASE_FONT_SIZE,
    DEFAULT_VIEWPORT_HEIGHT,
@@ -113,6 +114,8 @@ export const isSettingsPage = ref(false)
 export const selectedNode = ref<StaticNode | null>(null)
 
 export const notSupport = ref(false)
+
+export const userInfo = ref<HuimaUser>()
 
 export const baseRenderSettings: BaseRenderSettings = {
    fontAssetUrlPlaceholders: [''],

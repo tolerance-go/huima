@@ -11,6 +11,7 @@ import debounce from 'lodash.debounce'
 import { toRaw, watch, watchEffect } from 'vue'
 import { normalizeCss } from './constants/normalize.css'
 import { createServerNode } from './utils/createServerNode'
+import { User as HuimaUser } from '@huima-admin/db'
 import {
    codeblockCode,
    copiedCode,
@@ -25,6 +26,7 @@ import {
    selectedNode,
    settings,
    usedI18n,
+   userInfo,
 } from './states/app'
 import {
    convertFigmaIdToHtmlId,
@@ -34,6 +36,7 @@ import { extractAndSplitBgImgUrls } from './utils/extractAndSplitBgImgUrls'
 import request from './utils/request'
 import Alert from './views/Alert.vue'
 import SettingsComponent from './views/Settings.vue'
+import { v4 as uuidv4 } from 'uuid'
 
 watch(
    () => settings,
@@ -74,6 +77,22 @@ watchEffect(() => {
       '--code-font-size',
       settings.value.codeFontSize + 'px',
    )
+})
+
+watchEffect(async () => {
+   if (!settings.value.token) return
+
+   const rsp = await request.post<HuimaUser>(
+      '/api/get-user-by-token',
+      {},
+      {
+         headers: {
+            Authorization: `Bearer ${settings.value.token}`,
+         },
+      },
+   )
+
+   userInfo.value = rsp.data
 })
 
 const exportZip = (
@@ -132,6 +151,11 @@ const handleUploadClick = debounce(async () => {
       return
    }
 
+   if (!userInfo.value) {
+      window.alert2('token 无效，请在设置页面重新配置')
+      return
+   }
+
    if (!selectedNode.value) {
       return
    }
@@ -149,17 +173,13 @@ const handleUploadClick = debounce(async () => {
                type: 'image/' + imageFillMeta.imageExtension,
             }) // 假设 arrayBuffer 是 JPEG 图片的数据
 
-            const imgName = `${selectedNode.value!.name}_${
-               node.name
-            }_${convertFigmaIdToHtmlId(node.id)}.${
-               imageFillMeta.imageExtension
-            }`
+            const imgName = `${uuidv4()}.${imageFillMeta.imageExtension}`
 
             const file = new File([blob], imgName) // 第一个参数是文件数据，第二个参数是文件名
 
             imgFiles.push(file)
 
-            return `/uploads/${imgName}`
+            return `/uploads/${userInfo.value!.id}/${imgName}`
          },
       },
    )

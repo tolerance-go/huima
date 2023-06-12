@@ -5,6 +5,7 @@ import {
    StaticGroupNode,
 } from '@huima/common/dist/types'
 import { StaticNode } from '@huima/render-static-node'
+import { Buffer } from 'buffer'
 import { createServerNode } from './createServerNode'
 import { ServerNodeConvertHooks } from './types'
 
