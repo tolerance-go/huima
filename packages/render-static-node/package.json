@@ -8,8 +8,10 @@
    "main": "dist/index.js",
    "scripts": {
       "build": "npm run clean && tsc -p tsconfig.build.json",
+      "build:jssj": "npm run clean && IS_JSSJ=true tsc -p tsconfig.build.json",
       "clean": "rimraf ./dist",
       "dev": "npm run build -- --watch",
+      "dev:jssj": "IS_JSSJ=true npm run build:jssj -- --watch",
       "test": "vitest"
    },
    "dependencies": {

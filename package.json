@@ -7,13 +7,13 @@
    "main": "code.js",
    "scripts": {
       "build": "pnpm -r run build",
-      "build:jssj": "pnpm -r run build:plugin:jssj",
+      "build:jssj": "pnpm -r run build:jssj",
       "changeset": "changeset",
       "changeset:publish": "pnpm build && echo 'skip changeset publish' && git push --follow-tags --no-verify",
       "changeset:version": "changeset version",
       "clean": "git clean -dfX",
       "dev": "pnpm -r --parallel run dev",
-      "dev:jssj": "pnpm -r --parallel run dev:plugin:jssj",
+      "dev:jssj": "pnpm -r --parallel run dev:jssj",
       "format": "prettier '**/(*.{css,js,jsx,ts,tsx,md,mdx,vue,html}|package.json|tsconfig.json)' --write",
       "prepare": "husky install"
    },

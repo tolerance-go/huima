@@ -7,10 +7,10 @@
    "author": "",
    "scripts": {
       "build": "npm run clean && tsc -p tsconfig.json",
-      "build:jssj": "npm run clean && IS_JSSJ=true npm run build",
+      "build:jssj": "npm run clean && IS_JSSJ=true tsc -p tsconfig.json",
       "clean": "rimraf ./dist",
       "dev": "npm run build -- --watch",
-      "dev:jssj": "IS_JSSJ=true npm run build:jssj -- --watch",
+      "dev:jssj": "npm run build:jssj -- --watch",
       "test": "vitest"
    },
    "devDependencies": {
