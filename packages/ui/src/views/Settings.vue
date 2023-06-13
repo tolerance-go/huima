@@ -4,21 +4,11 @@ import {
    baseUISettings,
    formSettings,
    usedI18n,
-} from '../states/app'
+} from '../states'
 import { encryptPassword } from '@huima-admin/encrypt-password'
 
 const handleGetToken = () => {
    window.open('http://localhost:8002/')
-}
-
-const handleTokenBlur = () => {
-   // 加密 token
-   if (formSettings.token) {
-      formSettings.token = encryptPassword(
-         formSettings.token,
-         process.env.PLUGIN_PASSWORD_SYMMETRIC_KEY!,
-      )
-   }
 }
 </script>
 <template>
@@ -35,14 +25,13 @@ const handleTokenBlur = () => {
             <span
                class="text-blue-500 hover:underline cursor-pointer"
                @click="handleGetToken"
-               >获取</span
+               >{{ usedI18n.access }}</span
             ></span
          >
          <input
             v-model="formSettings.token"
             type="password"
             class="mt-1 block w-full"
-            @blur="handleTokenBlur"
          />
       </label>
       <h3 class="text-gray-500 text-sm mt-4">

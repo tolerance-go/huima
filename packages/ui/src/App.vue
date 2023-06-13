@@ -27,7 +27,7 @@ import {
    settings,
    usedI18n,
    userInfo,
-} from './states/app'
+} from './states'
 import {
    convertFigmaIdToHtmlId,
    convertHtmlIdToFigmaId,
@@ -147,12 +147,12 @@ ${copiedCode.value}
 
 const handleUploadClick = debounce(async () => {
    if (!settings.value.token) {
-      window.alert2('没有发现 token，请在设置页面配置')
+      window.alert2(usedI18n.value.noToken)
       return
    }
 
    if (!userInfo.value) {
-      window.alert2('token 无效，请在设置页面重新配置')
+      window.alert2(usedI18n.value.invalidToken)
       return
    }
 
@@ -212,7 +212,7 @@ const handleUploadClick = debounce(async () => {
       ),
    ])
    window.alert2(
-      '上传成功，<a class="underline text-blue-500" href="http://localhost:8002/zh/admin/projects" target="_blank">立即查看</a>',
+      `${usedI18n.value.uploadSuccess}<a class="underline text-blue-500" href="http://localhost:8002/zh/admin/projects" target="_blank">${usedI18n.value.viewNow}</a>`,
    )
 }, 300)
 </script>

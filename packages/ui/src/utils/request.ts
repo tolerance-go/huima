@@ -1,4 +1,5 @@
 import request from 'axios'
+import { usedI18n } from '../states'
 
 request.defaults.baseURL = 'http://localhost:8002'
 
@@ -15,7 +16,7 @@ request.interceptors.response.use(
          console.log(error.response.headers)
          // alert(error.response.data)
          typeof error.response.data === 'string' &&
-            window.alert2('服务错误：' + error.response.data)
+            window.alert2(usedI18n.value.serverError + error.response.data)
       } else {
          // 在设置触发错误的请求时发生了一些事情
          console.log('Error', error.message)

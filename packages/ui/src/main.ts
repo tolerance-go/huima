@@ -1,3 +1,4 @@
+import { decryptPassword } from '@huima-admin/encrypt-password'
 import { UIAction } from '@huima/common/dist/types'
 import ClipboardJS from 'clipboard'
 import {
@@ -7,7 +8,7 @@ import {
    notSupport,
    selectedNode,
    usedI18n,
-} from './states/app'
+} from './states'
 
 const clipboard = new ClipboardJS('#copyBtn', {
    text: () => {
@@ -42,7 +43,15 @@ window.onmessage = (event) => {
          payload: { settings: _settings },
       } = event.data.pluginMessage as UIAction<'initSettings'>
 
-      Object.assign(formSettings, _settings)
+      Object.assign(formSettings, {
+         ..._settings,
+         token:
+            _settings.token &&
+            decryptPassword(
+               _settings.token,
+               process.env.PLUGIN_PASSWORD_SYMMETRIC_KEY!,
+            ),
+      })
 
       return
    }

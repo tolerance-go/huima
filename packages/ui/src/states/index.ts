@@ -1,4 +1,5 @@
 import { User as HuimaUser } from '@huima-admin/db'
+import { encryptPassword } from '@huima-admin/encrypt-password'
 import {
    DEFAULT_BASE_FONT_SIZE,
    DEFAULT_VIEWPORT_HEIGHT,
@@ -25,89 +26,10 @@ import { convertFigmaIdToHtmlId } from '../utils/convertFigmaIdToHtmlId'
 import { convertHtmlToJsx } from '../utils/convertHtmlToJsx'
 import { getScriptStr } from '../utils/getScriptStr'
 
-export const i18n = reactive({
-   'zh-CN': {
-      generate: '生成',
-      pleaseSelect: '“请选择场景元素后，点击生成按钮”',
-      exportBtnText: '导出',
-      enableCssToTailwindCss: '启用 CSS 转 Tailwindcss',
-      basicFontSize: '基础字号大小',
-      designDraftViewportWidth: '设计稿视口宽度',
-      targetFormat: '目标格式',
-      enablePxUnitConversion: '启用 px 单位转换',
-      exportLabel: '导出',
-      uploadLabel: '上传',
-      uiSettingsLabel: '界面',
-      sysSettingsLabel: '系统',
-      viewportHeightLabel: '视口高度',
-      basicsLabel: '基础',
-      configureLabel: '设置',
-      copyBtnText: '复制',
-      copySuccessBtnText: '复制成功!',
-      miniProgram: '小程序',
-      preview: '预览',
-      theCurrentNodeDoesNotSupportRendering: '当前节点不支持渲染',
-      addFont: '添加字体',
-      addFontTitle: '字体',
-      resourceAddress: '资源地址',
-      continueAdding: '继续添加',
-      tailwindcssLabel: '启用 Tailwindcss',
-      codeFontSizeLabel: '代码字体大小',
-      tokenLabel: '令牌',
-      viewportWidthLabel: '视口宽高',
-      languageLabel: '语言',
-      targetRuntimeEnvLabel: '运行环境',
-      targetRuntimeDslLabel: 'DSL',
-      uploadBtnText: '上传',
-   },
-   'en-US': {
-      tokenLabel: 'Token',
-      uploadLabel: 'Upload',
-      languageLabel: 'Language',
-      codeFontSizeLabel: 'Code font-size',
-      targetRuntimeEnvLabel: 'Runtime Env',
-      targetRuntimeDslLabel: 'DSL',
-      tailwindcssLabel: 'Enable Tailwindcss',
-      sysSettingsLabel: 'System',
-      addFont: 'Add font',
-      addFontTitle: 'Font',
-      resourceAddress: 'Resource address',
-      continueAdding: 'Continue adding',
-      miniProgram: 'Miniapp',
-      generate: 'Generate',
-      pleaseSelect:
-         '"Please select the scene elements first, then click the Generate button"',
-      exportBtnText: 'Export',
-      enableCssToTailwindCss: 'Enable CSS to Tailwindcss conversion',
-      basicFontSize: 'Basic font size',
-      designDraftViewportWidth: 'Design draft viewport width',
-      targetFormat: 'Target format',
-      enablePxUnitConversion: 'Enable px unit conversion',
-      exportLabel: 'Export',
-      uiSettingsLabel: 'UI',
-      viewportHeightLabel: 'Viewport height',
-      viewportWidthLabel: 'Viewport width',
-      basicsLabel: 'Basics',
-      configureLabel: 'Settings',
-      copyBtnText: 'Copy',
-      uploadBtnText: 'Upload',
-      copySuccessBtnText: 'Copy successful!',
-      preview: 'Preview',
-      theCurrentNodeDoesNotSupportRendering:
-         'Rendering not supported on current node.',
-   },
-})
+export * from './i18n'
 
 // 高优先级的复制按钮文案
 export const highCopyBtnText = ref()
-
-export const usedI18n = computed(() => {
-   // if (isJsDesign) {
-   //    return i18n['zh-CN']
-   // }
-   // return i18n['en-US']
-   return i18n[settings.value.language]
-})
 
 export const isSettingsPage = ref(false)
 
@@ -162,6 +84,12 @@ export const settings = computed(() => {
    const fonts = formSettings.fontAssetUrlPlaceholders.filter(Boolean)
    return {
       ...formSettings,
+      token:
+         formSettings.token &&
+         encryptPassword(
+            formSettings.token,
+            process.env.PLUGIN_PASSWORD_SYMMETRIC_KEY!,
+         ),
       fontAssetUrlPlaceholders: fonts.length ? fonts : [''],
       viewportSize: {
          width: formSettings.viewportSize.width || DEFAULT_VIEWPORT_WIDTH,
