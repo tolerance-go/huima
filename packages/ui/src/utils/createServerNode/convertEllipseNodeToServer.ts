@@ -4,6 +4,7 @@ import {
    StaticContainerNode,
    StaticEllipseNode,
 } from '@huima/common/dist/types'
+import { Buffer } from 'buffer'
 import { ServerNodeConvertHooks } from './types'
 
 export const convertEllipseNodeToServer = (
@@ -25,11 +26,15 @@ export const convertEllipseNodeToServer = (
          },
          imageFillSrc: src,
          svgStr: node.svgBytes && Buffer.from(node.svgBytes).toString(),
+         svgBytes: new Uint8Array(0),
+         serverNode: true,
       }
    }
 
    return {
       ...node,
+      svgStr: node.svgBytes && Buffer.from(node.svgBytes).toString(),
+      svgBytes: new Uint8Array(0),
       serverNode: true,
    }
 }

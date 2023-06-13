@@ -1,5 +1,6 @@
 import { isCircle } from '@huima/common/dist/isCircle'
 import {
+   ServerEllipseNode,
    StaticContainerNode,
    StaticEllipseNode,
 } from '@huima/common/dist/types'
@@ -27,7 +28,7 @@ import { BaseConvertSettings, RenderNodeHooks } from '../types'
  */
 export function convertEllipseNodeToHtml(
    settings: BaseConvertSettings,
-   node: StaticEllipseNode,
+   node: StaticEllipseNode | ServerEllipseNode,
    hooks?: RenderNodeHooks,
    parentNode?: StaticContainerNode,
 ): string {
@@ -43,7 +44,26 @@ export function convertEllipseNodeToHtml(
       rotation,
    } = node
 
+   // 不是完整的圆形，转换成 svg
    if (!isCircle(arcData)) {
+      if ('serverNode' in node && node.serverNode) {
+         if (!node.svgStr) {
+            throw new Error('node.svgStr is undefined')
+         }
+         return `<div style="${convertCssObjectToString({
+            width: `${width}px`,
+            height: `${height}px`,
+            // 居中显示
+            display: 'flex',
+            'justify-content': 'center',
+            'align-items': 'center',
+            ...convertNodePositionToCss(settings, node, parentNode),
+         })}">${node.svgStr.replace(
+            '<svg',
+            `<svg role='ellipse-vector'`,
+         )}</div>`
+      }
+
       // 可能转换失败，导致没有 svgBytes
       if (!node.svgBytes) {
          return ''

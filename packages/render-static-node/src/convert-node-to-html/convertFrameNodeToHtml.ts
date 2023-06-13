@@ -55,6 +55,7 @@ export const convertFrameNodeToHtml = (
    const css: Record<string, string | number | null | undefined> = {
       width: `${width}px`,
       height: `${height}px`,
+      overflow: 'hidden',
       ...getFrameFlexLayoutStyle(node),
       ...convertBorderRadiusToCss(cornerRadius),
       ...backgroundColorCss,
