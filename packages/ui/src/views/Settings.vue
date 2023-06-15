@@ -5,18 +5,17 @@ import {
    formSettings,
    usedI18n,
 } from '../states'
-import { encryptPassword } from '@huima-admin/encrypt-password'
 
-const handleGetToken = () => {
-   window.open('http://localhost:8002/')
-}
+// const handleGetToken = () => {
+//    window.open('http://localhost:8002/')
+// }
 </script>
 <template>
    <h2 class="text-lg">
       {{ usedI18n.configureLabel }}
    </h2>
    <div role="settings-page" class="grid grid-cols-1 gap-6 mt-3">
-      <h3 class="text-gray-500 text-sm mt-4">
+      <!-- <h3 class="text-gray-500 text-sm mt-4">
          {{ usedI18n.uploadLabel }}
       </h3>
       <label class="block">
@@ -33,7 +32,7 @@ const handleGetToken = () => {
             type="password"
             class="mt-1 block w-full"
          />
-      </label>
+      </label> -->
       <h3 class="text-gray-500 text-sm mt-4">
          {{ usedI18n.exportLabel }}
       </h3>
