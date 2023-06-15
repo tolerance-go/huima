@@ -323,9 +323,10 @@ const handleUploadClick = debounce(async () => {
             v-if="settings.isPreview"
          >
             <button
+               disabled
                @click="handleUploadClick"
                type="button"
-               class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white"
+               class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-black hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:text-white disabled:bg-gray-600 disabled:cursor-not-allowed disabled:hover:text-gray-300"
             >
                <svg
                   xmlns="http://www.w3.org/2000/svg"
